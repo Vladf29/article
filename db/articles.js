@@ -8,10 +8,10 @@ const articleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'user'
     },
-    comment: [{
+    comment: {
         type: Schema.Types.ObjectId,
         ref: 'user'
-    }],
+    },
     liked: [{
         type: Schema.Types.ObjectId,
         ref: 'user'

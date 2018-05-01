@@ -55,10 +55,6 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/article(\.html)?$', (req, res) => {
-    res.render('article');
-});
-
 app.use((err, req, res, next) => {
     res.send(err);
 });

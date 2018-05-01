@@ -1,13 +1,17 @@
 'use strict'
 
-$('.js-img').click(function () {
+import {
+    httpRequest
+} from './modules/httpRequest';
+
+$(document.body).on('click', '.js-img', function () {
     const src = $(this).attr('src');
     const bigImg = $('.js-big-img');
     bigImg.find('.big-img img').attr('src', src);
     bigImg.attr('data-state', 'show');
 });
 
-$('.js-big-img').click(function () {
+$(document.body).on('click', '.js-big-img', function () {
     const bigImg = $(this);
     bigImg.find('.big-img img').attr('src', '');
     bigImg.attr('data-state', 'hidden');
@@ -99,3 +103,82 @@ $(document.body).on('click', '.js-replay', function () {
 $(document.body).on('click', '.js-comment-delete', function () {
     $(this).closest('.js-comment').remove();
 });
+
+const upload = async () => {
+    const data = {};
+
+    data['mainTitle'] = $('h1.article__main-title').text();
+    data['mainImg'] = $('.article__main-img').find('img').attr('src');
+
+    $('.article__body').children().each(function (ind) {
+        const tag = $(this);
+        if (tag.prop('tagName') === 'P') {
+            data['graf-' + ind] = tag.html();
+        } else if (tag.prop('tagName') === 'H2') {
+            data['title-' + ind] = tag.text();
+        } else if (tag.hasClass('article__img')) {
+            data['img-' + ind] = {
+                imgSrc: tag.find('img').attr('src'),
+                caption: tag.find('em').text()
+            }
+        } else if (tag.hasClass('code')) {
+            data['code-' + ind] = tag.html();
+        }
+    });
+
+    try {
+        const opts = {
+            method: "POST",
+            url: "/article/add",
+            header: ['Content-Type', 'application/json'],
+            data: data,
+        }
+        await httpRequest(opts);
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+// upload();
+
+const download = async () => {
+    try {
+        const opts = {
+            method: "GET",
+            url: "/article/a",
+        }
+        const result = await httpRequest(opts);
+        const data = JSON.parse(result);
+
+        for (const k in data) {
+            switch (k) {
+                case 'mainTitle':
+                    $(`<h1 class='article__main-title'>${data[k]}</h1>`).insertAfter('.article__author')
+                    break;
+                case 'mainImg':
+                    let temp = `
+                        <div class='article__main-img article__img'>
+                            <img src=${data[k]} class='js-img'>
+                        </div>
+                    `
+                    $(temp).insertAfter('.article__header-timestamps');
+                    break;
+                default:
+                    if (/graf\-[0-9]{1,}/.test(k)) {
+                        $('.article__body').append(`<p>${data[k]}</p>`);
+                    } else if (/(code)-\d+?/.test(k)) {
+                        $('.article__body').append(`<figure>${data[k]}</figure>`);
+                    } else if (/(img)-\d+?/.test(k)) {
+                        let temp = `<img src='${data[k].imgSrc}' class='js-img'>`
+                        if (data[k].caption) temp += `<em>${data[k].caption}</em>`;
+                        $('.article__body').append(`<figure class='article__img'>${temp}</figure>`);
+                    }
+            }
+        }
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+download();
