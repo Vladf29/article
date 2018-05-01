@@ -1,0 +1,43 @@
+{
+  "name": "newdip",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "latest",
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "latest",
+    "browser-sync": "^2.23.7",
+    "browserify": "latest",
+    "event-stream": "^3.3.4",
+    "glob": "latest",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-pug": "^4.0.1",
+    "gulp-rename": "latest",
+    "gulp-sass": "latest",
+    "rimraf": "latest",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "express": "latest",
+    "express-promise-router": "^3.0.2",
+    "express-session": "^1.15.6",
+    "joi": "^13.2.0",
+    "mongoose": "^5.0.16",
+    "morgan": "^1.9.0",
+    "nodemailer": "^4.6.4",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pug": "latest",
+    "randomstring": "^1.1.5"
+  }
+}

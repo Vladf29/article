@@ -1,0 +1,11 @@
+.social {
+    display: flex;
+    &__link {
+        margin-right: 15px;
+        font-size: 16px;
+        color: #fff;
+        &:hover {
+            color: #0086a6;
+        }
+    }
+}

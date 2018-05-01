@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        include ../../parts/normalize
+        link(rel="stylesheet", href="/styles/settings.css")      
+        title Settings
+    body
+        .wrapper-page
+            include ../../parts/headerPage
+            .content-page
+                .settings
+                    .hero-n
+                        h1.hero-n__heading Settings
+                    .settings__heading.settings__heading_pd
+                        h2.settings__heading-title Email settings
+                    ul.settings__list
+                        li.settings__item
+                            .u-flex-1
+                                .top-block
+                                   .settings__heading
+                                        .settings__heading-title.settings__heading-title_small Your email
+                                .bottom-block
+                                    input.settings__field-edit.js-setting-email(type="email", name="email" id='email' placeholder='warvlad822@gmail.com' disabled)
+                            .u-flex-0
+                                button.btn.btn_primary.js-edit-btn(data-target-field='js-setting-email') Edit email
+
+                .settings
+                    .settings__heading.settings__heading_pd
+                        h2.settings__heading-title Account
+                    ul.settings__list
+                        li.settings__item
+                            .u-flex-1
+                                .top-block
+                                    .settings__heading
+                                        .settings__heading-title.settings__heading-title_small Your username
+                                .bottom-block
+                                    span.settings__no-user-select http://localhost:3000/
+                                    input.settings__field-edit.js-setting-username(type="text", name="username" id='username' placeholder='Vladf29' disabled)
+                            .u-flex-0
+                                button.btn.btn_primary.js-edit-btn(data-target-field='js-setting-username') Edit username
+                        li.settings__item
+                            .u-flex-1
+                                .top-block
+                                    .settings__heading
+                                        .settings__heading-title.settings__heading-title_small Manage blocked users
+                                .bottom-block
+                                    span.font-size-14 See a list of all the users you’ve blocked.
+                            .u-flex-0
+                                button.btn.btn_primary Manage blocked users
+
+                .settings
+                    .settings__heading.settings__heading_pd
+                        h2.settings__heading-title Security
+                    ul.settings__list
+                        li.settings__item
+                            .u-flex-1
+                                .top-block
+                                    .settings__heading
+                                        .settings__heading-title.settings__heading-title_small Sign out of all other sessions
+                                .bottom-block
+                                    span.font-size-14 This will sign you out of sessions in other browsers or on other computers.
+                            .u-flex-0
+                                button.btn.btn_primary Sign out other sessions
+                        li.settings__item
+                            .u-flex-1
+                                .top-block
+                                    .settings__heading
+                                        .settings__heading-title.settings__heading-title_small Delete account
+                                .bottom-block
+                                    span.font-size-14 Permanently delete your account and all of your content.
+                            .setting__u-flex-0
+                                button.btn.btn_primary Delete account
+            include ../../parts/footer
+            include ../../parts/signC
+        
+        script(src="/js/common.js")
+        script(src="/js/settings.js")

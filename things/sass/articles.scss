@@ -1,0 +1,83 @@
+.stories__wrapper {
+    padding-top: 70px;
+    padding-bottom: 70px;
+    width: 684px;
+    margin: auto;
+    >.hero-n {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid rgba(0, 0, 0, .05);
+        .tab {
+            margin-right: 22px;
+            padding-bottom: 8px;
+            color: rgba(0, 0, 0, .54);
+            font-size: 14px;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            &:last-child {
+                margin-right: 0;
+            }
+            &_selected {
+                border-bottom: 1px solid rgba(0, 0, 0, 0.555);
+                color: rgb(0, 0, 0);
+            }
+            &:hover {
+                color: rgba(0, 0, 0, .75);
+            }
+        }
+    }
+}
+
+.stories {
+    .story {
+        padding: 20px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, .05);
+        &:last-child {
+            border-bottom: 0;
+        }
+        &__heading {
+            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 26px;
+            color: rgba(38, 41, 58, 0.8);
+            line-height: 34px;
+            margin: 20px 0 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        &__desc {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: rgba(38, 41, 58, 0.8);
+            line-height: 28px;
+        }
+        &__meta {
+            margin-bottom: 25px;
+            color: rgba(38, 41, 58, 0.6);
+            display: flex;
+            font-size: 16px;
+            >span {
+                position: relative;
+                margin-right: 25px;
+                &::after {
+                    content: '•';
+                    font-size: 16px;
+                    position: absolute;
+                    top: 50%;
+                    right: -15px;
+                    transform: translateY(-50%);
+                }
+                &:last-child {
+                    margin-right: 0;
+                    &::after {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}

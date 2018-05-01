@@ -1,0 +1,105 @@
+.header-page {
+    $h: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: $h;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+    background-color: #f9fbfb;
+    padding: 0 15px;
+    &__l,
+    &__r {
+        display: flex;
+        align-items: center;
+        height: $h;
+        .search {
+            margin-right: 15px;
+        }
+    }
+    .main-menu {
+        height: $h;
+        &__link {
+            line-height: $h;
+        }
+    }
+}
+
+.main-menu {
+    display: flex;
+    padding: 0 5px;
+    &__link {
+        font-size: 16px;
+        display: block;
+        text-decoration: none;
+        padding: 0 13px;
+        color: #666;
+        text-align: center;
+        &:hover {
+            background-color: rgba($color: #000000, $alpha: .05);
+        }
+    }
+}
+
+.search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    width: 22px;
+    transition: width 250ms linear;
+    &[data-state=open] {
+        width: 150px;
+        .search__c {
+            visibility: visible;
+        }
+    }
+    &__icon {
+        font-size: 16px;
+        color: #666;
+        cursor: pointer;
+        padding: 2px
+    }
+    &__c {
+        // visibility: hidden
+    }
+    &__control {
+        display: block;
+        width: 100%;
+        padding: 2px 6px;
+        font-size: 16px;
+        border: 0;
+        background-color: #f9fbfb;
+    }
+}
+
+.aut {
+    display: flex;
+    height: 100%;
+    &__item {
+        display: flex;
+        height: 100%;
+        align-items: center;
+        color: #999;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 0 8px;
+        letter-spacing: .2px;
+        cursor: pointer;
+        &:hover {
+            background-color: rgba($color: #000000, $alpha: .05);
+        }
+    }
+    &__write-post {
+        font-size: 14px;
+        color: #009fc6;
+        font-weight: 700;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .avatar {
+        padding: 0 8px
+    }
+}

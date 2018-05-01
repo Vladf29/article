@@ -1,0 +1,16 @@
+@import'./social.scss';
+.footer-page {
+    flex: 0 0 auto;
+    background-color: rgb(52, 68, 74);
+    color: #fff;
+    padding: 32px 0;
+    &__content {
+        display: flex;
+        justify-content: space-between;
+        width: 1000px;
+        margin: auto;
+    }
+    &__copyright {
+        font-size: 14px;
+    }
+}
