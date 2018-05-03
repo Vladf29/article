@@ -7,39 +7,57 @@ html(lang="en")
         title Settings
         include ../../parts/normalize
         link(rel="stylesheet", href="/styles/common.css")
+        link(rel="stylesheet", href="/styles/profile.css")
     body
         .wrapper-page
             include ../../parts/headerPage
             .content-page
                 .user-profile
-                    .user-profile__info-block
-                        .user-profile__avatar
-                        .user-profile__form-edit
-                            span.user-profile__name
-                        .user-profile__form-edit                        
-                            span.user-profile__describe
-                    .user-profile__tab-bar
-                        .user-profile__tabs
-                            -var items = ['Profile','Posts','Likes']
-                            each item in items
-                                a.user-profile__tab(href='#')=item
-                    
-                    .user-profile__c
-                        .user-profile__heading
-                            span.user-profile__title About Me
-                            .user-profile__edit-btn
-                                span Edit
-                        .user-profile__content
-                    
-                    .user-profile__c
-                        .user-profile__heading
-                            span.user-profile__title Posts by Vlad
-                        
-                        .user-profile__content
 
+                    .user-profile__info-block
+                        .user-profile__content    
+                            .user-profile__info-block-content
+                                .user-profile__avatar
+                                    .user-profile__avatar-c
+                                        img(src="https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200", alt="")
+                                        .user-profile__avatar-upload
+                                            i.fas.fa-camera
+                                            span Upload
+                                .user-profile__form-edit
+                                    input.user-profile__form-edit-name(value='Vlad')
+                                .user-profile__form-edit
+                                    input.user-profile__form-edit-describe(placeholder='Describe yourself in a few words')                                                 
+
+                    .user-profile__tab-bar
+                        .user-profile__content
+                            .user-profile__tabs
+                                -var items = ['Profile','Posts','Likes']
+                                each item in items
+                                    a.user-profile__tab(href='/me/'+item.toLowerCase())=item
+                    
+                    .user-profile__content
+                        .user-profile__c
+                            .user-profile__heading
+                                span.user-profile__title About Me
+                                .user-profile__edit-btn
+                                    i.fas.fa-pencil-alt
+                                    span Edit
+                            .user-profile__block.user-profile__about-block
+
+                        .user-profile__c
+                            .user-profile__heading
+                                span.user-profile__title Posts by Vlad
+
+                            .user-profile__block.post-block
+                                .post-block__content
+                                .post-block__write
+                                    i(class="fas fa-plus-circle")
+                                    span Write a post
                             
 
                 
 
             include ../../parts/footer
             include ../../parts/signC
+        
+        script(src="/js/common.js")        
