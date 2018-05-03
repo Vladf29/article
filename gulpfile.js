@@ -104,8 +104,10 @@ gulp.task('cleanP', function del(cd) {
     return rimraf('public', cd);
 });
 
+gulp.task('clean', gulp.series('cleanB', 'cleanP'));
+
 gulp.task('default', gulp.series(
-    'cleanB', 'cleanP',
+    'clean',
     gulp.parallel('js', 'pug', 'sass'),
     gulp.parallel('watch', 'server')
 ));
