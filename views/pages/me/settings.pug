@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Settings
+        include ../../parts/normalize
+        link(rel="stylesheet", href="/styles/settings.css")
+    body
+        .wrapper-page
+            include ../../parts/headerPage
+            .content-page
+                .settings
+
+                    .sidebar
+                        .slidebar
+                            span.slidebar__title Settings
+                            .slidebar__items
+                                -var items = ['Account','Profile','Notification']
+                                each item in items                                    
+                                    a.slider__item(href='#')
+                                        span=item + ' Settings'
+
+                    .settings__content
+                        span.settings__content-title Account Settings
+                        .settings__block
+                            span.settings__content-title Update Email
+                            .settings__block-input
+                                .settings__block-wrapper-input
+                                    input(type='email' value='warvlad822@gmail.com' placeholder='Enter a new email')
+                            .settings__block-input
+                                .settings__block-wrapper-input
+                                    input(type='passworld' placeholder='Please enter your current password')
+                            .settings__block-action
+                                button.btn.btn_primary Update
+                                button.btn Cancel 
+                        
+                        .settings__block
+                            span.settings__content-title Update Username
+                            .settings__block-input
+                                .settings__block-wrapper-input
+                                    input(type="text" value='warvlad')
+                        
+                        .settings__block
+                            span.settings__content-title Update Password
+                            .settings__block-input
+                                .settings__block-wrapper-input
+                                    input(type="password" placeholder='Old Password')
+                            .settings__block-input
+                                .settings__block-wrapper-input
+                                    input(type="password" placeholder='New Password')
+                            .settings__block-input
+                                .settings__block-wrapper-input
+                                    input(type="password" placeholder='Confirm New Password')
+                                                        
+
+            include ../../parts/footer
+            include ../../parts/signC
+        
+        script(src="/js/common.js")
