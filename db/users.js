@@ -41,6 +41,11 @@ const userSchema = new Schema({
         default: false
     },
     tokenConfirmEmail: String,
+}, {
+    timestamps: {
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt'
+    }
 });
 
 const User = mongoose.model('user', userSchema);

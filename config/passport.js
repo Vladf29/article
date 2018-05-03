@@ -6,11 +6,6 @@ const LocalPassport = require('passport-local').Strategy;
 const User = require('../db/users');
 
 passport.serializeUser((user, done) => {
-    console.log('id: ', user.id);
-    console.log('email: ', user.email);
-    const t = Date.now();
-    while (Date.now() - t < 2000) {}
-
     done(null, user.id);
 });
 

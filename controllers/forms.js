@@ -25,7 +25,7 @@ module.exports = {
             <p>Hello</p>
             <p>Please confirm your email address by clicking on the link below.</p>
             <p>
-                <a href='http://localhost:8000/form/verify/${tokenConfirmEmail}'><b>'htttp://localhost:8000/form/verify/${tokenConfirmEmail}'</b></a>
+                <a href='http://localhost:3000/form/verify/${tokenConfirmEmail}'><b>'htttp://localhost:3000/form/verify/${tokenConfirmEmail}'</b></a>
             </p>
             <p>Happy emailing!</p>
         `
@@ -53,6 +53,6 @@ module.exports = {
             await user.save();
             req.flash('success', 'The email is confirmed successfully');
         }
-        res.redirect('/')
+        res.redirect('/');
     }
 };
