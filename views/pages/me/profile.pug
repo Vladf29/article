@@ -5,11 +5,41 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         title Settings
-        include ../../parts/normalize        
+        include ../../parts/normalize
+        link(rel="stylesheet", href="/styles/common.css")
     body
         .wrapper-page
             include ../../parts/headerPage
             .content-page
+                .user-profile
+                    .user-profile__info-block
+                        .user-profile__avatar
+                        .user-profile__form-edit
+                            span.user-profile__name
+                        .user-profile__form-edit                        
+                            span.user-profile__describe
+                    .user-profile__tab-bar
+                        .user-profile__tabs
+                            -var items = ['Profile','Posts','Likes']
+                            each item in items
+                                a.user-profile__tab(href='#')=item
+                    
+                    .user-profile__c
+                        .user-profile__heading
+                            span.user-profile__title About Me
+                            .user-profile__edit-btn
+                                span Edit
+                        .user-profile__content
+                    
+                    .user-profile__c
+                        .user-profile__heading
+                            span.user-profile__title Posts by Vlad
+                        
+                        .user-profile__content
+
+                            
+
+                
 
             include ../../parts/footer
             include ../../parts/signC
