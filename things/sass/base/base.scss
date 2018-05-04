@@ -8,6 +8,10 @@
     border: 0;
 }
 
+*[data-state=hidden] {
+    display: none !important;
+}
+
 ul,
 li {
     list-style: none;

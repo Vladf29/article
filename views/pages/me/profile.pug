@@ -16,16 +16,16 @@ html(lang="en")
                     .user-profile__info-block
                         .user-profile__content    
                             .user-profile__info-block-content
-                                .user-profile__avatar.js-avatar
-                                    .user-profile__avatar-c
+                                .user-profile__avatar
+                                    .user-profile__avatar-c.js-avatar
                                         img(src="https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200", alt="")
                                         .user-profile__avatar-upload
                                             i.fas.fa-camera
                                             span Upload
                                 .user-profile__form-edit
-                                    input.user-profile__form-edit-name(value='Vlad' data-edit-field='username')
+                                    input.user-profile__form-edit-name.js-edit(value='Vlad' data-edit='username')
                                 .user-profile__form-edit
-                                    input.user-profile__form-edit-describe(placeholder='Describe yourself in a few words'  data-edit-field='describe')                                                 
+                                    input.user-profile__form-edit-describe.js-edit(placeholder='Describe yourself in a few words' data-edit='describe')                                                 
 
                     .user-profile__tab-bar
                         .user-profile__content
@@ -38,10 +38,17 @@ html(lang="en")
                         .user-profile__c
                             .user-profile__heading
                                 span.user-profile__title About Me
-                                .user-profile__edit-btn
+                                .user-profile__edit-btn.js-edit-btn(data-state='show')
                                     i.fas.fa-pencil-alt
                                     span Edit
-                            .user-profile__block.user-profile__about-block
+                                .user-profile__edit-btn.js-edit-btn-ok(data-state='hidden')
+                                    i.fas.fa-check
+                                    span Ok
+                            .user-profile__block.about-block
+                                .about-block__c(data-state='show' data-action='ok')
+                                    p Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde a odio rem provident, eum nostrum totam impedit eligendi. Temporibus ea cum, velit vel aspernatur libero in doloribus quod! Recusandae minima ratione quam magnam fuga quaerat!
+                                .about-block__c(data-state='hidden' data-action='edit')
+                                    textarea.about-block__field(placeholder='About Me...')
 
                         .user-profile__c
                             .user-profile__heading

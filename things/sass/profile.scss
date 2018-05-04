@@ -133,8 +133,28 @@
         border: solid 1px #e5eaea;
         padding: 20px 30px;
     }
-    &__about-block {
+    .about-block {
         height: 215px;
+        overflow-y: auto;
+        &__c {
+            height: 100%;
+            font-size: 14px;
+            letter-spacing: .3px;
+            line-height: 1.55;
+        }
+        &__field {
+            display: block;
+            height: 100%;
+            width: 100%;
+            background-color: transparent;
+            word-break: break-all;
+            resize: none;
+            font-size: 14px;
+            line-height: 1.55;
+            letter-spacing: .3px;
+            padding: 4px 8px;
+            border: 1px dashed #bdbdbd;
+        }
     }
     .post-block {
         &__write {
@@ -164,9 +184,6 @@
     justify-content: center;
     align-items: center;
     z-index: 100;
-    &[data-state=hidden] {
-        display: none;
-    }
     &__close {
         font-size: 13px;
         position: absolute;
@@ -221,9 +238,6 @@
     }
     &__content {
         width: calc(100% - 50px);
-        &[data-state=hidden] {
-            display: none;
-        }
         &-heading {
             border-bottom: 1px solid #ddd;
             height: 50px;
@@ -308,9 +322,6 @@
     .preview {
         width: 100%;
         height: 100%;
-        &[data-state=hidden] {
-            display: none;
-        }
         &-c {
             display: flex;
             justify-content: center;
