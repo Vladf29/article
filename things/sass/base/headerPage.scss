@@ -1,4 +1,8 @@
 .header-page {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 99;
     $h: 60px;
     display: flex;
     justify-content: space-between;

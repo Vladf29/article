@@ -1,5 +1,90 @@
 .settings {
-    max-width: 1280px;
-    width: 100%;
-    margin: auto;
+    background-color: #f2f2f2;
+    padding-bottom: 75px;
+    min-height: 100vh;
+    &__c {
+        position: relative;
+        max-width: 1280px;
+        width: 100%;
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+    }
+    &__content {
+        width: 980px;
+        margin-left: 265px;
+        padding-top: 20px;
+        &-title {
+            display: block;
+            font-size: 18px;
+            padding-bottom: 15px;
+            color: #333;
+            &-main {
+                font-weight: bold;
+                font-size: 22px;
+                color: #666;
+            }
+        }
+    }
+    &__block {
+        background-color: #fff;
+        margin-bottom: 25px;
+        padding: 25px;
+        &-wrapper-input {
+            margin-bottom: 15px;
+        }
+        &-input {
+            width: 300px;
+            padding: 6px 0;
+            background-color: transparent;
+            border: 0;
+            border-bottom: solid 1px #b2b2b2;
+            font-size: 14px;
+            color: #666;
+            &:focus {
+                color: #4c4c4c;
+                border-bottom: solid 1px #00b5e2;
+            }
+        }
+        &-action {
+            display: flex;
+            margin-top: 10px;
+            .btn {
+                margin-right: 15px;
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+        &-describle {}
+    }
+    .sidebar {
+        width: 200px;
+        position: fixed;
+        bottom: 0;
+        top: 60px;
+        padding-top: 40px;
+        background-color: #fafafa;
+        &__c {}
+        &__title {
+            font-size: 20px;
+            display: block;
+            color: #333;
+            padding-left: 12px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #d9d9d9;
+        }
+        &__items {
+            display: flex;
+            flex-direction: column;
+        }
+        &__item {
+            padding: 15px 7px 15px 12px;
+            color: #666;
+            font-size: 16px;
+            &:hover {
+                background-color: rgba(0, 0, 0, .05);
+            }
+        }
+    }
 }

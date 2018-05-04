@@ -12,50 +12,56 @@ html(lang="en")
             include ../../parts/headerPage
             .content-page
                 .settings
+                    .settings__c
+                        .sidebar
+                            .slidebar__c
+                                span.sidebar__title Settings
+                                .sidebar__items
+                                    -var items = ['Account','Profile','Notification']
+                                    each item in items                                    
+                                        a.sidebar__item(href='#')
+                                            span=item + ' Settings'
 
-                    .sidebar
-                        .slidebar
-                            span.slidebar__title Settings
-                            .slidebar__items
-                                -var items = ['Account','Profile','Notification']
-                                each item in items                                    
-                                    a.slider__item(href='#')
-                                        span=item + ' Settings'
+                        .settings__content
+                            span.settings__content-title.settings__content-title Account Settings
+                            .settings__block
+                                span.settings__content-title Update Email
+                                .settings__block-wrapper-input
+                                    input(type='email' class='settings__block-input' value='warvlad822@gmail.com' placeholder='Enter a new email')
+                                .settings__block-wrapper-input
+                                    input(type='passworld' class='settings__block-input' placeholder='Please enter your current password')
+                                .settings__block-action
+                                    button.btn.btn_primary Update
+                                    button.btn Cancel 
 
-                    .settings__content
-                        span.settings__content-title Account Settings
-                        .settings__block
-                            span.settings__content-title Update Email
-                            .settings__block-input
+                            .settings__block
+                                span.settings__content-title Update Username
                                 .settings__block-wrapper-input
-                                    input(type='email' value='warvlad822@gmail.com' placeholder='Enter a new email')
-                            .settings__block-input
-                                .settings__block-wrapper-input
-                                    input(type='passworld' placeholder='Please enter your current password')
-                            .settings__block-action
-                                button.btn.btn_primary Update
-                                button.btn Cancel 
-                        
-                        .settings__block
-                            span.settings__content-title Update Username
-                            .settings__block-input
-                                .settings__block-wrapper-input
-                                    input(type="text" value='warvlad')
-                        
-                        .settings__block
-                            span.settings__content-title Update Password
-                            .settings__block-input
-                                .settings__block-wrapper-input
-                                    input(type="password" placeholder='Old Password')
-                            .settings__block-input
-                                .settings__block-wrapper-input
-                                    input(type="password" placeholder='New Password')
-                            .settings__block-input
-                                .settings__block-wrapper-input
-                                    input(type="password" placeholder='Confirm New Password')
-                                                        
+                                    input(type="text" class='settings__block-input' value='warvlad')
+                                .settings__block-action
+                                    button.btn.btn_primary Update
 
-            include ../../parts/footer
+                            .settings__block
+                                span.settings__content-title Update Password
+                                .settings__block-wrapper-input
+                                    input(type="password" class='settings__block-input' placeholder='Old Password')
+                                .settings__block-wrapper-input                                
+                                    input(type="password" class='settings__block-input' placeholder='New Password')
+
+                                .settings__block-wrapper-input
+                                    input(type="password" class='settings__block-input' placeholder='Confirm New Password')
+                                .settings__block-action
+                                    button.btn.btn_primary Update Password
+
+                            .settings__block
+                                span.settings__content-title Delete Account
+                                .settings__block-describe
+                                    span Permanently delete your Codementor account and all data associated with it.
+                                .settings__block-action
+                                    button.btn.btn_danger-outline Delete Account
+
+
+            //- include ../../parts/footer
             include ../../parts/signC
         
         script(src="/js/common.js")
