@@ -32,7 +32,7 @@ module.exports = {
         await mailer.sendEmail('admin@codesite.com', req.body.email, 'Please', html);
 
         req.flash('success', 'Please check your email');
-
+        console.log(user);
         res.json(user);
     },
     logInUser: async (req, res) => {

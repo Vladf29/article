@@ -44,7 +44,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/me', require('./routes/user'));
+app.use('/me', require('./routes/users'));
 app.use('/topic', require('./routes/topic'));
 app.use('/form', require('./routes/forms'));
 app.use('/article', require('./routes/article'))

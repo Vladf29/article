@@ -5,14 +5,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    firstName: {
+    username: {
         type: String,
         required: true
     },
-    lastName: {
-        type: String,
-        required: true,
-    },
+    avatarUrl: String,
+    describe: String,
+    aboutMe: String,
     password: {
         type: String,
         minlength: 6,
