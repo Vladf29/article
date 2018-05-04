@@ -44,7 +44,7 @@ const uploadFiles = {
 gulp.task('server', () => {
     browserSync.init({
         server: {
-            port: 9000,
+            port: 8000,
             baseDir: uploadFolder.g
         }
     });
