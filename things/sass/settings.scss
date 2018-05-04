@@ -32,6 +32,13 @@
         padding: 25px;
         &-wrapper-input {
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        label.invalid {
+            margin-left: 15px;
+            font-size: 14px;
+            color: #E91E63;
         }
         &-input {
             width: 300px;
