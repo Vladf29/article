@@ -15,19 +15,13 @@ export const signUpForm = () => {
     async function handlerSignUp(event) {
         event.preventDefault();
         const personData = {
-            firstName: this.elements['fname'].value,
-            lastName: this.elements['lname'].value,
+            username: this.elements['username'].value,
             email: this.elements['email'].value,
             password: this.elements['password'].value
         }
 
         const schema = {
-            firstName: {
-                presence: {
-                    allowEmpty: false,
-                },
-            },
-            lastName: {
+            username: {
                 presence: {
                     allowEmpty: false,
                 },
@@ -56,8 +50,7 @@ export const signUpForm = () => {
 
         const rePassword = this.elements['Reapet password'].value;
         const notValid = validate({
-            firstName: personData.firstName,
-            lastName: personData.lastName,
+            username: personData.username,
             email: personData.email,
             password: personData.password,
             'Reapet password': rePassword

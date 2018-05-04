@@ -16,16 +16,16 @@ html(lang="en")
                     .user-profile__info-block
                         .user-profile__content    
                             .user-profile__info-block-content
-                                .user-profile__avatar
+                                .user-profile__avatar.js-upload-avatar
                                     .user-profile__avatar-c
                                         img(src="https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200", alt="")
                                         .user-profile__avatar-upload
                                             i.fas.fa-camera
                                             span Upload
                                 .user-profile__form-edit
-                                    input.user-profile__form-edit-name(value='Vlad')
+                                    input.user-profile__form-edit-name(value='Vlad' data-edit-field='username')
                                 .user-profile__form-edit
-                                    input.user-profile__form-edit-describe(placeholder='Describe yourself in a few words')                                                 
+                                    input.user-profile__form-edit-describe(placeholder='Describe yourself in a few words'  data-edit-field='describe')                                                 
 
                     .user-profile__tab-bar
                         .user-profile__content
@@ -54,9 +54,32 @@ html(lang="en")
                                     span Write a post
                             
 
-                
+            .upload-img
+                .upload-img__c
+                    .upload-img__sidebar
+                        .upload-img__sidebar-items
+                            -var items = ['laptop','link']
+                            each item in items
+                                .upload-img__sidebar-item(data-upload-show=item)
+                                    .upload-img__sidebar-item-c
+                                        .upload-img__sidebar-item-icon
+                                            i(class='fas fa-'+item)
+                    .upload-img__content(data-upload-state='hidden')
+                        .upload-img__content-heading
+                            span My Device
+                        .upload-img__content-c
+                            .upload-img__drop
+                                .upload-img__drop-area
+                                    .upload-img__drop-select-labels
+                                    input.upload-img__drop-select(type='file' id='userImg')
+                    .upload-img__content(data-upload-state='hidden' style='display:none')
+                        .upload-img__content-heading
+                            span URL
+                        .upload-img__content-c                        
+                            form.upload-img__url
+                                input.upload-img__url-input(type='text' name='userURLImg' placeholder='Enter a URL')
 
             //- include ../../parts/footer
             include ../../parts/signC
         
-        script(src="/js/common.js")        
+        script(src="/js/common.js")
