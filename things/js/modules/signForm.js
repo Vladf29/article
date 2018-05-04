@@ -70,7 +70,7 @@ export const signUpForm = () => {
                 method: 'POST',
                 url: '/form/sign_up',
                 header: ['Content-Type', 'application/json'],
-                data: personData
+                data: JSON.stringify(personData)
             }
             await httpRequest(settings);
             location.href = location.href;
@@ -138,7 +138,7 @@ export const logInForm = () => {
                 method: 'POST',
                 url: '/form/log_in',
                 header: ['Content-Type', 'application/json'],
-                data: personData
+                data: JSON.stringify(personData)
             }
             await httpRequest(settings);
             location.href = location.href;

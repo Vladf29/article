@@ -164,6 +164,18 @@
     justify-content: center;
     align-items: center;
     z-index: 100;
+    &[data-state=hidden] {
+        display: none;
+    }
+    &__close {
+        font-size: 13px;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: #444;
+        padding: 2px;
+        cursor: pointer;
+    }
     &__c {
         background-color: #eee;
         width: 720px;
@@ -171,6 +183,7 @@
         border-radius: 5px;
         display: flex;
         overflow: hidden;
+        position: relative;
     }
     &__sidebar {
         width: 50px;
@@ -185,13 +198,11 @@
             $s: 38px;
             padding: 8px 0px;
             cursor: pointer;
+            &--active {
+                background-color: #ddd;
+            }
             &:hover {
-                background-color: #ddd; // &:last-child {
-                //     border-bottom-left-radius: 5px;
-                // }
-                // &:first-child {
-                //     border-top-left-radius: 5px;
-                // }
+                background-color: #ddd;
             }
             &-c {
                 width: $s;
@@ -210,6 +221,9 @@
     }
     &__content {
         width: calc(100% - 50px);
+        &[data-state=hidden] {
+            display: none;
+        }
         &-heading {
             border-bottom: 1px solid #ddd;
             height: 50px;
@@ -245,23 +259,35 @@
         border-radius: 4px;
         border: 1px dashed #bdbdbd;
         &__c {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             width: 100%;
             height: 100%;
             position: relative;
         }
         &__select {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            top: 0;
             width: 100%;
             height: 100%;
-            opacity: 0;
-            cursor: pointer;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 250ms ease-in-out;
+            &:hover {
+                background-color: #fff;
+            }
+            &[data-state=hidden] {
+                display: none;
+            }
+            &-input {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                cursor: pointer;
+            }
             &-labels {
                 text-align: center;
                 display: flex;
@@ -277,6 +303,31 @@
                 font-size: 13px;
                 color: #9e9e9e;
             }
+        }
+    }
+    .preview {
+        width: 100%;
+        height: 100%;
+        &[data-state=hidden] {
+            display: none;
+        }
+        &-c {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90%;
+            img {
+                max-height: 100%;
+                max-width: 100%;
+            }
+        }
+        &-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 12px;
+            height: 10%;
+            border-top: 1px solid #ddd;
         }
     }
 }

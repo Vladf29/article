@@ -13,7 +13,7 @@ export const httpRequest = (settings) => {
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
         if (header && header.length === 2) xhr.setRequestHeader(header[0], header[1]);
-        data ? xhr.send(JSON.stringify(data)) : xhr.send();
+        data ? xhr.send(data) : xhr.send();
 
         xhr.onload = function () {
             if (this.status === 200)
