@@ -64,20 +64,23 @@ html(lang="en")
                                     .upload-img__sidebar-item-c
                                         .upload-img__sidebar-item-icon
                                             i(class='fas fa-'+item)
-                    .upload-img__content(data-upload-state='hidden')
+                    .upload-img__content(data-upload-state='hidden' style='display:none')
                         .upload-img__content-heading
                             span My Device
                         .upload-img__content-c
-                            .upload-img__drop
-                                .upload-img__drop-area
-                                    .upload-img__drop-select-labels
-                                    input.upload-img__drop-select(type='file' id='userImg')
-                    .upload-img__content(data-upload-state='hidden' style='display:none')
+                            .drop-area
+                                .drop-area__c
+                                    .drop-area__select-labels
+                                        span.drop-area__select-heading Select Files to Upload
+                                        span.drop-area__select-subheading or Drag and Drop, Copy and Paste Files
+                                    input.drop-area__select(type='file' id='userImg')
+                    .upload-img__content(data-upload-state='hidden')
                         .upload-img__content-heading
                             span URL
                         .upload-img__content-c                        
                             form.upload-img__url
                                 input.upload-img__url-input(type='text' name='userURLImg' placeholder='Enter a URL')
+                                button.btn.btn_primary Confirm
 
             //- include ../../parts/footer
             include ../../parts/signC
