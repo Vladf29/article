@@ -21,7 +21,22 @@ $('.js-update-email').validate({
         }
     },
     errorClass: 'invalid',
-    submitHandler: HandlerUpdateEmail
+    submitHandler: (form, event) => {
+        event.preventDefault();
+
+        const data = {
+            email: form.elements['email'].value,
+            password: form.elements['password'].value
+        }
+        const opts = {
+            url: '/me/update/email',
+            method: 'PUT',
+            header: ['Content-Type', 'application/json'],
+            data: JSON.stringify(data)
+        }
+
+        sendData(opts);
+    }
 });
 
 $('.js-update-password').validate({
@@ -46,7 +61,21 @@ $('.js-update-password').validate({
         }
     },
     errorClass: 'invalid',
-    submitHandler: HandlerUpdatePassword
+    submitHandler: (form, event) => {
+        event.preventDefault();
+
+        const data = {
+            oldPassword: form.elements['oldPassword'].value,
+            newPassword: form.elements['newPassword'].value
+        }
+        const opts = {
+            url: '/me/update/password',
+            method: 'PUT',
+            header: ['Content-Type', 'application/json'],
+            data: JSON.stringify(data)
+        }
+        sendData(opts);
+    }
 });
 
 $('.js-update-username').validate({
@@ -60,73 +89,29 @@ $('.js-update-username').validate({
         }
     },
     errorClass: 'invalid',
-    submitHandler: HandlerUpdateUsername
-});
+    submitHandler: (form, event) => {
+        event.preventDefault();
 
-/** 
- * Isn't ready yet!!!
- */
-async function HandlerUpdateEmail(form) {
-    try {
-        const data = {
-            email: form.elements['email'].value,
-            password: form.elements['password'].value
-        }
-        const opts = {
-            url: '/test',
-            method: 'PUT',
-            header: ['Content-Type', 'application/json'],
-            data: JSON.stringify(data)
-        }
-
-        const result = await httpRequest(opts);
-        console.log(result);
-
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-async function HandlerUpdatePassword(form) {
-    try {
-        const data = {
-            oldPassword: form.elements['oldPassword'].value,
-            newPassword: form.elements['newPassword'].value
-        }
-        const opts = {
-            url: '/test',
-            method: 'PUT',
-            header: ['Content-Type', 'application/json'],
-            data: JSON.stringify(data)
-        }
-
-        const result = await httpRequest(opts);
-        console.log(result);
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-async function HandlerUpdateUsername(form) {
-    try {
         const data = {
             username: form.elements['username'].value,
             password: form.elements['password'].value
         }
         const opts = {
-            url: '/test',
+            url: '/me/update/username',
             method: 'PUT',
             header: ['Content-Type', 'application/json'],
             data: JSON.stringify(data)
         }
 
-        const result = await httpRequest(opts);
-        console.log(result);
+        sendData(opts);
+    }
+});
+
+async function sendData(opts) {
+    try {
+        await httpRequest(opts);
+        location.href = location.href;
     } catch (err) {
         console.log(err);
     }
 }
-
-/**
- * 
- */

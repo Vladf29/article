@@ -27,3 +27,7 @@ $('.js-search-icon').click(function () {
     $(this).closest('.search').attr('data-state', state === 'open' ? 'closed' : 'open');
     $(this).closest('.search').find('.search__control').val('').focus();
 });
+
+$('.js-flash-close').click(function () {
+    $(this).closest('.flash-msg').remove();
+});

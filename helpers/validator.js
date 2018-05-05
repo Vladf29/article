@@ -22,8 +22,16 @@ module.exports = {
             email: Joi.string().email().required()
         }),
         logIn: Joi.object().keys({
-            email: Joi.string().required(),
+            email: Joi.string().email().required(),
             password: Joi.string().min(6).required()
+        }),
+        username:Joi.object().keys({
+            username: Joi.string().required(),
+            password: Joi.string().min(6).required(),
+        }),
+        updataPassword:Joi.object().keys({
+            oldPassword: Joi.string().min(6).required(),
+            newPassword: Joi.string().min(6).required(),
         })
     }
 }

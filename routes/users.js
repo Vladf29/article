@@ -6,7 +6,7 @@ const authorized = require('../modules/authorized');
 
 const UserControllers = require('../controllers/users');
 const {
-    schames,
+    schemas,
     validateBody
 } = require('../helpers/validator');
 
@@ -18,6 +18,13 @@ router.get('/', async (req, res) => {
 });
 
 router.route('/profile')
-    .get(UserControllers.renderProfilePage);
+    .get(authorized.isAuthorized, UserControllers.renderProfilePage);
+
+router.route('/settings')
+    .get(authorized.isAuthorized, UserControllers.renderSettingsPage);
+
+router.put('/update/email', validateBody(schemas.logIn), UserControllers.updateUserEmail);
+router.put('/update/username', validateBody(schemas.username), UserControllers.updateUserName);
+router.put('/update/password', validateBody(schemas.updataPassword), UserControllers.updateUserPassword);
 
 module.exports = router;

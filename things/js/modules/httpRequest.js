@@ -16,9 +16,9 @@ export const httpRequest = (settings) => {
         data ? xhr.send(data) : xhr.send();
 
         xhr.onload = function () {
-            if (this.status === 200)
+            if (this.status === 200 || (this.status >= 300 && this.status < 400))
                 resolve(this.response);
-            else{
+            else {
                 const error = new Error();
                 error.message = this.response;
                 error.status = this.status;

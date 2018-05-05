@@ -39,6 +39,9 @@ app.use(express.static('public'));
 
 app.use((req, res, next) => {
     res.locals.auth = req.user ? true : false;
+    if (res.locals.auth) {
+        res.locals.user = req.user;
+    }
     res.locals.success_messages = req.flash('success');
     res.locals.error_messages = req.flash('error');
     next();

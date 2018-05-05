@@ -71,3 +71,35 @@ a {
         margin: 0;
     }
 }
+
+.flash-msg {
+    position: fixed;
+    z-index: 999;
+    width: 100%;
+    padding: 15px 45px 15px 20px;
+    color: #333;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    &--success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    &--error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    &__c {
+        font-size: 14px;
+    }
+    &__close {
+        cursor: pointer;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        padding: 5px;
+    }
+}

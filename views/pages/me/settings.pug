@@ -29,7 +29,7 @@ html(lang="en")
                                 span.settings__content-title Update Email
                                 form.js-update-email
                                     .settings__block-wrapper-input
-                                        input(type='email' class='settings__block-input' name='email' value='warvlad822@gmail.com' placeholder='Enter a new email' required)
+                                        input(type='email' class='settings__block-input' name='email' value=`${user ? user.email : false}` placeholder='Enter a new email' required)
                                     .settings__block-wrapper-input
                                         input(type='passworld' class='settings__block-input' name='password' placeholder='Please enter your current password' )
                                     .settings__block-action
@@ -40,7 +40,7 @@ html(lang="en")
                                 span.settings__content-title Update Username
                                 form.js-update-username
                                     .settings__block-wrapper-input
-                                        input(type="text" class='settings__block-input' name='username' value='warvlad')
+                                        input(type="text" class='settings__block-input' name='username' value=`${user ? user.username : false}`)
                                     .settings__block-wrapper-input
                                         input(type="password" class='settings__block-input' name='password' placeholder='Please enter your current password')
                                     .settings__block-action

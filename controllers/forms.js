@@ -19,8 +19,6 @@ module.exports = {
         const tokenConfirmEmail = randomString.generate(32);
         req.value.body.tokenConfirmEmail = tokenConfirmEmail;
 
-        
-        console.log(req.value.body)
         const newUser = await User(req.value.body);
         const user = await newUser.save();
 
@@ -29,18 +27,18 @@ module.exports = {
             <p>Hello</p>
             <p>Please confirm your email address by clicking on the link below.</p>
             <p>
-                <a href='http://localhost:3000/form/verify/${tokenConfirmEmail}'><b>'htttp://localhost:3000/form/verify/${tokenConfirmEmail}'</b></a>
+                <a href='http://localhost:3000/form/verify/${tokenConfirmEmail}'>'htttp://localhost:3000/form/verify/${tokenConfirmEmail}'</a>
             </p>
             <p>Happy emailing!</p>
         `
-        await mailer.sendEmail('admin@codesite.com', req.body.email, 'Please', html);
+        // await mailer.sendEmail('admin@codesite.com', req.body.email, 'Please', html);    
 
         req.flash('success', 'Please check your email');
         
         res.json(user);
     },
     logInUser: async (req, res) => {
-        res.redirect('/me/bookmarks')
+        res.redirect('/')
     },
     verifyEmail: async (req, res) => {
         const tokenConfirmEmail = req.params.tokenConfirmEmail;

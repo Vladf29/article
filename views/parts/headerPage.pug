@@ -1,7 +1,10 @@
-if (success_messages != '')
-    p=success_messages
-if (error_messages != '')
-    p=error_messages
+if (success_messages != '' || error_messages != '')
+    -var msg = success_messages != '' ? success_messages : error_messages
+    .flash-msg(class=`${success_messages != '' ? 'flash-msg--success' : 'flash-msg--error'}`)
+        .flash-msg__close.js-flash-close
+            i.fas.fa-times
+        .flash-msg__c
+            span=msg
 
 header.header-page
     .header-page__l
@@ -10,7 +13,7 @@ header.header-page
             -var items = ['JavaScript','React','Node.js','TypeScript']
             each item in items
                 a.main-menu__link(href='/topic/'+item.toLowerCase())=item
-                
+
     .header-page__r
         .search(data-state='closed')
             .search__icon.js-search-icon
@@ -27,7 +30,7 @@ header.header-page
                         -var items = ['Write a post','Articles','Bookmarks','Profile','Settings']
                         each item in items
                             li.avatar__drop-item
-                                a(href='/me/'+item.toLowerCase().replace(/\s/g,'_')+'.html')=item
+                                a(href='/me/'+item.toLowerCase().replace(/\s/g,'_'))=item
                         li.avatar__drop-item
                                 a(href='/form/log_out') Log out
             .aut__item.aut__write-post 
