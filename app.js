@@ -16,6 +16,8 @@ const port = 3000;
 mongoose.connect('mongodb://localhost/articles');
 mongoose.Promise = global.Promise;
 
+
+
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/views/pages`)
 
@@ -41,22 +43,18 @@ app.use((req, res, next) => {
     res.locals.auth = req.user ? true : false;
     if (res.locals.auth) {
         res.locals.user = req.user;
+        res.locals.user.avatarUrl = req.user.avatarUrl ? req.user.avatarUrl : "https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200";
     }
     res.locals.success_messages = req.flash('success');
     res.locals.error_messages = req.flash('error');
     next();
 });
 
+app.use('/', require('./routes/index'));
 app.use('/me', require('./routes/users'));
 app.use('/topic', require('./routes/topic'));
 app.use('/form', require('./routes/forms'));
 app.use('/article', require('./routes/article'))
-
-app.get('/', (req, res) => {
-    res.render('index', {
-        topic: "Tutorials and Insights"
-    });
-});
 
 app.use((err, req, res, next) => {
     res.send(err);

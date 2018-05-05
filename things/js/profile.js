@@ -84,7 +84,7 @@ $('.js-data-edit').on('change', async function () {
     try {
         const edit = $(this).attr('data-edit');
         const val = $(this).val();
-        if (!val) return;
+        if (edit === 'name' && !val) return;
 
         const obj = {}
         obj[edit] = val;
@@ -122,7 +122,7 @@ $('.js-edit-btn-ok').click(function () {
     const edit = $(this).closest('.user-profile__c').find('.about-block .about-block__c[data-action=edit]');
 
     const val = edit.find('textarea').val();
-        ok.find('p').text(val);
+    ok.find('p').text(val);
     edit.attr('data-state', 'hidden');
     ok.attr('data-state', 'show');
 
@@ -161,13 +161,12 @@ async function sendImg() {
         const formData = new FormData();
         formData.append('img', img.files[0]);
         const opts = {
-            url: '/test',
+            url: '/me/update/avatarImg',
             method: 'PUT',
             data: formData,
         }
-        const result = await httpRequest(opts);
-        console.log(result);
-
+        await httpRequest(opts);
+        location.href = location.href;
     } catch (err) {
         console.log(err);
     }
@@ -179,7 +178,7 @@ async function sendUrlImg(event) {
         // if (url === '') return;
 
         const opts = {
-            url: '/test',
+            url: '/me/update/imgUrl',
             method: 'PUT',
             header: ['Content-Type', 'application/json'],
             data: JSON.stringify({
@@ -188,6 +187,7 @@ async function sendUrlImg(event) {
         }
 
         await httpRequest(opts);
+        location.href = location.href;
     } catch (err) {
         console.log(err);
     }

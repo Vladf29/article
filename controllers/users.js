@@ -1,10 +1,17 @@
 'use strict'
 
+const fs = require('fs');
+
 const User = require('../db/users');
 
 module.exports = {
-    renderProfilePage: (req, res) => {
-        res.render('me/profile');
+    renderProfilePage: async (req, res) => {
+        const user = await User.findOne({
+            email: req.user.email
+        });
+        res.render('me/profile', {
+            owner: true
+        });
     },
     renderSettingsPage: (req, res) => {
         res.render('me/settings');
@@ -94,5 +101,47 @@ module.exports = {
             aboutMe: req.body.aboutMe
         });
         res.send('OK');
+    },
+    updateUserAvatarUrl: async (req, res) => {
+        const user = await User.findOne({
+            email: req.user.email
+        });
+
+        const currentImg = user.avatarUrl;
+        if (!/^(http|https):\/\//.test(currentImg) && currentImg) {
+            fs.unlink('./' + currentImg);
+        }
+
+        user.avatarUrl = req.body.url
+        await user.save();
+        res.send('OK');
+    },
+    updateUserAvatarImg: (req, res) => {
+        const targetPath = `${req.file.destination}/${Date.now()}${req.file.originalname}`;
+        const tmpPath = req.file.path;
+
+        const src = fs.createReadStream(tmpPath);
+        const dest = fs.createWriteStream(targetPath);
+        src.pipe(dest);
+
+        src.on('end', async () => {
+            fs.unlink(tmpPath);
+            const user = await User.findOne({
+                email: req.user.email
+            });
+
+            const currentImg = user.avatarUrl;
+            if (!/^(http|https):\/\//.test(currentImg) && currentImg) {
+                fs.unlink('./' + currentImg);
+            }
+
+            user.avatarUrl = targetPath.replace('.', '');
+            await user.save();
+            res.send('OK');
+        });
+
+        src.on('error', () => {
+
+        });
     }
 }
