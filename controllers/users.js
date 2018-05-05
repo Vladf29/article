@@ -39,7 +39,7 @@ module.exports = {
         req.flash('success', 'Email was changed');
         res.send('Ok');
     },
-    updateUserName: async (req, res) => {
+    updateUserUsername: async (req, res) => {
         const user = await User.findOne({
             email: req.user.email
         });
@@ -70,5 +70,29 @@ module.exports = {
         await user.save();
         req.flash('success', 'Password was changed');
         res.send('Ok');
+    },
+    updateUserName: async (req, res) => {
+        await User.findOneAndUpdate({
+            email: req.user.email
+        }, {
+            name: req.body.name
+        });
+        res.send('OK');
+    },
+    updateUserDescribe: async (req, res) => {
+        await User.findOneAndUpdate({
+            email: req.user.email
+        }, {
+            describe: req.body.describe
+        });
+        res.send('OK');
+    },
+    updateUserAboutMe: async (req, res) => {
+        await User.findOneAndUpdate({
+            email: req.user.email
+        }, {
+            aboutMe: req.body.aboutMe
+        });
+        res.send('OK');
     }
 }

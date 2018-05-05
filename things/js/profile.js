@@ -80,7 +80,7 @@ $('.js-upload-form-url').submit(function (event) {
     elemPreview.find('.preview-c').append(`<img src='${url}'>`);
 });
 
-$('.js-edit').on('change', async function () {
+$('.js-data-edit').on('change', async function () {
     try {
         const edit = $(this).attr('data-edit');
         const val = $(this).val();
@@ -90,14 +90,13 @@ $('.js-edit').on('change', async function () {
         obj[edit] = val;
 
         const opts = {
-            url: '/test',
+            url: `/me/update/${edit}`,
             method: 'PUT',
             header: ['Content-Type', 'application/json'],
             data: JSON.stringify(obj)
         }
 
-        const result = await httpRequest(opts);
-        console.log(result);
+        await httpRequest(opts);
     } catch (err) {
         console.log(err);
     }
@@ -123,7 +122,7 @@ $('.js-edit-btn-ok').click(function () {
     const edit = $(this).closest('.user-profile__c').find('.about-block .about-block__c[data-action=edit]');
 
     const val = edit.find('textarea').val();
-    ok.find('p').text(val);
+        ok.find('p').text(val);
     edit.attr('data-state', 'hidden');
     ok.attr('data-state', 'show');
 
@@ -140,7 +139,7 @@ $('.js-edit-btn-ok').click(function () {
 async function sendAboutMe(val) {
     try {
         const opts = {
-            url: '/test',
+            url: '/me/update/aboutMe',
             method: 'PUT',
             header: ['Content-Type', 'application/json'],
             data: JSON.stringify({
@@ -148,8 +147,7 @@ async function sendAboutMe(val) {
             })
         }
 
-        const result = await httpRequest(opts);
-        console.log(result);
+        await httpRequest(opts);
     } catch (err) {
         console.log(err);
     }
@@ -189,8 +187,7 @@ async function sendUrlImg(event) {
             })
         }
 
-        const result = await httpRequest(opts);
-        console.log(result);
+        await httpRequest(opts);
     } catch (err) {
         console.log(err);
     }

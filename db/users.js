@@ -13,7 +13,11 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    avatarUrl: String,
+    avatarUrl: {
+        required: true,
+        type: String,
+        default: 'https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200'
+    },
     describe: String,
     aboutMe: String,
     password: {

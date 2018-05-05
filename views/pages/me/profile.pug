@@ -18,14 +18,14 @@ html(lang="en")
                             .user-profile__info-block-content
                                 .user-profile__avatar
                                     .user-profile__avatar-c.js-avatar
-                                        img(src="https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200", alt="")
+                                        img(src=`${user ? user.avatarUrl : ""}`, alt="")
                                         .user-profile__avatar-upload
                                             i.fas.fa-camera
                                             span Upload
                                 .user-profile__form-edit
-                                    input.user-profile__form-edit-name.js-edit(value='Vlad' data-edit='username')
+                                    input.user-profile__form-edit-name.js-data-edit(value=`${user ? user.name : ""}` data-edit='name')
                                 .user-profile__form-edit
-                                    input.user-profile__form-edit-describe.js-edit(placeholder='Describe yourself in a few words' data-edit='describe')                                                 
+                                    input.user-profile__form-edit-describe.js-data-edit(placeholder='Describe yourself in a few words' value=`${user ? user.describe ? user.describe : '' : ""}` data-edit='describe')                                                 
 
                     .user-profile__tab-bar
                         .user-profile__content
@@ -46,7 +46,10 @@ html(lang="en")
                                     span Ok
                             .user-profile__block.about-block
                                 .about-block__c(data-state='show' data-action='ok')
-                                    p Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde a odio rem provident, eum nostrum totam impedit eligendi. Temporibus ea cum, velit vel aspernatur libero in doloribus quod! Recusandae minima ratione quam magnam fuga quaerat!
+                                    if (user && user.aboutMe)
+                                        p=user.aboutMe
+                                    else 
+                                        p
                                 .about-block__c(data-state='hidden' data-action='edit')
                                     textarea.about-block__field(placeholder='About Me...')
 

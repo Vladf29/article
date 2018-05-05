@@ -44,7 +44,7 @@ const uploadFiles = {
 gulp.task('server', () => {
     browserSync.init({
         server: {
-            port: 8000,
+            proxy: "localhost:8000",
             baseDir: uploadFolder.g
         }
     });
