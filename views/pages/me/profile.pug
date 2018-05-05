@@ -24,10 +24,15 @@ html(lang="en")
                                                 i.fas.fa-camera
                                                 span Upload
                                 .user-profile__form-edit
-                                    input.user-profile__form-edit-name.js-data-edit(value=`${user ? user.name : ""}` data-edit='name')
+                                    if (owner)                                        
+                                        input.user-profile__form-edit-name.js-data-edit(value=`${user ? user.name : ""}` data-edit='name')
+                                    else 
+                                        span.user-profile__form-edit-name=user.name
                                 .user-profile__form-edit
-                                    input.user-profile__form-edit-describe.js-data-edit(placeholder='Describe yourself in a few words' value=`${user ? user.describe ? user.describe : '' : ""}` data-edit='describe')                                                 
-
+                                    if (owner) 
+                                        input.user-profile__form-edit-describe.js-data-edit(placeholder='Describe yourself in a few words' value=`${user ? user.describe ? user.describe : '' : ""}` data-edit='describe')                                                 
+                                    else 
+                                        span.user-profile__form-edit-describe=user.describe
                     .user-profile__tab-bar
                         .user-profile__content
                             .user-profile__tabs

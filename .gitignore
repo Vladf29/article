@@ -3,3 +3,4 @@ build
 public
 config/mailer.js
 articles
+asset/users

@@ -10,7 +10,8 @@ module.exports = {
             email: req.user.email
         });
         res.render('me/profile', {
-            owner: true
+            owner: true,
+            user
         });
     },
     renderSettingsPage: (req, res) => {
@@ -143,5 +144,20 @@ module.exports = {
         src.on('error', () => {
 
         });
+    },
+
+    userDeleteAccount: async (req, res) => {
+        const user = await User.findOne({
+            email: req.user.email
+        });
+        req.logOut();
+
+        const currentImg = user.avatarUrl;
+        if (!/^(http|https):\/\//.test(currentImg) && currentImg) {
+            fs.unlink('./' + currentImg);
+        }
+
+        await user.remove();
+        res.send('Ok');
     }
 }

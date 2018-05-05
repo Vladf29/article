@@ -42,8 +42,8 @@ app.use(express.static('public'));
 app.use((req, res, next) => {
     res.locals.auth = req.user ? true : false;
     if (res.locals.auth) {
-        res.locals.user = req.user;
-        res.locals.user.avatarUrl = req.user.avatarUrl ? req.user.avatarUrl : "https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200";
+        res.locals.authUser = req.user;
+        res.locals.authUser.avatarUrl = req.user.avatarUrl ? req.user.avatarUrl : "https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200";
     }
     res.locals.success_messages = req.flash('success');
     res.locals.error_messages = req.flash('error');

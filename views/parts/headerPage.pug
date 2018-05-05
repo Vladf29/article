@@ -25,7 +25,7 @@ header.header-page
             if (auth)
                 .avatar(data-state='closed')
                     .avatar__log.js-avatar-log
-                        img(src=`${user.avatarUrl}`, alt="user avatar")
+                        img(src=`${authUser.avatarUrl}`, alt="user avatar")
                     ul.avatar__drop-list
                         -var items = ['Write a post','Articles','Bookmarks','Profile','Settings']
                         each item in items

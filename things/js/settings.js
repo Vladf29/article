@@ -107,6 +107,19 @@ $('.js-update-username').validate({
     }
 });
 
+$('.js-delete-account').click(async function () {
+    if (!confirm('Are you sure?')) return;
+
+    try {
+        await httpRequest({
+            url: '/me/delete'
+        });
+        location.href = '/';
+    } catch (err) {
+        console.log(err);
+    }
+});
+
 async function sendData(opts) {
     try {
         await httpRequest(opts);

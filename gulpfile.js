@@ -90,10 +90,13 @@ gulp.task('sass', () => {
         .pipe(gulp.dest(uploadFiles.sass.s))
 });
 
-gulp.task('watch', () => {
+gulp.task('watchG', () => {
+    gulp.watch(srcPaths.pug + '/**/*.pug', gulp.series('pug'));
+});
+
+gulp.task('wathcS', () => {
     gulp.watch(srcPaths.js + '/**/*.js', gulp.series('js'));
     gulp.watch(srcPaths.sass + '/**/*.scss', gulp.series('sass'));
-    gulp.watch(srcPaths.pug + '/**/*.pug', gulp.series('pug'));
 });
 
 gulp.task('cleanB', function del(cd) {
@@ -106,8 +109,14 @@ gulp.task('cleanP', function del(cd) {
 
 gulp.task('clean', gulp.series('cleanB', 'cleanP'));
 
+gulp.task('srv', gulp.series(
+    'clean',
+    gulp.parallel('js', 'sass'),
+    gulp.parallel('wathcS')
+));
+
 gulp.task('default', gulp.series(
     'clean',
     gulp.parallel('js', 'pug', 'sass'),
-    gulp.parallel('watch', 'server')
+    gulp.parallel('watchG', 'wathcS', 'server')
 ));

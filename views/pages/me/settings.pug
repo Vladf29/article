@@ -29,7 +29,7 @@ html(lang="en")
                                 span.settings__content-title Update Email
                                 form.js-update-email
                                     .settings__block-wrapper-input
-                                        input(type='email' class='settings__block-input' name='email' value=`${user ? user.email : false}` placeholder='Enter a new email' required)
+                                        input(type='email' class='settings__block-input' name='email' value=`${authUser ? authUser.email : false}` placeholder='Enter a new email' required)
                                     .settings__block-wrapper-input
                                         input(type='passworld' class='settings__block-input' name='password' placeholder='Please enter your current password' )
                                     .settings__block-action
@@ -40,7 +40,7 @@ html(lang="en")
                                 span.settings__content-title Update Username
                                 form.js-update-username
                                     .settings__block-wrapper-input
-                                        input(type="text" class='settings__block-input' name='username' value=`${user ? user.username : false}`)
+                                        input(type="text" class='settings__block-input' name='username' value=`${authUser ? authUser.username : false}`)
                                     .settings__block-wrapper-input
                                         input(type="password" class='settings__block-input' name='password' placeholder='Please enter your current password')
                                     .settings__block-action
@@ -64,7 +64,7 @@ html(lang="en")
                                 .settings__block-describe
                                     span Permanently delete your Codementor account and all data associated with it.
                                 .settings__block-action
-                                    button.btn.btn_danger-outline Delete Account
+                                    button.btn.btn_danger-outline.js-delete-account Delete Account
 
 
             //- include ../../parts/footer

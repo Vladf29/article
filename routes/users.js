@@ -27,6 +27,8 @@ router.route('/settings')
 router.route('/profile')
     .get(authorized.isAuthorized, UserControllers.renderProfilePage);
 
+router.get('/delete', UserControllers.userDeleteAccount);
+
 router.put('/update/email', validateBody(schemas.logIn), UserControllers.updateUserEmail);
 router.put('/update/username', validateBody(schemas.username), UserControllers.updateUserUsername);
 router.put('/update/password', validateBody(schemas.updataPassword), UserControllers.updateUserPassword);
