@@ -10,7 +10,7 @@ module.exports = {
         const exist = await User.findOne({
             email: req.value.body.email
         });
-        
+
         if (exist) return res.status(400).send('The same email is already existed');
 
         const hash = await User.hashPassword(req.value.body.password);
@@ -18,6 +18,8 @@ module.exports = {
 
         const tokenConfirmEmail = randomString.generate(32);
         req.value.body.tokenConfirmEmail = tokenConfirmEmail;
+
+        req.value.body.username = req.value.body.email.split('@')[0];
 
         const newUser = await User(req.value.body);
         const user = await newUser.save();
@@ -34,7 +36,7 @@ module.exports = {
         // await mailer.sendEmail('admin@codesite.com', req.body.email, 'Please', html);    
 
         req.flash('success', 'Please check your email');
-        
+
         res.json(user);
     },
     logInUser: async (req, res) => {

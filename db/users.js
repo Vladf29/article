@@ -9,6 +9,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
     avatarUrl: String,
     describe: String,
     aboutMe: String,
