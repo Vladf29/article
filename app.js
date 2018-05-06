@@ -3,11 +3,10 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-
 const cookieParser = require('cookie-parser');
+
 const session = require('express-session');
 const passport = require('passport');
-
 const flash = require('connect-flash');
 
 const app = express();
@@ -15,8 +14,6 @@ const port = 3000;
 
 mongoose.connect('mongodb://localhost/articles');
 mongoose.Promise = global.Promise;
-
-
 
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/views/pages`)

@@ -36,7 +36,7 @@ module.exports = {
             return res.status(302).send();
         }
 
-        const isValidPassword = await User.comparePassword(req.value.body.password, user.password);
+        const isValidPassword = await user.comparePassword(req.value.body.password);
         if (!isValidPassword) {
             req.flash('error', 'The password is incorrect!');
             return res.status(302).send();
@@ -52,7 +52,7 @@ module.exports = {
             email: req.user.email
         });
 
-        const isValidPassword = await User.comparePassword(req.value.body.password, user.password);
+        const isValidPassword = await user.comparePassword(req.value.body.password);
         if (!isValidPassword) {
             req.flash('error', 'The password is incorrect!');
             return res.status(302).send();
@@ -68,13 +68,13 @@ module.exports = {
             email: req.user.email
         });
 
-        const isValidPassword = await User.comparePassword(req.value.body.oldPassword, user.password);
+        const isValidPassword = await user.comparePassword(req.value.body.oldPassword);
         if (!isValidPassword) {
             req.flash('error', 'The password is incorrect!');
             return res.status(302).send();
         }
 
-        user.password = await User.hashPassword(req.value.body.newPassword);
+        user.password = req.value.body.newPassword;
         await user.save();
         req.flash('success', 'Password was changed');
         res.send('Ok');

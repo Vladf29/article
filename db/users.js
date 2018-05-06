@@ -52,22 +52,24 @@ const userSchema = new Schema({
     }
 });
 
-const User = mongoose.model('user', userSchema);
-module.exports = User;
-
-module.exports.hashPassword = async (password) => {
+userSchema.pre('save', async function (next) {
     try {
         const salt = await bcrypt.genSalt(10);
-        return await bcrypt.hash(password, salt);
+        const passwordHash = await bcrypt.hash(this.password, salt);
+        this.password = passwordHash;
+        next();
     } catch (err) {
-        throw new Error('Hashing Error', err);
+        next(err);
     }
-}
+});
 
-module.exports.comparePassword = async (inputP, hashP) => {
+userSchema.methods.comparePassword = async function (password) {
     try {
-        return await bcrypt.compare(inputP, hashP);
+        return await bcrypt.compare(password, this.password);
     } catch (err) {
         return new Error('Comparing failed', err);
     }
 }
+
+const User = mongoose.model('user', userSchema);
+module.exports = User;

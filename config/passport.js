@@ -20,25 +20,26 @@ passport.deserializeUser(async (id, done) => {
 
 const localPassport = new LocalPassport({
     usernameField: 'email',
-    passwordField: 'password'
-}, async (email, password, done) => {
+    passwordField: 'password',
+    passReqToCallback: true,
+}, async (req, email, password, done) => {
     try {
         const user = await User.findOne({
             email
         });
 
         if (!user) {
-            return done(null, false, {
-                message: 'Incorrect email'
-            });
+            // req.flash('error', 'Incorrect email');
+            return done(null, false);
         }
 
-        const isValid = await User.comparePassword(password, user.password);
+        const isValid = await user.comparePassword(password);
+        console.log('>>>', isValid);
         if (!isValid) {
-            return done(null, false, {
-                message: 'Incorrect password.'
-            });
+            // req.flash('error', 'Incorrect password');
+            return done(null, false);
         }
+
         return done(null, user);
     } catch (err) {
         done(err, false);

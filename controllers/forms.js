@@ -13,9 +13,6 @@ module.exports = {
 
         if (exist) return res.status(400).send('The same email is already existed');
 
-        const hash = await User.hashPassword(req.value.body.password);
-        req.value.body.password = hash;
-
         const tokenConfirmEmail = randomString.generate(32);
         req.value.body.tokenConfirmEmail = tokenConfirmEmail;
 
@@ -23,7 +20,6 @@ module.exports = {
 
         const newUser = await User(req.value.body);
         const user = await newUser.save();
-
 
         const html = `
             <p>Hello</p>
