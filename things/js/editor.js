@@ -12,6 +12,7 @@ const Editor = (() => {
                   <li class="edit-board__item" data-action='addList'>List</li>
                   <li class="edit-board__item" data-action='addImg'>Img</li>
                   <li class="edit-board__item" data-action='addCode'>Code</li>
+                  <li class="edit-board__item" data-action='newTitleH2'>H2</li>
                   <li class="edit-board__item" data-action='makeBold'>B</li>
                   <li class="edit-board__item" data-action='makeItalic'>i</li>
                   <li class="edit-board__item" data-action='makeLink'>a</li>
@@ -22,6 +23,7 @@ const Editor = (() => {
             return `
                 <ul class='edit-board__items'>
                     <li class='edit-board__item' data-action='newParagraph'>p</li>
+                    <li class="edit-board__item" data-action='newTitleH2'>H2</li>                    
                 </ul>                
             `
         })(),
@@ -30,7 +32,7 @@ const Editor = (() => {
             <ul class='edit-board__items'>
                 <li class='edit-board__item' data-action='addCaption'>cap</li>
                 <li class='edit-board__item' data-action='newParagraph'>p</li>                
-                <li class='edit-board__item' data-action='deleteElem'>del</li>                
+                <li class='edit-board__item' data-action='deleteElem'>del</li>
             </ul>
             `
         })(),
@@ -145,8 +147,14 @@ const Editor = (() => {
         }
 
         HandlerOnClickArticle(event) {
-            event.stopPropagation();
-            const target = event.target;
+            // event.stopPropagation();
+            let target = event.target;
+
+            if (_hasClass(target, 'js-placeholder')) {
+                while (!_hasClass(target, 'js-f')) {
+                    target = target.parentElement;
+                }
+            }
 
             if (target === _isSelected || !_hasClass(target, 'js-f') || _hasClass(target, 'js-edit-field')) return;
 
@@ -177,6 +185,9 @@ const Editor = (() => {
                     // _that.DeleteElement();
 
                     _that.newParagraph();
+                },
+                newTitleH2() {
+                    _that.newTitleH2();
                 },
                 addImg() {
                     _that.AddImg();
@@ -290,7 +301,7 @@ const Editor = (() => {
 
         newParagraph() {
             let parent = _articleBlock;
-            if (_isSelected) {
+            if (_isSelected && _isSelected.parentElement != parent) {
                 this.OutSelecte();
                 while (_isSelected.parentElement != parent) {
                     _isSelected = _isSelected.parentElement;
@@ -298,6 +309,23 @@ const Editor = (() => {
             }
 
             this.AddNewElement('p', '', ['js-graf', 'js-f']);
+        }
+
+        newTitleH2() {
+            let parent = _articleBlock;
+            if (_isSelected && _isSelected.parentElement != parent) {
+                this.OutSelecte();
+                while (_isSelected.parentElement != parent) {
+                    _isSelected = _isSelected.parentElement;
+                }
+            } else if (_isSelected.tagName === 'P') {
+                const title = this.CreateNewElement('h2', '', ['js-graf', 'js-f']);
+                this.OutSelecte();
+                _articleBlock.replaceChild(title, _isSelected);
+                this.OnSelecte(title);
+            } else {
+                this.AddNewElement('h2', '', ['js-graf', 'js-f']);
+            }
         }
 
         AddList() {
@@ -382,15 +410,20 @@ const Editor = (() => {
                 let str = textarea.value;
 
                 // if (!str) {
-                //     _isSelected.appendChild(this.CreateNewElement('span', 'Enter any text', 'placeholder'));
                 //     _addClass(_isSelected, 'is-empty');
                 // } else {
                 //     _hasClass(_isSelected, 'is-empty') && _isSelected.classList.remove('is-empty');
-                //     _isSelected.textContent = str;
                 // }
 
                 _isSelected.removeChild(textarea);
-                _isSelected.textContent = str;
+                if (!str) {
+                    _isSelected.appendChild(this.CreateNewElement('span', 'Enter any text', ['placeholder', 'js-placeholder']));
+                    _addClass(_isSelected, 'is-empty');
+                } else {
+                    _hasClass(_isSelected, 'is-empty') && _isSelected.classList.remove('is-empty');
+                    _isSelected.textContent = str;
+                }
+
                 _isSelected.classList.remove('is-selected');
             }
         }

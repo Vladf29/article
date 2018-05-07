@@ -1,5 +1,8 @@
 .edit-page {
     padding-top: 125px;
+    .is-empty {
+        font-style: italic;
+    }
 }
 
 .edit-board {
@@ -70,10 +73,6 @@
 
 .align-right {
     margin-left: auto !important;
-}
-
-.placeholder {
-    font-size: 14px;
 }
 
 .article {
