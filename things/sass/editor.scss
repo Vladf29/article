@@ -1,5 +1,6 @@
 .edit-page {
     padding-top: 125px;
+    background-color: #f9f9f9;
     .is-empty {
         font-style: italic;
     }
@@ -57,6 +58,7 @@
     font-size: 19px;
     letter-spacing: .1px;
     font-weight: 300;
+    background-color: transparent;
 }
 
 .flex {
@@ -113,13 +115,11 @@
             color: #c7254e;
         }
         a {
+            font-size: 19px;
             &:hover {
                 text-decoration: underline;
             }
         }
-    }
-    b {
-        font-size: 22px;
     }
     ol li {
         list-style-type: decimal !important;
@@ -133,8 +133,8 @@
         padding-left: 40px; // border: 1px dashed #ad1;
         li {
             font-size: 16px;
-            color: #26293a;
-            font-weight: 500;
+            color: #26293a; // font-weight: 500;
+            font-weight: 300;
             line-height: 1.5;
         }
     }

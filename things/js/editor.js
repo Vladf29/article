@@ -9,11 +9,11 @@ const Editor = (() => {
         def: (() => {
             return `
                 <ul class="edit-board__items">
-                  <li class="edit-board__item" data-action='addList'>List</li>
-                  <li class="edit-board__item" data-action='addImg'>Img</li>
-                  <li class="edit-board__item" data-action='addCode'>Code</li>
-                  <li class="edit-board__item" data-action='newTitleH2'>H2</li>
-                  <li class="edit-board__item" data-action='makeBold'>B</li>
+                  <li class="edit-board__item" data-action='addList'>list</li>
+                  <li class="edit-board__item" data-action='addImg'>img</li>
+                  <li class="edit-board__item" data-action='addCode'>code</li>
+                  <li class="edit-board__item" data-action='newTitleH2'>h2</li>
+                  <li class="edit-board__item" data-action='makeBold'>b</li>
                   <li class="edit-board__item" data-action='makeItalic'>i</li>
                   <li class="edit-board__item" data-action='makeLink'>a</li>
                 </ul>
@@ -48,6 +48,54 @@ const Editor = (() => {
 
     let _isSelected;
     let _selected;
+
+
+    const storageRegxFuncToTag = [
+        (str = '') => {
+            const regx = /(\*{2}).+?(\*{2})/g;
+            return str.replace(regx, (str) => {
+                str = str.replace(/(\*{2})/, '<b>');
+                return str.replace(/(\*{2})/, '</b>');
+            });
+        },
+        (str = '') => {
+            const regx = /(\*{1}).+?(\*{1})/g;
+            return str.replace(regx, (str) => {
+                str = str.replace(/(\*{1})/, '<i>');
+                return str.replace(/(\*{1})/, '</i>');
+            });
+        },
+        (str = '') => {
+            const regx = /\[.+?\]\(.+?\)/g;
+            return str.replace(regx, (str) => {
+                const text = str.match(/\[.+?\]/g)[0].replace(/(\[|\])/g, '');
+                const href = str.match(/\(.+?\)/g)[0].replace(/(\(|\))/g, '');
+                return `<a href='${href}'>${text}</a>`
+            });
+        }
+    ];
+    const storageRegxFuncToSymbol = [
+        (str = '') => {
+            const regx = /(<b>).+?(<\/b>)/g;
+            return str.replace(regx, (str) => {
+                return str.replace(/(<b>|<\/b>)/g, '**');
+            });
+        },
+        (str = '') => {
+            const regx = /(<i>).+?(<\/i>)/g;
+            return str.replace(regx, (str) => {
+                return str.replace(/(<i>|<\/i>)/g, '*');
+            });
+        },
+        (str = '') => {
+            const regx = /<a href=('|").+?('|")>.+?<\/a>/g;
+            return str.replace(regx, (str) => {
+                const text = str.match(/>.+?</g)[0].replace(/(>|<)/g, '');
+                const href = str.match(/href=('|").+?('|")/g)[0].replace(/(href=|('|"))/g, '');
+                return `[${text}](${href})`
+            });
+        }
+    ];
 
     /**
      * def - default
@@ -200,7 +248,16 @@ const Editor = (() => {
                 },
                 deleteElem() {
                     _that.DeleteElement();
-                }
+                },
+                makeBold() {
+                    _that.insertSymbol('**  **');
+                },
+                makeItalic() {
+                    _that.insertSymbol('*  *');
+                },
+                makeLink() {
+                    _that.insertSymbol('[]()');
+                },
             }
 
             const action = target.getAttribute('data-action');
@@ -308,7 +365,7 @@ const Editor = (() => {
                 }
             }
 
-            this.AddNewElement('p', '', ['js-graf', 'js-f']);
+            this.AddNewElement('p', '', ['js-graf', 'js-f', 'is-empty']);
         }
 
         newTitleH2() {
@@ -372,11 +429,35 @@ const Editor = (() => {
             this.OnSelecte(code);
         }
 
+        insertSymbol(insetStr) {
+            function getCaret(el) {
+                return el.selectionStart;
+            }
+
+            function getPosInRow(el) {
+                var caret = getCaret(el);
+                var text = el.value.substr(0, caret).replace(/^(.*[\n\r])*([^\n\r]*)$/, '$2');
+
+                return text.length;
+            }
+
+            const textarea = document.querySelector('.js-edit-field');
+            const pos = getPosInRow(textarea);
+            textarea.value = textarea.value.substr(0, pos) + ` ${insetStr} ` + textarea.value.substr(pos);
+        }
+
         SetTextarea() {
             if (_hasClass(_isSelected, 'is-selected')) return;
 
             const textarea = this.CreateNewElement('textarea', '', ['edit-textarea', 'js-edit-field']);
-            textarea.value = _hasClass(_isSelected, 'is-empty') ? '' : _isSelected.textContent;
+            // textarea.value = _hasClass(_isSelected, 'is-empty') ? '' : _isSelected.textContent;
+            let str = _isSelected.innerHTML;
+            if (!_hasClass(_isSelected, 'is-empty') && str) {
+                storageRegxFuncToSymbol.forEach((item) => {
+                    str = item(str);
+                });
+                textarea.value = str;
+            }
             textarea.placeholder = 'TITLE';
 
             _addClass(_isSelected, 'is-selected');
@@ -421,9 +502,13 @@ const Editor = (() => {
                     _addClass(_isSelected, 'is-empty');
                 } else {
                     _hasClass(_isSelected, 'is-empty') && _isSelected.classList.remove('is-empty');
-                    _isSelected.textContent = str;
-                }
 
+                    storageRegxFuncToTag.forEach((item) => {
+                        str = item(str);
+                    });
+
+                    _isSelected.innerHTML = str;
+                }
                 _isSelected.classList.remove('is-selected');
             }
         }
