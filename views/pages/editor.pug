@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        include ../parts/normalize
+        link(rel="stylesheet", href="./styles/editor.css")
+        title Editor
+    body
+        .wrapper-page
+            include ../parts/headerPage
+            .content-page.edit-page
+                .article-wrapper.js-article-wrapper
+                    .article.js-article
+
+                    .edit-board.js-edit-board(data-state='closed')
+                        .edit-board__c
+                            .edit-board__content.js-edit-content
+
+            include ../parts/signC            
+
+        script(src="http://www.jacklmoore.com/js/autosize.min.js")
+        script(src="./js/editor.js")
