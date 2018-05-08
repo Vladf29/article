@@ -9,6 +9,9 @@ html(lang="en")
         title Profile
         include ../../parts/normalize
         link(rel="stylesheet", href="/styles/profile.css")
+        if (owner)
+            link(rel="stylesheet", href="/styles/uploadImg.css")
+        
     body
         .wrapper-page
             include ../../parts/headerPage

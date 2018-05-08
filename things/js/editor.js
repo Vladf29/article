@@ -5,25 +5,36 @@ const Editor = (() => {
     const _articleBlock = document.querySelector('.js-article');
     const _editPanel = document.querySelector('.js-edit-board');
 
+    const icons = {
+        bold: `<li class="edit-board__item" data-action='makeBold'><i class="fas fa-bold"></i></li>`,
+        link: `<li class="edit-board__item" data-action='makeItalic'><i class="fas fa-italic"></i></li>`,
+        italic: `<li class="edit-board__item" data-action='makeLink'><i class="fas fa-link"></i></li>`,
+        H: `<li class="edit-board__item" data-action='newTitleH2'><i class="fas fa-heading"></i></li>`,
+        img: `<li class="edit-board__item" data-action='addImg'><i class="far fa-image"></i></li>`,
+        code: `<li class="edit-board__item" data-action='addCode'><i class="fas fa-code"></i></li>`,
+        list: `<li class="edit-board__item" data-action='addList'><i class="fas fa-list-ul"></i></li>`,
+        par: `<li class='edit-board__item' data-action='newParagraph'><i class="fas fa-paragraph"></i></li>`,
+        del: `<li class='edit-board__item' data-action='deleteElem'><i class="fas fa-trash-alt"></i></li>`
+    }
     const _templatePanel = {
         def: (() => {
             return `
                 <ul class="edit-board__items">
-                  <li class="edit-board__item" data-action='addList'>list</li>
-                  <li class="edit-board__item" data-action='addImg'>img</li>
-                  <li class="edit-board__item" data-action='addCode'>code</li>
-                  <li class="edit-board__item" data-action='newTitleH2'>h2</li>
-                  <li class="edit-board__item" data-action='makeBold'>b</li>
-                  <li class="edit-board__item" data-action='makeItalic'>i</li>
-                  <li class="edit-board__item" data-action='makeLink'>a</li>
+                  ${icons.list}
+                  ${icons.img}
+                  ${icons.code}
+                  ${icons.H}
+                  ${icons.bold}
+                  ${icons.italic}
+                  ${icons.link}
                 </ul>
             `
         })(),
         list: (() => {
             return `
                 <ul class='edit-board__items'>
-                    <li class='edit-board__item' data-action='newParagraph'>p</li>
-                    <li class="edit-board__item" data-action='newTitleH2'>H2</li>                    
+                    ${icons.par}
+                    ${icons.H}
                 </ul>                
             `
         })(),
@@ -31,16 +42,16 @@ const Editor = (() => {
             return `
             <ul class='edit-board__items'>
                 <li class='edit-board__item' data-action='addCaption'>cap</li>
-                <li class='edit-board__item' data-action='newParagraph'>p</li>                
-                <li class='edit-board__item' data-action='deleteElem'>del</li>
+                ${icons.del}
+                ${icons.par}
             </ul>
             `
         })(),
         code: (() => {
             return `
             <ul class='edit-board__items'>
-                <li class='edit-board__item' data-action='newParagraph'>p</li>
-                <li class='edit-board__item' data-action='deleteElem'>del</li>
+                ${icons.del}
+                ${icons.par}
             </ul>
             `
         })(),
@@ -204,13 +215,19 @@ const Editor = (() => {
                 }
             }
 
-            if (target === _isSelected || !_hasClass(target, 'js-f') || _hasClass(target, 'js-edit-field')) return;
-
             if (target === this) {
-                _that.DeleteTextarea();
-                _isSelected = undefined;
+                // _that.DeleteTextarea();
+                _that.OutSelecte();
+                let put = this.lastElementChild;
+                if (_hasClass(put, 'js-list')) {
+                    put = put.lastElementChild;
+                }
+                _that.OnSelecte(put);
+                // _isSelected = undefined;
                 return;
             }
+
+            if (target === _isSelected || !_hasClass(target, 'js-f') || _hasClass(target, 'js-edit-field')) return;
 
             if ((target !== _isSelected) && _isSelected)
                 _that.OutSelecte();
@@ -345,10 +362,17 @@ const Editor = (() => {
                 }
             }
 
-            if (_isSelected.nextElementSibling)
+            if (_isSelected.nextElementSibling) {
                 put = _isSelected.nextElementSibling;
-            else if (_isSelected.previousElementSibling)
+                if (_hasClass(put, 'js-list')) {
+                    put = put.firstElementChild;
+                }
+            } else if (_isSelected.previousElementSibling) {
                 put = _isSelected.previousElementSibling;
+                if (_hasClass(put, 'js-list')) {
+                    put = put.lastElementChild;
+                }
+            }
 
             parent.removeChild(_isSelected);
 

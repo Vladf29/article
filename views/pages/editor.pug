@@ -5,18 +5,60 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         include ../parts/normalize
-        link(rel="stylesheet", href="./styles/editor.css")
+        link(rel="stylesheet", href="/styles/editor.css")
+        link(rel="stylesheet", href="/styles/uploadImg.css")
         title Editor
     body
         .wrapper-page
             include ../parts/headerPage
-            .content-page.edit-page
-                .article-wrapper.js-article-wrapper
-                    .article.js-article
+            .content-page
+                .edit-page
+                    .article-wrapper.js-article-wrapper
+                        .edit-board.js-edit-board
+                            .edit-board__c
+                                .edit-board__content.js-edit-content
+                        .article.js-article
+                
+                .upload-img.js-upload(data-state='hidden')
+                    .upload-img__c
+                        .upload-img__close.js-upload-close
+                            i.fas.fa-times
+                        .upload-img__sidebar
+                            .upload-img__sidebar-items
+                                -var items = ['laptop','link']
+                                each item in items
+                                    .upload-img__sidebar-item.js-upload-sidebar(data-show=item)
+                                        .upload-img__sidebar-item-c
+                                            .upload-img__sidebar-item-icon
+                                                i(class='fas fa-'+item)
 
-                    .edit-board.js-edit-board(data-state='closed')
-                        .edit-board__c
-                            .edit-board__content.js-edit-content
+                        .upload-img__content.js-upload-content(data-state='show' data-type='laptop')
+                            .upload-img__content-heading
+                                span My Device
+                            .upload-img__content-c
+                                .drop-area
+                                    .drop-area__c
+                                        .drop-area__select.js-select(data-state='show')
+                                            .drop-area__select-labels
+                                                span.drop-area__select-heading Select Files to Upload
+                                                span.drop-area__select-subheading or Drag and Drop, Copy and Paste Files
+                                            input.drop-area__select-input(type='file' id='userImg' name='userImg')
+
+                        .upload-img__content.js-upload-content(data-state='hidden' data-type='link')
+                            .upload-img__content-heading
+                                span URL
+                            .upload-img__content-c                        
+                                form.upload-img__url.js-upload-form-url
+                                    input.upload-img__url-input(type='text' name='userURLImg' id='userURLImg' placeholder='Enter a URL' required)
+                                    button.btn.btn_primary Confirm
+                    
+                        .upload-img__content.js-preview(data-state='hidden' data-show='laptop')
+                            .preview
+                                .preview-c
+                                .preview-action.js-preview-action
+                                    button.btn(data-action='cancel') Cancel
+                                    button.btn.btn_primary(data-action='save') Save
+
 
             include ../parts/signC            
 
