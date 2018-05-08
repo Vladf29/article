@@ -1,7 +1,6 @@
 'use strict'
 
-
-const Editor = (() => {
+export const Editor = (() => {
     const _articleBlock = document.querySelector('.js-article');
     const _editPanel = document.querySelector('.js-edit-board');
 
@@ -17,9 +16,9 @@ const Editor = (() => {
         del: `<li class='edit-board__item' data-action='deleteElem'><i class="fas fa-trash-alt"></i></li>`
     }
     const _templatePanel = {
-        def: (() => {
-            return `
+        def: `
                 <ul class="edit-board__items">
+                  ${icons.par}
                   ${icons.list}
                   ${icons.img}
                   ${icons.code}
@@ -28,33 +27,38 @@ const Editor = (() => {
                   ${icons.italic}
                   ${icons.link}
                 </ul>
-            `
-        })(),
-        list: (() => {
-            return `
+            `,
+        list: `
                 <ul class='edit-board__items'>
                     ${icons.par}
                     ${icons.H}
+                    ${icons.bold}
+                    ${icons.italic}
+                    ${icons.link}
                 </ul>                
-            `
-        })(),
-        img: (() => {
-            return `
+            `,
+        img: `
             <ul class='edit-board__items'>
-                <li class='edit-board__item' data-action='addCaption'>cap</li>
+                ${icons.par}
+                <li class='edit-board__item' data-action='addCaption'><i class="far fa-closed-captioning"></i></li>
+                ${icons.del}
+            </ul>
+            `,
+        'img-caption': `
+            <ul class='edit-board__items'>
+                ${icons.par}
+                <li class='edit-board__item' data-action='addCaption'><i class="far fa-closed-captioning"></i></li>
+                ${icons.bold}
+                ${icons.italic}
+                ${icons.link}
+            </ul>
+            `,
+        code: `
+            <ul class='edit-board__items'>
                 ${icons.del}
                 ${icons.par}
             </ul>
-            `
-        })(),
-        code: (() => {
-            return `
-            <ul class='edit-board__items'>
-                ${icons.del}
-                ${icons.par}
-            </ul>
-            `
-        })(),
+            `,
     }
 
     let _isSelected;
@@ -209,28 +213,26 @@ const Editor = (() => {
             // event.stopPropagation();
             let target = event.target;
 
-            if (_hasClass(target, 'js-placeholder')) {
-                while (!_hasClass(target, 'js-f')) {
-                    target = target.parentElement;
-                }
-            }
+            if (_hasClass(target, 'js-placeholder')) target = target.closest('.js-f');
 
             if (target === this) {
-                // _that.DeleteTextarea();
-                _that.OutSelecte();
-                let put = this.lastElementChild;
-                if (_hasClass(put, 'js-list')) {
-                    put = put.lastElementChild;
+                if (this.children.length !== 0) {
+                    _that.OutSelecte();
+                    let put = this.lastElementChild;
+                    if (_hasClass(put, 'js-list')) {
+                        put = put.lastElementChild;
+                    }
+                    _that.OnSelecte(put);
+                } else {
+                    _that.DeleteTextarea();
+                    _isSelected = undefined;
                 }
-                _that.OnSelecte(put);
-                // _isSelected = undefined;
                 return;
             }
 
             if (target === _isSelected || !_hasClass(target, 'js-f') || _hasClass(target, 'js-edit-field')) return;
 
-            if ((target !== _isSelected) && _isSelected)
-                _that.OutSelecte();
+            if ((target !== _isSelected) && _isSelected) _that.OutSelecte();
 
             _that.OnSelecte(target);
         }
@@ -247,15 +249,13 @@ const Editor = (() => {
                     _that.AddList();
                 },
                 newParagraph() {
-                    // _that.DeleteElement();
-
                     _that.newParagraph();
                 },
                 newTitleH2() {
                     _that.newTitleH2();
                 },
                 addImg() {
-                    _that.AddImg();
+                    $('.js-upload').attr('data-state', 'show');
                 },
                 addCaption() {
                     _that.AddImgCaption();
@@ -277,7 +277,7 @@ const Editor = (() => {
                 },
             }
 
-            const action = target.getAttribute('data-action');
+            const action = $(target).attr('data-action') ? $(target).attr('data-action') : $(target).closest('[data-action]').attr('data-action');
             action && actions[action] && actions[action]();
 
             if (action !== 'showPanel') actions.showPanel();
@@ -303,6 +303,9 @@ const Editor = (() => {
                     setAtr();
                     break;
             }
+
+            if (_hasClass(_isSelected, 'js-block-img')) setAtr('img');
+            else if (_hasClass(_isSelected, 'js-img-graf')) setAtr('img-caption');
 
             _routine = _articleBlock.getAttribute('data-routine');
 
@@ -371,6 +374,9 @@ const Editor = (() => {
                 put = _isSelected.previousElementSibling;
                 if (_hasClass(put, 'js-list')) {
                     put = put.lastElementChild;
+                } else if (_hasClass(put, 'js-block-img')) {
+                    put = put.lastElementChild;
+                    put = put.firstElementChild;
                 }
             }
 
@@ -418,27 +424,37 @@ const Editor = (() => {
             this.OnSelecte(item);
         }
 
-        AddImg() {
-            const block = this.CreateNewElement('div', '', 'block-img');
-            const container = this.CreateNewElement('div', '', 'block-img__c');
+        AddBlockImg(url) {
+            const blockImg = this.CreateNewElement('div', '', ['block-img', 'js-block-img'])
+            const containerImg = this.CreateNewElement('div', '', ['block-img__img', 'js-f']);
 
             const img = this.CreateNewElement('img', '', ['js-img', 'js-f']);
-            img.src = prompt('Url', '');
-            img.alt = `It's just a cat`;
+            img.src = url;
 
-            container.appendChild(img);
-            block.appendChild(container);
+            containerImg.appendChild(img)
+            blockImg.appendChild(containerImg);
+            this.InsertNewElement(blockImg);
 
-            _articleBlock.replaceChild(block, _isSelected);
-            this.OnSelecte(img);
+            // _articleBlock.replaceChild(blockImg, _isSelected);
+
+            this.OutSelecte();
+            $('.js-upload').attr('data-state', 'hidden');
+            this.OnSelecte(blockImg);
         }
 
         AddImgCaption() {
-            const caption = prompt('Enter any text', '');
-            if (!caption) return;
+            const captionText = prompt('Enter any text', '');
+            if (!captionText) return;
 
-            const el = this.CreateNewElement('p', caption, 'caption');
-            this.InsertNewElement(el, _isSelected.parentElement);
+            const containerCaption = this.CreateNewElement('div', '', 'block-img__caption');
+            const caption = this.CreateNewElement('span', captionText, ['js-graf', 'js-img-graf', 'js-f']);
+            // this.InsertNewElement(el, _isSelected.parentElement);
+
+            containerCaption.appendChild(caption);
+            _isSelected.closest('.js-block-img').appendChild(containerCaption);
+
+            this.OutSelecte();
+            this.OnSelecte(caption);
         }
 
         AddBlockCode() {
@@ -538,5 +554,3 @@ const Editor = (() => {
         }
     }
 })();
-
-new Editor().Start();
