@@ -22,22 +22,28 @@ router.get('/users', async (req, res) => {
 });
 
 router.route('/settings')
-    .get(authorized.isAuthorized, UserControllers.renderSettingsPage);
+    .get(authorized.isAuthorized, UserControllers.pages.renderSettings);
 
 router.route('/profile')
-    .get(authorized.isAuthorized, UserControllers.renderProfilePage);
+    .get(authorized.isAuthorized, UserControllers.pages.renderProfile);
+
+router.route('/write_post')
+    .get(UserControllers.pages.writePost)
+
+router.get('/write_post/create', UserControllers.writePost.create);
+router.post('/write_post/add', UserControllers.writePost.add);
 
 router.get('/delete', UserControllers.userDeleteAccount);
 
-router.put('/update/email', validateBody(schemas.logIn), UserControllers.updateUserEmail);
-router.put('/update/username', validateBody(schemas.username), UserControllers.updateUserUsername);
-router.put('/update/password', validateBody(schemas.updataPassword), UserControllers.updateUserPassword);
+router.put('/update/email', validateBody(schemas.logIn), UserControllers.updates.userEmail);
+router.put('/update/username', validateBody(schemas.username), UserControllers.updates.userUsername);
+router.put('/update/password', validateBody(schemas.updataPassword), UserControllers.updates.userPassword);
 
-router.put('/update/name', UserControllers.updateUserName);
-router.put('/update/describe', UserControllers.updateUserDescribe);
-router.put('/update/aboutMe', UserControllers.updateUserAboutMe);
+router.put('/update/name', UserControllers.updates.userName);
+router.put('/update/describe', UserControllers.updates.userDescribe);
+router.put('/update/aboutMe', UserControllers.updates.userAboutMe);
 
-router.put('/update/imgUrl', UserControllers.updateUserAvatarUrl);
-router.put('/update/avatarImg', uploadAvatar.single('img'), UserControllers.updateUserAvatarImg);
+router.put('/update/imgUrl', UserControllers.updates.userAvatarUrl);
+router.put('/update/avatarImg', uploadAvatar.single('img'), UserControllers.updates.userAvatarImg);
 
 module.exports = router;

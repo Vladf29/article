@@ -4,8 +4,10 @@ const fs = require('fs');
 
 const User = require('../db/users');
 
-module.exports = {
-    renderProfilePage: async (req, res) => {
+const pathToDraft = './asset';
+
+const pages = {
+    renderProfile: async (req, res) => {
         const user = await User.findOne({
             email: req.user.email
         });
@@ -14,11 +16,16 @@ module.exports = {
             user
         });
     },
-    renderSettingsPage: (req, res) => {
+    renderSettings: (req, res) => {
         res.render('me/settings');
     },
+    writePost: (req, res) => {
+        res.render('editor');
+    }
+}
 
-    updateUserEmail: async (req, res) => {
+const updates = {
+    userEmail: async (req, res) => {
         const user = await User.findOne({
             email: req.user.email
         });
@@ -47,7 +54,7 @@ module.exports = {
         req.flash('success', 'Email was changed');
         res.send('Ok');
     },
-    updateUserUsername: async (req, res) => {
+    userUsername: async (req, res) => {
         const user = await User.findOne({
             email: req.user.email
         });
@@ -63,7 +70,7 @@ module.exports = {
         req.flash('success', 'Username was changed');
         res.send('Ok');
     },
-    updateUserPassword: async (req, res) => {
+    userPassword: async (req, res) => {
         const user = await User.findOne({
             email: req.user.email
         });
@@ -79,7 +86,7 @@ module.exports = {
         req.flash('success', 'Password was changed');
         res.send('Ok');
     },
-    updateUserName: async (req, res) => {
+    userName: async (req, res) => {
         await User.findOneAndUpdate({
             email: req.user.email
         }, {
@@ -87,7 +94,7 @@ module.exports = {
         });
         res.send('OK');
     },
-    updateUserDescribe: async (req, res) => {
+    userDescribe: async (req, res) => {
         await User.findOneAndUpdate({
             email: req.user.email
         }, {
@@ -95,7 +102,7 @@ module.exports = {
         });
         res.send('OK');
     },
-    updateUserAboutMe: async (req, res) => {
+    userAboutMe: async (req, res) => {
         await User.findOneAndUpdate({
             email: req.user.email
         }, {
@@ -103,7 +110,7 @@ module.exports = {
         });
         res.send('OK');
     },
-    updateUserAvatarUrl: async (req, res) => {
+    userAvatarUrl: async (req, res) => {
         const user = await User.findOne({
             email: req.user.email
         });
@@ -117,7 +124,7 @@ module.exports = {
         await user.save();
         res.send('OK');
     },
-    updateUserAvatarImg: (req, res) => {
+    userAvatarImg: (req, res) => {
         const targetPath = `${req.file.destination}/${Date.now()}${req.file.originalname}`;
         const tmpPath = req.file.path;
 
@@ -145,7 +152,23 @@ module.exports = {
 
         });
     },
+}
 
+const writePost = {
+    create: (req, res) => {
+        res.send(`${Date.now()}`);
+    },
+    add: async (req, res) => {
+        const wr = fs.createWriteStream(`${pathToDraft}/a.json`)
+        wr.write(JSON.stringify(req.body.data));
+        res.send('OK');
+    }
+}
+
+module.exports = {
+    pages,
+    updates,
+    writePost,
     userDeleteAccount: async (req, res) => {
         const user = await User.findOne({
             email: req.user.email

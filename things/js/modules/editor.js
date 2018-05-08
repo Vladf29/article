@@ -47,7 +47,6 @@ export const Editor = (() => {
         'img-caption': `
             <ul class='edit-board__items'>
                 ${icons.par}
-                <li class='edit-board__item' data-action='addCaption'><i class="far fa-closed-captioning"></i></li>
                 ${icons.bold}
                 ${icons.italic}
                 ${icons.link}
@@ -63,6 +62,7 @@ export const Editor = (() => {
 
     let _isSelected;
     let _selected;
+    const storageData = [];
 
 
     const storageRegxFuncToTag = [
@@ -116,11 +116,13 @@ export const Editor = (() => {
      * def - default
      * list
      * img
+     * img-caption
      * code
      */
     let _routine = 'def';
 
     let _that;
+    let _id;
 
     const _checkType = (elem) => {
         return Object.prototype.toString.call(elem).slice(8, -1);
@@ -151,6 +153,14 @@ export const Editor = (() => {
 
         Start() {
             if (_articleBlock.children.length === 0) {
+                $.ajax({
+                    method: 'GET',
+                    url: '/me/write_post/create',
+                    success: function (data) {
+                        _id = data;
+                        console.log(_id);
+                    }
+                })
                 this.newParagraph();
             } else {
                 this.OnSelecte(_articleBlock.firstElementChild);
@@ -304,8 +314,8 @@ export const Editor = (() => {
                     break;
             }
 
-            if (_hasClass(_isSelected, 'js-block-img')) setAtr('img');
-            else if (_hasClass(_isSelected, 'js-img-graf')) setAtr('img-caption');
+            if (_hasClass(_isSelected, 'js-block-img') || _hasClass(_isSelected, 'js-container-img')) setAtr('img');
+            else if (_hasClass(_isSelected, 'js-img-caption')) setAtr('img-caption');
 
             _routine = _articleBlock.getAttribute('data-routine');
 
@@ -317,14 +327,103 @@ export const Editor = (() => {
 
         OutSelecte() {
             this.DeleteTextarea();
+
+            this.setSequenceNumber();
+
+            storageData.length = [];
+            $(_articleBlock).children().each(function (ind) {
+                const elem = $(this)
+                if (!elem.hasClass('js-plain')) {
+                    const container = elem.closest('.js-container');
+                    const type = container.attr('data-type');
+                    const key = container.attr('data-index');
+
+                    switch (type) {
+                        case 'img':
+                            const img = container.find('img').prop('src');
+                            const caption = container.find('.js-img-caption').length !== 0 ? container.find('.js-img-caption').html() : '';
+
+                            const a = {
+                                type,
+                                ind: +key,
+                                src: img,
+                                caption
+                            }
+                            storageData.push(a);
+                            break;
+                        case 'list':
+                            const list = {
+                                type,
+                                ind: +key,
+                                item: []
+                            };
+                            container.children().each(function (ind) {
+                                list.item.push($(this).hasClass('is-empty') ? '' : $(this).html());
+                            });
+
+                            storageData.push(list);
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    const str = elem.html();
+                    const key = elem.attr('data-index') ? elem.attr('data-index') : _articleBlock.children.length;
+                    const type = elem.attr('data-name');
+
+                    const a = {
+                        text: elem.hasClass('is-empty') ? '' : str,
+                        ind: +key,
+                        type
+                    };
+                    storageData.push(a);
+                }
+            });
+
+            storageData.sort((a, b) => a.ind - b.ind);
+            if (_id) {
+                $.ajax({
+                    method: 'POST',
+                    url: '/me/write_post/add',
+                    data: JSON.stringify({
+                        id: _id,
+                        data: storageData
+                    }),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (err) {
+                        console.log('err');
+                        console.log(err);
+                    }
+                });
+            }
+            console.clear();
+            console.log(storageData);
+        }
+
+        setSequenceNumber() {
+            $(_articleBlock).children().each(function (ind) {
+                let attr = ''
+                if (!_hasClass(_isSelected, 'js-plain')) {
+                    const container = $(_isSelected).closest('.js-container');
+                    attr = container.attr('data-index');
+                } else {
+                    attr = $(this).attr('data-index');
+                }
+                if (!attr) return $(this).attr('data-index', `${ind}`)
+                if (attr != ind) {;
+                    $(this).attr('data-index', `${ind}`);
+                }
+            });
         }
 
         AddNewElement(tag, str, cls, parent = _articleBlock) {
             if (!tag) return;
             const elem = this.CreateNewElement(tag, str, cls);
             this.InsertNewElement(elem, parent);
-            this.OutSelecte();
-            this.OnSelecte(elem);
+            return elem;
         }
 
         CreateNewElement(tag, str, cls) {
@@ -355,12 +454,16 @@ export const Editor = (() => {
             let put;
 
             if (_isSelected.parentElement !== parent) {
-                if (_isSelected.parentElement.children.length === 1 || !_hasClass(_isSelected, 'js-graf')) {
+                if (_isSelected.parentElement.children.length === 1 && !_hasClass(_isSelected, 'js-graf')) {
                     _isSelected = _isSelected.parentElement;
+
                     while (_isSelected.parentElement !== _articleBlock) {
                         _isSelected = _isSelected.parentElement;
                     }
                 } else {
+                    if (_hasClass(_isSelected, 'js-img-caption')) {
+                        _isSelected = _isSelected.parentElement;
+                    }
                     parent = _isSelected.parentElement;
                 }
             }
@@ -374,9 +477,6 @@ export const Editor = (() => {
                 put = _isSelected.previousElementSibling;
                 if (_hasClass(put, 'js-list')) {
                     put = put.lastElementChild;
-                } else if (_hasClass(put, 'js-block-img')) {
-                    put = put.lastElementChild;
-                    put = put.firstElementChild;
                 }
             }
 
@@ -395,7 +495,11 @@ export const Editor = (() => {
                 }
             }
 
-            this.AddNewElement('p', '', ['js-graf', 'js-f', 'is-empty']);
+            const par = this.AddNewElement('p', '', ['js-graf', 'js-f', 'is-empty', 'js-plain']);
+            par.setAttribute('data-name', `par`);
+            par.setAttribute('data-index', _articleBlock.children.length - 1);
+            this.OutSelecte();
+            this.OnSelecte(par);
         }
 
         newTitleH2() {
@@ -406,18 +510,23 @@ export const Editor = (() => {
                     _isSelected = _isSelected.parentElement;
                 }
             } else if (_isSelected.tagName === 'P') {
-                const title = this.CreateNewElement('h2', '', ['js-graf', 'js-f']);
+                const title = this.CreateNewElement('h2', '', ['js-graf', 'js-f', 'js-plain']);
+                title.setAttribute('data-name', `title`);
                 this.OutSelecte();
                 _articleBlock.replaceChild(title, _isSelected);
                 this.OnSelecte(title);
             } else {
-                this.AddNewElement('h2', '', ['js-graf', 'js-f']);
+                const title = this.AddNewElement('h2', '', ['js-graf', 'js-f', 'js-plain']).setAttribute('data-type', 'title');
+                this.OutSelecte();
+                this.OnSelecte(title);
             }
         }
 
         AddList() {
             const item = this.CreateNewElement('li', '', ['js-graf', 'js-f', 'js-list-item']);
-            const list = this.CreateNewElement('ul', '', 'js-list');
+            const list = this.CreateNewElement('ul', '', ['js-list', 'js-container']);
+            list.setAttribute('data-type', 'list');
+            list.setAttribute('data-name', `list`);
             list.appendChild(item);
             _articleBlock.replaceChild(list, _isSelected);
 
@@ -425,8 +534,10 @@ export const Editor = (() => {
         }
 
         AddBlockImg(url) {
-            const blockImg = this.CreateNewElement('div', '', ['block-img', 'js-block-img'])
-            const containerImg = this.CreateNewElement('div', '', ['block-img__img', 'js-f']);
+            const blockImg = this.CreateNewElement('div', '', ['block-img', 'js-block-img', 'js-container']);
+            blockImg.setAttribute('data-name', `img`);
+            blockImg.setAttribute('data-type', 'img');
+            const containerImg = this.CreateNewElement('div', '', ['block-img__img', 'js-container-img', 'js-f']);
 
             const img = this.CreateNewElement('img', '', ['js-img', 'js-f']);
             img.src = url;
@@ -435,20 +546,17 @@ export const Editor = (() => {
             blockImg.appendChild(containerImg);
             this.InsertNewElement(blockImg);
 
-            // _articleBlock.replaceChild(blockImg, _isSelected);
-
             this.OutSelecte();
             $('.js-upload').attr('data-state', 'hidden');
             this.OnSelecte(blockImg);
         }
 
         AddImgCaption() {
-            const captionText = prompt('Enter any text', '');
-            if (!captionText) return;
+            const a = $(_isSelected).closest('.block-img').find('.block-img__caption');
+            if (a.length !== 0) return;
 
             const containerCaption = this.CreateNewElement('div', '', 'block-img__caption');
-            const caption = this.CreateNewElement('span', captionText, ['js-graf', 'js-img-graf', 'js-f']);
-            // this.InsertNewElement(el, _isSelected.parentElement);
+            const caption = this.CreateNewElement('span', '', ['js-graf', 'js-img-caption', 'js-f']);
 
             containerCaption.appendChild(caption);
             _isSelected.closest('.js-block-img').appendChild(containerCaption);
@@ -490,7 +598,6 @@ export const Editor = (() => {
             if (_hasClass(_isSelected, 'is-selected')) return;
 
             const textarea = this.CreateNewElement('textarea', '', ['edit-textarea', 'js-edit-field']);
-            // textarea.value = _hasClass(_isSelected, 'is-empty') ? '' : _isSelected.textContent;
             let str = _isSelected.innerHTML;
             if (!_hasClass(_isSelected, 'is-empty') && str) {
                 storageRegxFuncToSymbol.forEach((item) => {
@@ -530,13 +637,9 @@ export const Editor = (() => {
                 const textarea = document.querySelector('.js-edit-field');
                 let str = textarea.value;
 
-                // if (!str) {
-                //     _addClass(_isSelected, 'is-empty');
-                // } else {
-                //     _hasClass(_isSelected, 'is-empty') && _isSelected.classList.remove('is-empty');
-                // }
-
                 _isSelected.removeChild(textarea);
+                _isSelected.classList.remove('is-selected');
+
                 if (!str) {
                     _isSelected.appendChild(this.CreateNewElement('span', 'Enter any text', ['placeholder', 'js-placeholder']));
                     _addClass(_isSelected, 'is-empty');
@@ -549,7 +652,6 @@ export const Editor = (() => {
 
                     _isSelected.innerHTML = str;
                 }
-                _isSelected.classList.remove('is-selected');
             }
         }
     }
