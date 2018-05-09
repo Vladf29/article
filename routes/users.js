@@ -21,18 +21,17 @@ router.get('/users', async (req, res) => {
     res.json(found);
 });
 
-router.route('/settings')
-    .get(authorized.isAuthorized, UserControllers.pages.renderSettings);
-
-router.route('/profile')
-    .get(authorized.isAuthorized, UserControllers.pages.renderProfile);
-
-router.get('/write_post', UserControllers.pages.writePost);
-
-router.get('/write_post/create', UserControllers.writePost.create);
-router.post('/write_post/add', UserControllers.writePost.add);
+router.get('/settings', authorized.isAuthorized, UserControllers.pages.renderSettings);
+router.get('/profile', authorized.isAuthorized, UserControllers.pages.renderProfile);
+router.get('/posts', authorized.isAuthorized, UserControllers.pages.renderPosts);
 
 router.get('/delete', UserControllers.userDeleteAccount);
+
+router.get('/write_a_post', authorized.isAuthorized, UserControllers.pages.writePost);
+
+router.get('/write_post/create', UserControllers.writePost.create);
+router.post('/write_post/draft', UserControllers.writePost.draft);
+
 
 router.put('/update/email', validateBody(schemas.logIn), UserControllers.updates.userEmail);
 router.put('/update/username', validateBody(schemas.username), UserControllers.updates.userUsername);

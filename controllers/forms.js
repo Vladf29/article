@@ -19,6 +19,7 @@ module.exports = {
         req.value.body.username = req.value.body.email.split('@')[0];
 
         const newUser = await User(req.value.body);
+        await newUser.hashPassword();
         const user = await newUser.save();
 
         const html = `

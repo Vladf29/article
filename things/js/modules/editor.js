@@ -158,6 +158,7 @@ export const Editor = (() => {
                 url: '/me/write_post/create',
                 success: function (data) {
                     _id = data;
+                    console.log(_id)
                     _that.Start();
                 }
             })
@@ -335,14 +336,16 @@ export const Editor = (() => {
         }
 
         Save() {
-            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
             this.setSequenceNumber();
             this.setDataForSend();
+
+            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
             storageData.sort((a, b) => a.ind - b.ind);
             if (_id) {
+                if (_notifQ.hasClass('notif--success')) _notifQ.removeClass('notif--success');
                 $.ajax({
                     method: 'POST',
-                    url: '/me/write_post/add',
+                    url: '/me/write_post/draft',
                     data: JSON.stringify({
                         id: _id,
                         data: storageData
@@ -350,6 +353,7 @@ export const Editor = (() => {
                     contentType: 'application/json',
                     success: function (data) {
                         _notifQ.addClass('notif--success');
+                        console.log(data);
                     },
                     error: function (err) {
                         console.log('err');
@@ -360,6 +364,7 @@ export const Editor = (() => {
         }
 
         setDataForSend() {
+            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
             storageData.length = [];
             $(_articleBlock).children().each(function (ind) {
                 const elem = $(this)

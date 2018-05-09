@@ -34,6 +34,9 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'article'
     }],
+    draft: [{
+        type: String,
+    }],
     likes: [{
         type: Schema.Types.ObjectId,
         ref: 'article'
@@ -52,16 +55,26 @@ const userSchema = new Schema({
     }
 });
 
-userSchema.pre('save', async function (next) {
+// userSchema.pre('save', async function (next) {
+//     try {
+//         const salt = await bcrypt.genSalt(10);
+//         const passwordHash = await bcrypt.hash(this.password, salt);
+//         this.password = passwordHash;
+//         next();
+//     } catch (err) {
+//         next(err);
+//     }
+// });
+
+userSchema.methods.hashPassword = async function () {
     try {
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt(5);
         const passwordHash = await bcrypt.hash(this.password, salt);
         this.password = passwordHash;
-        next();
     } catch (err) {
-        next(err);
+        return new Error('Comparing failed', err);
     }
-});
+}
 
 userSchema.methods.comparePassword = async function (password) {
     try {

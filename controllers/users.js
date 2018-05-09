@@ -1,10 +1,11 @@
 'use strict'
 
 const fs = require('fs');
+const mzFs = require('mz/fs');
 
 const User = require('../db/users');
 
-const pathToDraft = './asset/users';
+const pathToDraftArticles = './asset/users/draftArticles';
 
 const pages = {
     renderProfile: async (req, res) => {
@@ -21,6 +22,19 @@ const pages = {
     },
     writePost: (req, res) => {
         res.render('editor');
+    },
+    renderPosts: async (req, res) => {
+        const user = await User.findById(req.user.id);
+        const arr = [];
+        for (const k of user.draft) {
+            const data = await mzFs.readFile(`${pathToDraftArticles}/(${k})${req.user.id}.json`, 'utf8');
+            const a = {
+                id: k,
+                data: JSON.parse(data)
+            }
+            arr.push(a);
+        }
+        res.json(arr);
     }
 }
 
@@ -82,6 +96,7 @@ const updates = {
         }
 
         user.password = req.value.body.newPassword;
+        await user.hashPassword();
         await user.save();
         req.flash('success', 'Password was changed');
         res.send('Ok');
@@ -155,13 +170,26 @@ const updates = {
 }
 
 const writePost = {
-    create: (req, res) => {
-        res.send(`${Date.now()}`);
+    create: async (req, res) => {
+        const user = await User.findById(req.user.id);
+        const idDraft = user.draft[user.draft.length - 1] ? +user.draft[user.draft.length - 1] + 1 : 0;
+        res.send(`${idDraft}`);
     },
-    add: async (req, res) => {
-        const wr = fs.createWriteStream(`${pathToDraft}/a.json`);
-        wr.write(JSON.stringify(req.body.data));
-        res.send('OK');
+    draft: async (req, res) => {
+        // const user = await User.findById(req.user.id);
+        // if (!user.draft.includes(req.body.id)) {
+        //     user.draft.push(req.body.id);
+        //     await user.save();
+        // }
+        // const wr = fs.createWriteStream(`${pathToDraftArticles}/(${req.body.id})${req.user.id}.json`);
+        // wr.write(JSON.stringify(req.body.data));
+        // wr.end(null);
+
+        // wr.on('error', (err) => console.log(err));
+        // wr.on('finish', () => {
+        //     res.send('OK');
+        // });
+        res.send('OK')
     }
 }
 

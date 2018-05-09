@@ -13,13 +13,13 @@ editor.Init();
 
 uploadImg();
 
-// $(document.body).on('click', '.js-block-img', function () {
-//     $('.js-upload').attr('data-state', 'show');
-// });
+$('.js-block-main').click(function () {
+    $('.js-upload').attr('data-state', 'show');
+});
 
-$(document.body).on('click', '.js-block-delete', function (event) {
+$('.js-block-delete').click(function (event) {
     event.stopPropagation();
-    $(this).closest('.block-img').remove();
+    $(this).closest('.block-img').find('img').prop('src', '');
 });
 
 $('.js-preview-action').on('click', '.btn', function () {
