@@ -5,7 +5,6 @@
 }
 
 .edit-page {
-    padding-top: 75px;
     background-color: #f9f9f9;
     flex-grow: 2;
     display: flex;
@@ -13,6 +12,32 @@
     align-items: center;
     .is-empty {
         font-style: italic;
+    }
+    &__notif {
+        height: 40px;
+        width: 100%;
+        margin-bottom: 75px;
+        border-bottom: 2px dashed #bdbdbd;
+    }
+}
+
+.notif {
+    height: 100%;
+    padding: 0 15px;
+    color: #9E9E9E;
+    &--success {
+        color: #4ccf51;
+    }
+    &__content {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        font-size: 21px;
+    }
+    &__icon {}
+    &__msg {
+        margin-left: 8px;
+        letter-spacing: .55px;
     }
 }
 

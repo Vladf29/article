@@ -9,7 +9,7 @@ import {
 } from './modules/editor';
 
 const editor = new Editor();
-editor.Start();
+editor.Init();
 
 uploadImg();
 

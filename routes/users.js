@@ -27,8 +27,7 @@ router.route('/settings')
 router.route('/profile')
     .get(authorized.isAuthorized, UserControllers.pages.renderProfile);
 
-router.route('/write_post')
-    .get(UserControllers.pages.writePost)
+router.get('/write_post', UserControllers.pages.writePost);
 
 router.get('/write_post/create', UserControllers.writePost.create);
 router.post('/write_post/add', UserControllers.writePost.add);

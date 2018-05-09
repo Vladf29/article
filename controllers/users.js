@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const User = require('../db/users');
 
-const pathToDraft = './asset';
+const pathToDraft = './asset/users';
 
 const pages = {
     renderProfile: async (req, res) => {
@@ -159,7 +159,7 @@ const writePost = {
         res.send(`${Date.now()}`);
     },
     add: async (req, res) => {
-        const wr = fs.createWriteStream(`${pathToDraft}/a.json`)
+        const wr = fs.createWriteStream(`${pathToDraft}/a.json`);
         wr.write(JSON.stringify(req.body.data));
         res.send('OK');
     }

@@ -3,6 +3,7 @@
 export const Editor = (() => {
     const _articleBlock = document.querySelector('.js-article');
     const _editPanel = document.querySelector('.js-edit-board');
+    const _notifQ = $('.js-notif');
 
     const icons = {
         bold: `<li class="edit-board__item" data-action='makeBold'><i class="fas fa-bold"></i></li>`,
@@ -151,17 +152,20 @@ export const Editor = (() => {
             _that = this;
         }
 
+        Init() {
+            $.ajax({
+                method: 'GET',
+                url: '/me/write_post/create',
+                success: function (data) {
+                    _id = data;
+                    _that.Start();
+                }
+            })
+        }
         Start() {
             if (_articleBlock.children.length === 0) {
-                $.ajax({
-                    method: 'GET',
-                    url: '/me/write_post/create',
-                    success: function (data) {
-                        _id = data;
-                        console.log(_id);
-                    }
-                })
-                this.newParagraph();
+                // this.newParagraph(true);
+                this.newTitleH2(true);
             } else {
                 this.OnSelecte(_articleBlock.firstElementChild);
             }
@@ -327,15 +331,43 @@ export const Editor = (() => {
 
         OutSelecte() {
             this.DeleteTextarea();
+            this.Save();
+        }
 
+        Save() {
+            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
             this.setSequenceNumber();
+            this.setDataForSend();
+            storageData.sort((a, b) => a.ind - b.ind);
+            if (_id) {
+                $.ajax({
+                    method: 'POST',
+                    url: '/me/write_post/add',
+                    data: JSON.stringify({
+                        id: _id,
+                        data: storageData
+                    }),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        _notifQ.addClass('notif--success');
+                    },
+                    error: function (err) {
+                        console.log('err');
+                        console.log(err);
+                    }
+                });
+            }
+        }
 
+        setDataForSend() {
             storageData.length = [];
             $(_articleBlock).children().each(function (ind) {
                 const elem = $(this)
                 if (!elem.hasClass('js-plain')) {
                     const container = elem.closest('.js-container');
-                    const type = container.attr('data-type');
+                    if (container.attr('data-touch') === 'untouch') return;
+
+                    const type = container.attr('data-name');
                     const key = container.attr('data-index');
 
                     switch (type) {
@@ -362,11 +394,13 @@ export const Editor = (() => {
                             });
 
                             storageData.push(list);
+                            // ...
                             break;
                         default:
                             break;
                     }
                 } else {
+                    if (elem.attr('data-touch') === 'untouch') return;
                     const str = elem.html();
                     const key = elem.attr('data-index') ? elem.attr('data-index') : _articleBlock.children.length;
                     const type = elem.attr('data-name');
@@ -379,28 +413,6 @@ export const Editor = (() => {
                     storageData.push(a);
                 }
             });
-
-            storageData.sort((a, b) => a.ind - b.ind);
-            if (_id) {
-                $.ajax({
-                    method: 'POST',
-                    url: '/me/write_post/add',
-                    data: JSON.stringify({
-                        id: _id,
-                        data: storageData
-                    }),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        console.log(data);
-                    },
-                    error: function (err) {
-                        console.log('err');
-                        console.log(err);
-                    }
-                });
-            }
-            console.clear();
-            console.log(storageData);
         }
 
         setSequenceNumber() {
@@ -436,6 +448,8 @@ export const Editor = (() => {
                 else
                     _addClass(elem, cls);
             }
+
+            if (_notifQ.hasClass('notif--success')) _notifQ.removeClass('notif--success');
             return elem;
         }
 
@@ -481,12 +495,11 @@ export const Editor = (() => {
             }
 
             parent.removeChild(_isSelected);
-
             !put ? _isSelected = put : '';
             put ? this.OnSelecte(put) : this.newParagraph();
         }
 
-        newParagraph() {
+        newParagraph(flag = false) {
             let parent = _articleBlock;
             if (_isSelected && _isSelected.parentElement != parent) {
                 this.OutSelecte();
@@ -497,27 +510,33 @@ export const Editor = (() => {
 
             const par = this.AddNewElement('p', '', ['js-graf', 'js-f', 'is-empty', 'js-plain']);
             par.setAttribute('data-name', `par`);
+            par.setAttribute('data-touch', 'untouch');
             par.setAttribute('data-index', _articleBlock.children.length - 1);
-            this.OutSelecte();
+            if (!flag) this.OutSelecte();
             this.OnSelecte(par);
         }
 
-        newTitleH2() {
+        newTitleH2(flag = false) {
             let parent = _articleBlock;
             if (_isSelected && _isSelected.parentElement != parent) {
                 this.OutSelecte();
                 while (_isSelected.parentElement != parent) {
                     _isSelected = _isSelected.parentElement;
                 }
-            } else if (_isSelected.tagName === 'P') {
+            }
+            if (_isSelected && _isSelected.tagName === 'P') {
                 const title = this.CreateNewElement('h2', '', ['js-graf', 'js-f', 'js-plain']);
                 title.setAttribute('data-name', `title`);
-                this.OutSelecte();
+                title.setAttribute('data-touch', 'untouch');
+                if (!flag) this.OutSelecte();
                 _articleBlock.replaceChild(title, _isSelected);
                 this.OnSelecte(title);
             } else {
-                const title = this.AddNewElement('h2', '', ['js-graf', 'js-f', 'js-plain']).setAttribute('data-type', 'title');
-                this.OutSelecte();
+                const title = this.AddNewElement('h2', '', ['js-graf', 'js-f', 'js-plain']);
+                // const title = this.AddNewElement('h2', '', ['js-graf', 'js-f', 'js-empty', 'js-plain']);
+                title.setAttribute('data-name', 'title');
+                title.setAttribute('data-touch', 'untouch');
+                if (!flag) this.OutSelecte();
                 this.OnSelecte(title);
             }
         }
@@ -525,11 +544,16 @@ export const Editor = (() => {
         AddList() {
             const item = this.CreateNewElement('li', '', ['js-graf', 'js-f', 'js-list-item']);
             const list = this.CreateNewElement('ul', '', ['js-list', 'js-container']);
-            list.setAttribute('data-type', 'list');
             list.setAttribute('data-name', `list`);
+            list.setAttribute('data-touch', `untouch`);
             list.appendChild(item);
             _articleBlock.replaceChild(list, _isSelected);
 
+            this.OnSelecte(item);
+        }
+        AddListItem() {
+            const item = _that.AddNewElement('li', '', ['js-graf', 'js-f', 'js-list-item'], _isSelected.parentElement);
+            this.OutSelecte();
             this.OnSelecte(item);
         }
 
@@ -616,7 +640,7 @@ export const Editor = (() => {
                 if (event.keyCode === 13) {
                     if (_routine === 'code') return;
                     if (_routine === 'list')
-                        _that.AddNewElement('li', '', ['js-graf', 'js-f', 'js-list-item'], _isSelected.parentElement);
+                        _that.AddListItem();
                     else
                         _that.newParagraph();
                     return;
@@ -645,6 +669,12 @@ export const Editor = (() => {
                     _addClass(_isSelected, 'is-empty');
                 } else {
                     _hasClass(_isSelected, 'is-empty') && _isSelected.classList.remove('is-empty');
+                    if (!$(_isSelected).hasClass('js-plain')) {
+                        const container = $(_isSelected).closest('.js-container');
+                        if (container.attr('data-touch') === 'untouch') container.attr('data-touch', 'touch');
+                    } else {
+                        if ($(_isSelected).attr('data-touch') === 'untouch') $(_isSelected).attr('data-touch', 'touch');
+                    }
 
                     storageRegxFuncToTag.forEach((item) => {
                         str = item(str);
