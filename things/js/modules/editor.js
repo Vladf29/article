@@ -166,15 +166,7 @@ export const Editor = (() => {
                     }
                 });
             } else {
-                $.ajax({
-                    method: 'GET',
-                    url: '/me/write_a_post/create',
-                    success: function (data) {
-                        _id = data;
-                        localStorage.setItem('id_article_draft', _id);
-                        _that.Start();
-                    }
-                });
+                this.Start();
             }
         }
         Start() {
@@ -797,28 +789,28 @@ export const Editor = (() => {
             this.SetDataForSend();
 
             if (storageData.length === 0 && _articleBlock.children.length === 0) return;
+
             storageData.sort((a, b) => a.ind - b.ind);
-            if (_id) {
-                if (_notifQ.hasClass('notif--success')) _notifQ.removeClass('notif--success');
-                console.log(storageData)
-                $.ajax({
-                    method: 'POST',
-                    url: url,
-                    data: JSON.stringify({
-                        id: _id,
-                        data: storageData
-                    }),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        _notifQ.addClass('notif--success');
-                        console.log(data);
-                    },
-                    error: function (err) {
-                        console.log('err');
-                        console.log(err);
-                    }
-                });
-            }
+            if (_notifQ.hasClass('notif--success')) _notifQ.removeClass('notif--success');
+
+            $.ajax({
+                method: 'POST',
+                url: '/me/write_a_post/draft',
+                data: JSON.stringify({
+                    id: _id,
+                    data: storageData
+                }),
+                contentType: 'application/json',
+                success: function (data) {
+                    _notifQ.addClass('notif--success');
+                    console.log(data);
+                    localStorage.setItem('id_article_draft', data.id);
+                },
+                error: function (err) {
+                    console.log('err');
+                    console.log(err);
+                }
+            });
         }
 
         WriteNewPost() {
@@ -828,7 +820,30 @@ export const Editor = (() => {
 
         Publish() {
             localStorage.removeItem('id_article_draft');
-            this.Save('/me/write_a_post/publish');
+            this.SetSequenceNumber();
+            this.SetDataForSend();
+
+            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
+
+            storageData.sort((a, b) => a.ind - b.ind);
+            if (_notifQ.hasClass('notif--success')) _notifQ.removeClass('notif--success');
+
+            $.ajax({
+                method: 'POST',
+                url: '/me/write_a_post/publish',
+                data: JSON.stringify({
+                    id: _id,
+                    data: storageData
+                }),
+                contentType: 'application/json',
+                success: function (data) {
+                    location.href = location.href;
+                },
+                error: function (err) {
+                    console.log('err');
+                    console.log(err);
+                }
+            });
         }
 
         Delete() {

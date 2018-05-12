@@ -176,53 +176,49 @@ const writePost = {
     downloadDraft: async (req, res) => {
         const user = await User.findById(req.user.id);
         const idDraft = req.query.draft
-        if (!idDraft) {
-            return res.redirect('/me/write_a_post/create');
-        }
+        if (!idDraft) return res.status(404).send('Not Found');
 
-        if (!user.draft.includes(idDraft)) {
-            return res.json({
-                id: idDraft,
-            });
-        }
+        const isTaken = user.draftArticles.id(idDraft);
+        if (!isTaken) return res.status(400).send('Maybe the draft is removed.');
 
-        const data = await mzFs.readFile(`${pathToDraftArticles}/${idDraft}.json`, 'utf8');
         res.json({
-            id: idDraft,
-            data: JSON.parse(data),
-        })
+            id: isTaken.id,
+            data: JSON.parse(isTaken.content.toString())
+        });
     },
     draft: async (req, res) => {
         const user = await User.findById(req.user.id);
-        if (!user.draft.includes(req.body.id)) {
-            user.draft.push(req.body.id);
-            await user.save();
-        }
-        const wr = fs.createWriteStream(`${pathToDraftArticles}/${req.body.id}.json`);
-        wr.write(JSON.stringify(req.body.data));
-        wr.end(null);
+        const isTaken = user.draftArticles.id(req.body.id);
+        if (!isTaken) {
+            user.draftArticles.push({
+                content: new Buffer(JSON.stringify(req.body.data))
+            });
 
-        wr.on('error', (err) => console.log(err));
-        wr.on('finish', () => {
-            res.send('OK');
+            await user.save();
+            return res.json({
+                id: user.draftArticles[user.draftArticles.length - 1].id
+            });
+        }
+
+        isTaken.content = new Buffer(JSON.stringify(req.body.data));
+        await user.save();
+        res.json({
+            id: req.body.id
         });
     },
     delete: async (req, res) => {
         const user = await User.findById(req.user.id);
-        const idDraft = user.draft.includes(req.body.id);
-        if (!idDraft) {
+        const isTaken = user.draftArticles.id(req.body.id);
+        if (!isTaken) {
             req.flash('error', 'The draft isn\'t existed!');
-            return res.status(400).send();
+            return res.status(404).send();
         }
 
-        await mzFs.unlink(`${pathToDraftArticles}/${req.body.id}.json`);
-        user.draft.splice(user.draft.findIndex((item) => item === req.body.id), 1);
+        isTaken.remove();
         await user.save();
-        req.flash('success', 'The draft was removed successfully');
-        res.send();
+        res.send('OK');
     },
     publish: async (req, res) => {
-        // let data = await mzFs.readFile(`${pathToDraftArticles}/${req.body.id}.json`, 'utf8');
         let data = req.body.data;
 
         const info = {
@@ -234,6 +230,7 @@ const writePost = {
 
         const newArticle = new Article(info);
         await newArticle.save();
+        req.flash('success', 'publish');
         res.send();
     }
 }
