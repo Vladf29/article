@@ -3,6 +3,10 @@
 const fs = require('fs');
 const mzFs = require('mz/fs');
 
+const {
+    URL
+} = require('url');
+
 const User = require('../db/users');
 
 const pathToDraftArticles = './asset/users/draftArticles';
@@ -27,7 +31,7 @@ const pages = {
         const user = await User.findById(req.user.id);
         const arr = [];
         for (const k of user.draft) {
-            const data = await mzFs.readFile(`${pathToDraftArticles}/(${k})${req.user.id}.json`, 'utf8');
+            const data = await mzFs.readFile(`${pathToDraftArticles}/${k}.json`, 'utf8');
             const a = {
                 id: k,
                 data: JSON.parse(data)
@@ -172,24 +176,63 @@ const updates = {
 const writePost = {
     create: async (req, res) => {
         const user = await User.findById(req.user.id);
-        const idDraft = user.draft[user.draft.length - 1] ? +user.draft[user.draft.length - 1] + 1 : 0;
-        res.send(`${idDraft}`);
+        let idDraft = user.draft[user.draft.length - 1] ? user.draft[user.draft.length - 1] : 0;
+        idDraft = idDraft !== 0 ? idDraft.match(/\(\d+?\)/g)[0].match(/\d+?/g)[0] * 1 + 1 : 0;
+        idDraft = `(${idDraft})${req.user.id}`;
+        res.send(idDraft);
+    },
+    downloadDraft: async (req, res) => {
+        const user = await User.findById(req.user.id);
+        const idDraft = req.query.draft
+        if (!idDraft) {
+            let idDraft = user.draft[user.draft.length - 1] ? user.draft[user.draft.length - 1] : 0;
+            idDraft = idDraft !== 0 ? idDraft.match(/\(\d+?\)/g)[0].match(/\d+?/g)[0] * 1 + 1 : 0;
+            idDraft = `(${idDraft})${req.user.id}`;
+            return res.json({
+                id: idDraft,
+            });
+        }
+
+        if (!user.draft.includes(idDraft)) {
+            return res.json({
+                id: idDraft,
+            });
+        }
+
+        const data = await mzFs.readFile(`${pathToDraftArticles}/${idDraft}.json`, 'utf8');
+        res.json({
+            id: idDraft,
+            data: JSON.parse(data),
+        })
     },
     draft: async (req, res) => {
-        // const user = await User.findById(req.user.id);
-        // if (!user.draft.includes(req.body.id)) {
-        //     user.draft.push(req.body.id);
-        //     await user.save();
-        // }
-        // const wr = fs.createWriteStream(`${pathToDraftArticles}/(${req.body.id})${req.user.id}.json`);
-        // wr.write(JSON.stringify(req.body.data));
-        // wr.end(null);
+        const user = await User.findById(req.user.id);
+        if (!user.draft.includes(req.body.id)) {
+            user.draft.push(req.body.id);
+            await user.save();
+        }
+        const wr = fs.createWriteStream(`${pathToDraftArticles}/${req.body.id}.json`);
+        wr.write(JSON.stringify(req.body.data));
+        wr.end(null);
 
-        // wr.on('error', (err) => console.log(err));
-        // wr.on('finish', () => {
-        //     res.send('OK');
-        // });
-        res.send('OK')
+        wr.on('error', (err) => console.log(err));
+        wr.on('finish', () => {
+            res.send('OK');
+        });
+    },
+    delete: async (req, res) => {
+        const user = await User.findById(req.user.id);
+        const idDraft = user.draft.includes(req.body.id);
+        if (!idDraft) {
+            req.flash('error', 'The draft isn\'t existed!');
+            return res.status(400).send();
+        }
+
+        await mzFs.unlink(`${pathToDraftArticles}/${req.body.id}.json`);
+        user.draft.splice(user.draft.findIndex((item) => item === req.body.id), 1);
+        await user.save();
+        req.flash('success', 'The draft was removed successfully');
+        res.send();
     }
 }
 

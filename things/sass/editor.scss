@@ -10,14 +10,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 150px;
+    padding-bottom: 75px;
     .is-empty {
         font-style: italic;
     }
     &__notif {
         height: 40px;
         width: 100%;
-        margin-bottom: 75px;
         border-bottom: 2px dashed #bdbdbd;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        z-index: 10;
     }
 }
 
@@ -25,6 +31,9 @@
     height: 100%;
     padding: 0 15px;
     color: #9E9E9E;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     &--success {
         color: #4ccf51;
     }
@@ -33,6 +42,14 @@
         align-items: center;
         height: 100%;
         font-size: 21px;
+        .btn {
+            margin-right: 12px;
+            font-size: 12px;
+            padding: 6px 12px;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
     }
     &__icon {}
     &__msg {
@@ -205,7 +222,7 @@
     min-height: 100px;
     position: relative;
     margin-bottom: 20px;
-    &--main{
+    &--main {
         cursor: pointer;
     }
     &__placeholder {

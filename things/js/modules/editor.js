@@ -153,20 +153,34 @@ export const Editor = (() => {
         }
 
         Init() {
-            $.ajax({
-                method: 'GET',
-                url: '/me/write_post/create',
-                success: function (data) {
-                    _id = data;
-                    console.log(_id)
-                    _that.Start();
-                }
-            })
+            const id = localStorage.getItem('id_article_draft');
+            if (id) {
+                $.ajax({
+                    method: 'GET',
+                    url: `/me/write_a_post/download_draft?draft=${id}`,
+                    success: function (data) {
+                        _id = data.id;
+                        localStorage.setItem('id_article_draft', _id);
+                        _that.AddArticle(data.data);
+                        _that.Start();
+                    }
+                });
+            } else {
+                $.ajax({
+                    method: 'GET',
+                    url: '/me/write_a_post/create',
+                    success: function (data) {
+                        _id = data;
+                        localStorage.setItem('id_article_draft', _id);
+                        _that.Start();
+                    }
+                });
+            }
         }
         Start() {
             if (_articleBlock.children.length === 0) {
-                // this.newParagraph(true);
-                this.newTitleH2(true);
+                this.addMainFields();
+                this.OnSelecte(document.querySelector('.js-graf'));
             } else {
                 this.OnSelecte(_articleBlock.firstElementChild);
             }
@@ -332,106 +346,48 @@ export const Editor = (() => {
 
         OutSelecte() {
             this.DeleteTextarea();
-            this.Save();
         }
 
-        Save() {
-            this.setSequenceNumber();
-            this.setDataForSend();
+        AddArticle(data = []) {
+            if (!data) return;
 
-            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
-            storageData.sort((a, b) => a.ind - b.ind);
-            if (_id) {
-                if (_notifQ.hasClass('notif--success')) _notifQ.removeClass('notif--success');
-                $.ajax({
-                    method: 'POST',
-                    url: '/me/write_post/draft',
-                    data: JSON.stringify({
-                        id: _id,
-                        data: storageData
-                    }),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        _notifQ.addClass('notif--success');
-                        console.log(data);
-                    },
-                    error: function (err) {
-                        console.log('err');
-                        console.log(err);
-                    }
-                });
-            }
-        }
-
-        setDataForSend() {
-            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
-            storageData.length = [];
-            $(_articleBlock).children().each(function (ind) {
-                const elem = $(this)
-                if (!elem.hasClass('js-plain')) {
-                    const container = elem.closest('.js-container');
-                    if (container.attr('data-touch') === 'untouch') return;
-
-                    const type = container.attr('data-name');
-                    const key = container.attr('data-index');
-
-                    switch (type) {
-                        case 'img':
-                            const img = container.find('img').prop('src');
-                            const caption = container.find('.js-img-caption').length !== 0 ? container.find('.js-img-caption').html() : '';
-
-                            const a = {
-                                type,
-                                ind: +key,
-                                src: img,
-                                caption
+            data.forEach((item) => {
+                const type = item.type;
+                let elem;
+                switch (type) {
+                    case 'mainTitle':
+                        {
+                            const title = `<h1 class="js-graf js-f js-plain is-empty js-main-field" data-name="mainTitle" data-touch="touch" data-remove="false">${item.text}</h1>`;
+                            _articleBlock.innerHTML = title;
+                            break;
+                        }
+                    case 'mainImg':
+                        {
+                            elem = this.AddMainImg(item.src, false);
+                            break;
+                        }
+                    case 'par':
+                        {
+                            elem = this.newParagraph('', false);
+                            elem.innerHTML = item.text;
+                            break;
+                        }
+                    case 'list':
+                        {
+                            const list = this.AddList(item.items[0], false);
+                            for (let i = 1; i < item.items.length; i++) {
+                                const t = this.AddListItem('', list, false);
+                                t.innerHTML = item.items[i];
                             }
-                            storageData.push(a);
+                            elem = list;
                             break;
-                        case 'list':
-                            const list = {
-                                type,
-                                ind: +key,
-                                item: []
-                            };
-                            container.children().each(function (ind) {
-                                list.item.push($(this).hasClass('is-empty') ? '' : $(this).html());
-                            });
-
-                            storageData.push(list);
-                            // ...
-                            break;
-                        default:
-                            break;
-                    }
-                } else {
-                    if (elem.attr('data-touch') === 'untouch') return;
-                    const str = elem.html();
-                    const key = elem.attr('data-index') ? elem.attr('data-index') : _articleBlock.children.length;
-                    const type = elem.attr('data-name');
-
-                    const a = {
-                        text: elem.hasClass('is-empty') ? '' : str,
-                        ind: +key,
-                        type
-                    };
-                    storageData.push(a);
+                        }
+                    default:
+                        break;
                 }
-            });
-        }
-
-        setSequenceNumber() {
-            $(_articleBlock).children().each(function (ind) {
-                let attr = ''
-                if (!_hasClass(_isSelected, 'js-plain')) {
-                    const container = $(_isSelected).closest('.js-container');
-                    attr = container.attr('data-index');
-                } else {
-                    attr = $(this).attr('data-index');
-                }
-                if (!attr) return $(this).attr('data-index', `${ind}`)
-                if (attr != ind) {;
-                    $(this).attr('data-index', `${ind}`);
+                if (elem) {
+                    $(elem).attr('data-touch', 'touch');
+                    _articleBlock.appendChild(elem);
                 }
             });
         }
@@ -460,9 +416,15 @@ export const Editor = (() => {
 
         InsertNewElement(elem, parent = _articleBlock) {
             if (!elem) return;
-            if (_isSelected && parent.children.length > 1) {
-                parent.insertBefore(elem, _isSelected);
-                parent.insertBefore(_isSelected, elem);
+            if (_isSelected && parent.children.length > 1 && _isSelected !== parent.lastElementChild) {
+                if ($(_isSelected.nextElementSibling).hasClass('js-main-field')) {
+                    const ne = _isSelected.nextElementSibling;
+                    parent.insertBefore(elem, ne);
+                    parent.insertBefore(ne, elem);
+                } else {
+                    parent.insertBefore(elem, _isSelected);
+                    parent.insertBefore(_isSelected, elem);
+                }
             } else {
                 parent.appendChild(elem);
             }
@@ -471,6 +433,7 @@ export const Editor = (() => {
         DeleteElement() {
             let parent = _articleBlock;
             let put;
+            const altSelected = _isSelected;
 
             if (_isSelected.parentElement !== parent) {
                 if (_isSelected.parentElement.children.length === 1 && !_hasClass(_isSelected, 'js-graf')) {
@@ -483,7 +446,7 @@ export const Editor = (() => {
                     if (_hasClass(_isSelected, 'js-img-caption')) {
                         _isSelected = _isSelected.parentElement;
                     }
-                    parent = _isSelected.parentElement;
+                    _isSelected = _isSelected.parentElement;
                 }
             }
 
@@ -494,17 +457,20 @@ export const Editor = (() => {
                 }
             } else if (_isSelected.previousElementSibling) {
                 put = _isSelected.previousElementSibling;
-                if (_hasClass(put, 'js-list')) {
+                if (_hasClass(put, 'js-main-field'))
+                    put = parent.firstElementChild;
+                if (_hasClass(put, 'js-list'))
                     put = put.lastElementChild;
-                }
             }
 
-            parent.removeChild(_isSelected);
-            !put ? _isSelected = put : '';
-            put ? this.OnSelecte(put) : this.newParagraph();
+            if ($(altSelected).attr('data-remove') !== 'false') {
+                parent.removeChild(_isSelected);
+                !put ? _isSelected = put : '';
+                put ? this.OnSelecte(put) : this.newParagraph();
+            }
         }
 
-        newParagraph(flag = false) {
+        newParagraph(str = '', select = true) {
             let parent = _articleBlock;
             if (_isSelected && _isSelected.parentElement != parent) {
                 this.OutSelecte();
@@ -513,59 +479,122 @@ export const Editor = (() => {
                 }
             }
 
-            const par = this.AddNewElement('p', '', ['js-graf', 'js-f', 'is-empty', 'js-plain']);
+            const par = this.AddNewElement('p', str, ['js-graf', 'js-f', 'js-plain']);
             par.setAttribute('data-name', `par`);
             par.setAttribute('data-touch', 'untouch');
             par.setAttribute('data-index', _articleBlock.children.length - 1);
-            if (!flag) this.OutSelecte();
-            this.OnSelecte(par);
+
+            if (select) {
+                this.OutSelecte();
+                this.OnSelecte(par);
+            }
+
+            return par;
         }
 
-        newTitleH2(flag = false) {
+        newTitleH2(str = '', select = true) {
             let parent = _articleBlock;
             if (_isSelected && _isSelected.parentElement != parent) {
-                this.OutSelecte();
                 while (_isSelected.parentElement != parent) {
                     _isSelected = _isSelected.parentElement;
                 }
             }
             if (_isSelected && _isSelected.tagName === 'P') {
-                const title = this.CreateNewElement('h2', '', ['js-graf', 'js-f', 'js-plain']);
+                const title = this.CreateNewElement('h2', str, ['js-graf', 'js-f', 'js-plain']);
                 title.setAttribute('data-name', `title`);
                 title.setAttribute('data-touch', 'untouch');
-                if (!flag) this.OutSelecte();
+                this.OutSelecte();
                 _articleBlock.replaceChild(title, _isSelected);
                 this.OnSelecte(title);
             } else {
-                const title = this.AddNewElement('h2', '', ['js-graf', 'js-f', 'js-plain']);
+                const title = this.AddNewElement('h2', str, ['js-graf', 'js-f', 'js-plain']);
                 // const title = this.AddNewElement('h2', '', ['js-graf', 'js-f', 'js-empty', 'js-plain']);
                 title.setAttribute('data-name', 'title');
                 title.setAttribute('data-touch', 'untouch');
-                if (!flag) this.OutSelecte();
-                this.OnSelecte(title);
+                if (select) {
+                    this.OutSelecte();
+                    this.OnSelecte(title);
+                }
+                return title;
             }
         }
 
-        AddList() {
-            const item = this.CreateNewElement('li', '', ['js-graf', 'js-f', 'js-list-item']);
+        AddList(str = '', select = true) {
+            const item = this.CreateNewElement('li', str, ['js-graf', 'js-f', 'js-list-item']);
             const list = this.CreateNewElement('ul', '', ['js-list', 'js-container']);
             list.setAttribute('data-name', `list`);
             list.setAttribute('data-touch', `untouch`);
             list.appendChild(item);
-            _articleBlock.replaceChild(list, _isSelected);
 
-            this.OnSelecte(item);
+            if (select) {
+                if (_hasClass(_isSelected.nextElementSibling, 'js-main-field')) {
+                    const ne = _isSelected.nextElementSibling;
+                    this.InsertNewElement(list);
+                    this.OutSelecte();
+                } else {
+                    _articleBlock.replaceChild(list, _isSelected);
+                }
+
+                this.OnSelecte(item);
+            }
+            return list;
         }
-        AddListItem() {
-            const item = _that.AddNewElement('li', '', ['js-graf', 'js-f', 'js-list-item'], _isSelected.parentElement);
-            this.OutSelecte();
-            this.OnSelecte(item);
+        AddListItem(str = '', parent = _isSelected.parentElement, select = true) {
+            const item = _that.AddNewElement('li', str, ['js-graf', 'js-f', 'js-list-item'], parent);
+            if (select) {
+                this.OutSelecte();
+                this.OnSelecte(item);
+            }
+            return item;
         }
 
-        AddBlockImg(url) {
+        addMainFields(opt) {
+            const title = `<h1 class="js-graf js-f js-plain is-empty js-main-field" data-name="mainTitle" data-touch="untouch" data-remove="false"></h1>`;
+            const img = `<div class="block-img block-img--main js-block-main js-container js-main-field" data-name="mainImg" data-touch="untouch" data-remove="false" data-empty="true">
+                            <div class="block-img__placeholder">Set main image</div>
+                        </div>`
+            switch (opt) {
+                case 'img':
+                    {
+                        return img;
+                        break;
+                    }
+                case 'title':
+                    {
+                        return title;
+                        break;
+                    }
+                default:
+                    {
+                        const str = title + img;
+                        $(_articleBlock).html(str);
+                        break;
+                    }
+            }
+        }
+
+        AddMainImg(url, select = true) {
+            const blockImg = this.AddBlockImg(url, select);
+            $(blockImg).attr('data-touch', 'touch');
+            $(blockImg).attr('data-remove', 'false');
+            $(blockImg).attr('data-name', 'mainImg');
+
+            $(blockImg).addClass('block-img--main js-block-main js-main-field');
+
+            const deleteElem = this.CreateNewElement('div', '', ['block-img__delete', 'js-block-delete']);
+            deleteElem.innerHTML = `<i class='fas fa-minus'></i>`;
+            blockImg.appendChild(deleteElem);
+
+            const mainImg = $('.js-block-main');
+            if (mainImg.length !== 0)
+                mainImg.replaceWith(blockImg);
+            else
+                _articleBlock.appendChild(blockImg);
+        }
+
+        AddBlockImg(url, select = true) {
             const blockImg = this.CreateNewElement('div', '', ['block-img', 'js-block-img', 'js-container']);
             blockImg.setAttribute('data-name', `img`);
-            blockImg.setAttribute('data-type', 'img');
             const containerImg = this.CreateNewElement('div', '', ['block-img__img', 'js-container-img', 'js-f']);
 
             const img = this.CreateNewElement('img', '', ['js-img', 'js-f']);
@@ -573,19 +602,21 @@ export const Editor = (() => {
 
             containerImg.appendChild(img)
             blockImg.appendChild(containerImg);
-            this.InsertNewElement(blockImg);
-
-            this.OutSelecte();
             $('.js-upload').attr('data-state', 'hidden');
-            this.OnSelecte(blockImg);
+            if (select) {
+                this.InsertNewElement(blockImg);
+                this.OutSelecte();
+                this.OnSelecte(blockImg);
+            }
+            return blockImg;
         }
 
-        AddImgCaption() {
+        AddImgCaption(str = '') {
             const a = $(_isSelected).closest('.block-img').find('.block-img__caption');
             if (a.length !== 0) return;
 
             const containerCaption = this.CreateNewElement('div', '', 'block-img__caption');
-            const caption = this.CreateNewElement('span', '', ['js-graf', 'js-img-caption', 'js-f']);
+            const caption = this.CreateNewElement('span', str, ['js-graf', 'js-img-caption', 'js-f']);
 
             containerCaption.appendChild(caption);
             _isSelected.closest('.js-block-img').appendChild(containerCaption);
@@ -632,8 +663,8 @@ export const Editor = (() => {
                 storageRegxFuncToSymbol.forEach((item) => {
                     str = item(str);
                 });
-                textarea.value = str;
             }
+            textarea.value = str;
             textarea.placeholder = 'TITLE';
 
             _addClass(_isSelected, 'is-selected');
@@ -688,6 +719,131 @@ export const Editor = (() => {
                     _isSelected.innerHTML = str;
                 }
             }
+        }
+
+        SetDataForSend() {
+            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
+            storageData.length = [];
+            this.OutSelecte();
+            $(_articleBlock).children().each(function (ind) {
+                const elem = $(this)
+                if (!elem.hasClass('js-plain')) {
+                    const container = elem.closest('.js-container');
+                    if (container.attr('data-touch') === 'untouch') return;
+
+                    const type = container.attr('data-name');
+                    const key = container.attr('data-index');
+
+                    if (type === 'img' || type === 'mainImg') {
+                        const img = container.find('img').prop('src');
+                        const caption = container.find('.js-img-caption').length !== 0 ? container.find('.js-img-caption').html() : '';
+
+                        const a = {
+                            type,
+                            ind: +key,
+                            src: img,
+                            caption
+                        }
+                        storageData.push(a);
+                    } else if (type === 'list') {
+                        const list = {
+                            type,
+                            ind: +key,
+                            items: []
+                        };
+                        container.children().each(function (ind) {
+                            list.items.push($(this).hasClass('is-empty') ? '' : $(this).html());
+                        });
+
+                        storageData.push(list);
+                    }
+
+                } else {
+                    if (elem.attr('data-touch') === 'untouch') return;
+                    const str = elem.html();
+                    const key = elem.attr('data-index') ? elem.attr('data-index') : _articleBlock.children.length;
+                    const type = elem.attr('data-name');
+
+                    const a = {
+                        text: elem.hasClass('is-empty') ? '' : str,
+                        ind: +key,
+                        type
+                    };
+                    storageData.push(a);
+                }
+            });
+
+            this.OnSelecte(_isSelected);
+        }
+
+        SetSequenceNumber() {
+            $(_articleBlock).children().each(function (ind) {
+                let attr = ''
+                if (!_hasClass(_isSelected, 'js-plain')) {
+                    const container = $(_isSelected).closest('.js-container');
+                    attr = container.attr('data-index');
+                } else {
+                    attr = $(this).attr('data-index');
+                }
+                if (!attr) return $(this).attr('data-index', `${ind}`)
+                if (attr != ind) {;
+                    $(this).attr('data-index', `${ind}`);
+                }
+            });
+        }
+
+        Save(url = '/me/write_a_post/draft') {
+            this.SetSequenceNumber();
+            this.SetDataForSend();
+
+            if (storageData.length === 0 && _articleBlock.children.length === 0) return;
+            storageData.sort((a, b) => a.ind - b.ind);
+            if (_id) {
+                if (_notifQ.hasClass('notif--success')) _notifQ.removeClass('notif--success');
+                console.log(storageData)
+                $.ajax({
+                    method: 'POST',
+                    url: url,
+                    data: JSON.stringify({
+                        id: _id,
+                        data: storageData
+                    }),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        _notifQ.addClass('notif--success');
+                        console.log(data);
+                    },
+                    error: function (err) {
+                        console.log('err');
+                        console.log(err);
+                    }
+                });
+            }
+        }
+
+        WriteNewPost() {
+            localStorage.removeItem('id_article_draft');
+            location.href = location.href;
+        }
+
+        Publish() {
+            localStorage.removeItem('id_article_draft');
+            this.Save('/me/write_a_post/publish');
+        }
+
+        Delete() {
+            $.ajax({
+                method: 'DELETE',
+                url: '/me/write_a_post/delete',
+                data: JSON.stringify({
+                    id: _id
+                }),
+                contentType: 'application/json',
+                success: function () {
+                    localStorage.removeItem('id_article_draft');
+                    location.href = location.href;
+                },
+            });
         }
     }
 })();

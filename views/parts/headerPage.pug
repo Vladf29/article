@@ -33,7 +33,7 @@ header.header-page
                                 a(href='/me/'+item.toLowerCase().replace(/\s/g,'_'))=item
                         li.avatar__drop-item
                                 a(href='/form/log_out') Log out
-            .aut__item.aut__write-post 
+            a.aut__item.aut__write-post(href='/me/write_a_post') 
                 span Write a post
 
             if (!auth)
