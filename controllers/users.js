@@ -3,20 +3,16 @@
 const fs = require('fs');
 const mzFs = require('mz/fs');
 
-const {
-    URL
-} = require('url');
 
 const User = require('../db/users');
+const Article = require('../db/articles');
 
 const pathToDraftArticles = './asset/users/draftArticles';
 
 const pages = {
     renderProfile: async (req, res) => {
-        const user = await User.findOne({
-            email: req.user.email
-        });
-        res.render('me/profile', {
+        const user = await User.findById(req.user.id);
+        res.render('me/aboutMe', {
             owner: true,
             user
         });
@@ -29,16 +25,12 @@ const pages = {
     },
     renderPosts: async (req, res) => {
         const user = await User.findById(req.user.id);
-        const arr = [];
-        for (const k of user.draft) {
-            const data = await mzFs.readFile(`${pathToDraftArticles}/${k}.json`, 'utf8');
-            const a = {
-                id: k,
-                data: JSON.parse(data)
-            }
-            arr.push(a);
-        }
-        res.json(arr);
+        const posts = await Article.find({});
+        res.render('me/posts', {
+            owner: true,
+            user,
+            posts
+        })
     }
 }
 
@@ -185,12 +177,7 @@ const writePost = {
         const user = await User.findById(req.user.id);
         const idDraft = req.query.draft
         if (!idDraft) {
-            let idDraft = user.draft[user.draft.length - 1] ? user.draft[user.draft.length - 1] : 0;
-            idDraft = idDraft !== 0 ? idDraft.match(/\(\d+?\)/g)[0].match(/\d+?/g)[0] * 1 + 1 : 0;
-            idDraft = `(${idDraft})${req.user.id}`;
-            return res.json({
-                id: idDraft,
-            });
+            return res.redirect('/me/write_a_post/create');
         }
 
         if (!user.draft.includes(idDraft)) {
@@ -232,6 +219,21 @@ const writePost = {
         user.draft.splice(user.draft.findIndex((item) => item === req.body.id), 1);
         await user.save();
         req.flash('success', 'The draft was removed successfully');
+        res.send();
+    },
+    publish: async (req, res) => {
+        // let data = await mzFs.readFile(`${pathToDraftArticles}/${req.body.id}.json`, 'utf8');
+        let data = req.body.data;
+
+        const info = {
+            title: data.find((item) => item.type === 'mainTitle').text,
+            mainImg: data.find((item) => item.type === 'mainImg').src,
+            summary: data.find((item) => item.type === 'par').text.slice(0, 158),
+            content: new Buffer(JSON.stringify(data))
+        }
+
+        const newArticle = new Article(info);
+        await newArticle.save();
         res.send();
     }
 }

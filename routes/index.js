@@ -21,7 +21,7 @@ router.get('/:username', async (req, res) => {
 
     let owner = req.user ? user.username === req.user.username : false;
 
-    res.render('me/profile', {
+    res.render('me/aboutMe', {
         user,
         owner
     });

@@ -1,6 +1,12 @@
+.content-page {
+    display: flex;
+    flex-direction: column;
+}
+
 .user-profile {
     background-color: #f3f3f3;
     padding-bottom: 75px;
+    flex: 1 0 auto;
     &__content {
         width: 860px;
         margin: auto;
@@ -94,7 +100,7 @@
         padding: 12px 22px;
         font-size: 18px;
         color: #666;
-        &:first-child {
+        &--active {
             border-bottom: 3px solid #000;
         }
         &:hover {
@@ -173,3 +179,6 @@
         &__content {}
     }
 }
+
+
+@import './base/post.scss';
