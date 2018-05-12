@@ -34,9 +34,12 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'article'
     }],
-    draft: [{
-        type: String,
-    }],
+    draftArticle: [
+        new Schema({
+            type: Buffer,
+            require: true,
+        })
+    ],
     likes: [{
         type: Schema.Types.ObjectId,
         ref: 'article'
