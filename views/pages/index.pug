@@ -1,24 +1,18 @@
-<!DOCTYPE html>
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        meta(http-equiv="X-UA-Compatible", content="ie=edge")
-        title Main page
-        include ../parts/normalize
-        link(rel="stylesheet", href="/styles/index.css")
-    body
-        .wrapper-page
-            include ../parts/headerPage
-            .content-page
-                .hero
-                    .hero__c
-                        if(img)
-                            .hero__icon
-                                img(src=img, alt="")
-                        h1.hero__title=topic  
-                include ../parts/post
-            include ../parts/footer
-            include ../parts/signC
+extends ../layout
 
-        script(src="/js/index.js")
+block append head
+    -var titlePage = 'Main page'
+    link(rel="stylesheet", href="/styles/index.css")
+
+block content
+    .hero
+        .hero__c
+            if(img)
+                .hero__icon
+                    img(src=img, alt="")
+            h1.hero__title=topic  
+    include ../parts/post
+
+
+block append script
+    script(src="/js/index.js")

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Article
+        include ../parts/normalize
+        link(rel="stylesheet", href="/styles/article.css")        
+    body
+        .wrapper-page
+            include ../parts/headerPage
+            .content-page
+                .content
+                    .article
+                        header.article__header
+                            .article__author
+                                a.article__avatar(href='#')
+                                    img(src="https://avatars0.githubusercontent.com/u/22058265?v=4", alt="" class='js-img')
+                                a.article__content(href='#')
+                                    .article__name Elliot Plant
+                                    .article__headline Front End and Full Stack JavaScript Engineer
+                            
+                            //- h1.article__main-title Understanding JavaScript Module Resolution Systems with Dinosaurs
+                            .article__header-timestamps 
+                                small.publish-date Published Apr 16, 2018
+                                small.updated-at Last updated Apr 27, 2018
+                        
+                        //- .article__main-img.article__img
+                            img(src="https://process.filestackapi.com/cache=expiry:max/resize=width:700/compress/O5DLf7kIT1qjFKCuW3UK", alt="" class='js-img')
+                        
+                        .article__body
+                            //- p
+                            //-     |Modules make code cleaner, more reusable, and more fun to work with. They let you separate your JavaScript into separate files and they protect you and everyone else on your team from muddying up the global scope. It's also worth considering the fact that the dinosaurs didn't use modules and now they're extinct.
+                            //- p   To take advantage of modules in modern ES6 JavaScript, simply use the 
+                            //-     code import and  
+                            //-     code from 
+                            //-     |keywords:
+                            //- figure.code
+                            //-     pre    
+                            //-         code(class="language-javascript hljs")
+                            //-             |import{ pterodactly } from 'dinotopia';
+                            //- p It just works! Somehow JavaScript knows how to find the 
+                            //-     code pterodactly 
+                            //-     |export in the 
+                            //-     code dinotopia 
+                            //-     |module and fit them together seamlessly. But... how?
+                            //- p And while we're asking questions, what are modules? How do they work? Why are there so many kinds of modules? And why does my text editor complain about them so much?
+                            //- h2#a-bit-of-history A Bit of History
+                            //- figure.article__img
+                            //-     img(src="https://upload.wikimedia.org/wikipedia/commons/e/e5/KT-impact.gif" alt="jQuery is a Meteor" class='js-img')
+                            //-     br
+                            //-     em An artist's rendition of using the global namespace, courtesy of Wikimedia.org
+                            //- h2#the-state-of-the-industry The State of the Industry
+                            //- p Somehow we ended up with five major module loading systems.
+                            //- p To solve module resolution in the browser, the Asynchronous Module Definition (AMD) standard was created. The AMD library require.js is used by many front-end libraries because it is much faster than CommonJS, but this unfortunately created two different standards.
+                            //- figure.article__img
+                            //-     img(src="https://imgs.xkcd.com/comics/standards.png" alt="Standards beget Standards" class='js-img')
+                            //-     br
+                            //-     em How standards reproduce, courtesy of xkcd.com
+                            //- p As JavaScript became more complex, SystemJS entered the scene as a more complete module resolution system that can import all of the standard JavaScript module types as well as "global" modules into its own namespace. It has some nice bells and whistles that the other systems don't have, but takes a bit of configuration to set up in your project.
+                            //- p Next, we see that CommonJS uses 
+                            //-     code require
+                            //-     |, which is also not in the ECMAScript standard. CommonJS relies on Node or another library to define the 
+                            //-     code require
+                            //-     |function. If you're interested in how 
+                            //-     code require
+                            //-     |works under the hood, check out Fred K Schott's 
+                            //-     a(href="http://fredkschott.com/post/2014/06/require-and-the-module-system/" target="_blank" rel="nofollow noopener" class='js-img') excellent post 
+                            //-     |about it. The important part for us is that 
+                            //-     code require 
+                            //-     |accepts a filepath as a string argument and synchronously returns a value that we store in the variable 
+                            //-     code best_dino_1
+                    
+                        footer.article__footer
+                            .article__tags
+                                each item in ['Javscript','Node.js','TypeScript']
+                                    a.btn.btn_outline(href='#')=item
+                            .article__engager
+                                .btn.btn-heart.js-like(data-liked='false')
+                                    i(class="far fa-heart js-icon-heart")
+                                    .btn-heart__number.js-number-heart 15
+                                .article__comment
+                                    img(src="https://lite-cdn.codementor.io/static/images//Community/icon-comment.png", alt="")
+                                    span.article__comment-count 2
+                            
+                            .article__comments
+                                .comment.no-border
+                                    .comment__c
+                                        .comment__avatar
+                                                img(src="", alt="")
+                                        .comment__body
+                                            form.js-add-comment                               
+                                                .comment__field
+                                                     textarea.comment__control(placeholder='Leave a comment' class='js-comment-control')
+                                                .comment__footer(style='justify-content: flex-end;')
+                                                     button.btn.btn_primary Submit
+                                .js-comments
+                                    .comment.js-comment(data-state)
+                                        .comment__delete.js-comment-delete
+                                            i(class="fas fa-times")
+                                        .comment__c
+                                            .comment__avatar
+                                                    img(src="", alt="")
+                                            .comment__body
+                                                .comment__info
+                                                    a(href='#').comment__name Nick Lin
+                                                    span.comment__timestamp 4 hours ago
+                                                .comment__content
+                                                    p Thank you for your good article. it’s so knowledgeable and skillful.
+                                                .comment__footer
+                                                    .comment__like.js-like
+                                                        i(class="far fa-heart js-icon-heart")
+                                                        span.comment__count.js-number-heart 2
+                                                    span.replay.js-replay Repaly
+                                        .comment__children.js-comment-children
+
+
+        .big-img-c.js-big-img
+            .big-img
+                img(src='#')
+        include ../parts/footer
+        include ../parts/signC
+        
+        script(src="/js/article.js")

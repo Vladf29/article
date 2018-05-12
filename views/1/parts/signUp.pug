@@ -1,0 +1,21 @@
+.sign.sign_up
+    .sign__c
+        .sign__close
+            i(class="fas fa-times")
+        form.js-sign-form.sign__form
+            .sign__group(data-valid='valid')
+                input.sign__control(placeholder='Name' name='name' value='Vlad')
+                span.sign__msg-invlaid
+            .sign__group(data-valid='valid')
+                input.sign__control(placeholder='Email' name='email' type='email' value='warvlad822@gmail.com')
+                span.sign__msg-invlaid
+            .sign__group(data-valid='valid')
+                input.sign__control(placeholder='Password' name='password' type='password' value='12345678')
+                span.sign__msg-invlaid
+            .sign__group(data-valid='valid')
+                input.sign__control(placeholder='Reapet password' name='Reapet password' type='password' value='12345678')
+                span.sign__msg-invlaid
+            .sign__group
+                button.btn.btn_primary Sign up
+            .sign__sub
+                a(href='#') Log in

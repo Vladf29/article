@@ -1,0 +1,43 @@
+if (success_messages != '' || error_messages != '')
+    -var msg = success_messages != '' ? success_messages : error_messages
+    .flash-msg(class=`${success_messages != '' ? 'flash-msg--success' : 'flash-msg--error'}`)
+        .flash-msg__close.js-flash-close
+            i.fas.fa-times
+        .flash-msg__c
+            span=msg
+
+header.header-page
+    .header-page__l
+        nav.main-menu
+            a.main-menu__link(href='/') Home
+            -var items = ['JavaScript','React','Node.js','TypeScript']
+            each item in items
+                a.main-menu__link(href='/topic/'+item.toLowerCase())=item
+
+    .header-page__r
+        .search(data-state='closed')
+            .search__icon.js-search-icon
+                i.fas.fa-search
+            .search__c
+                input.search__control(type="text" placeholder='Search post' id='search-post')
+        .aut
+
+            if (auth)
+                .avatar(data-state='closed')
+                    .avatar__log.js-avatar-log
+                        img(src=`${authUser.avatarUrl}`, alt="user avatar")
+                    ul.avatar__drop-list
+                        -var items = ['Write a post','Articles','Bookmarks','Profile','Settings']
+                        each item in items
+                            li.avatar__drop-item
+                                a(href='/me/'+item.toLowerCase().replace(/\s/g,'_'))=item
+                        li.avatar__drop-item
+                                a(href='/form/log_out') Log out
+            .aut__item.aut__write-post 
+                span Write a post
+
+            if (!auth)
+                .aut__item(data-sign-toggle='sign-up')
+                    span Sign up
+                .aut__item(data-sign-toggle='log-in')
+                    span Log in
