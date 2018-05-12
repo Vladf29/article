@@ -166,13 +166,6 @@ const updates = {
 }
 
 const writePost = {
-    create: async (req, res) => {
-        const user = await User.findById(req.user.id);
-        let idDraft = user.draft[user.draft.length - 1] ? user.draft[user.draft.length - 1] : 0;
-        idDraft = idDraft !== 0 ? idDraft.match(/\(\d+?\)/g)[0].match(/\d+?/g)[0] * 1 + 1 : 0;
-        idDraft = `(${idDraft})${req.user.id}`;
-        res.send(idDraft);
-    },
     downloadDraft: async (req, res) => {
         const user = await User.findById(req.user.id);
         const idDraft = req.query.draft
