@@ -3,11 +3,8 @@
 const fs = require('fs');
 const mzFs = require('mz/fs');
 
-
 const User = require('../db/users');
 const Article = require('../db/articles');
-
-const pathToDraftArticles = './asset/users/draftArticles';
 
 const pages = {
     renderProfile: async (req, res) => {
@@ -24,8 +21,8 @@ const pages = {
         res.render('editor');
     },
     renderPosts: async (req, res) => {
-        const user = await User.findById(req.user.id);
-        const posts = await Article.find({});
+        const [user, posts] = await Promise.all([User.findById(req.user.id), await Article.find({})]);
+
         res.render('me/posts', {
             owner: true,
             user,
@@ -240,7 +237,7 @@ module.exports = {
 
         const currentImg = user.avatarUrl;
         if (!/^(http|https):\/\//.test(currentImg) && currentImg) {
-            fs.unlink('./' + currentImg);
+            await mzFs.unlink('./' + currentImg)
         }
 
         await user.remove();
