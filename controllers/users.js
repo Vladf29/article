@@ -21,7 +21,7 @@ const pages = {
         res.render('editor');
     },
     renderPosts: async (req, res) => {
-        const [user, posts] = await Promise.all([User.findById(req.user.id), await Article.find({})]);
+        const [user, posts] = await Promise.all([User.findById(req.user.id), Article.find({})]);
 
         res.render('me/posts', {
             owner: true,
