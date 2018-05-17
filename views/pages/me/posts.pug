@@ -8,19 +8,21 @@ block append varibale
 block contentInner
     if (posts)
         .user-profile__c
-            each post in posts
-                .post
-                    .post__content
-                        .post__body
-                            a(href='/article.html')
-                                h3.post__title=post.title
-                                .post__summary=post.summary
-                        .post__preview-img
-                            img(src=`${post.mainImg}`, alt="")
-                    .post__footer
-                            .btn.btn-heart
-                                i(class="far fa-heart")
-                                .btn-heart__number=post.likes ? post.likes : 0
-                            .post__comment
-                                img(src="https://lite-cdn.codementor.io/static/images//Community/icon-comment.png", alt="")
-                                span.post__comment-count=post.comments ? post.comments : 0 
+            
+            include ../../parts/post
+            //- each post in posts
+            //-     .post
+            //-         .post__content
+            //-             .post__body
+            //-                 a(href='/article.html')
+            //-                     h3.post__title=post.title
+            //-                     .post__summary=post.summary
+            //-             .post__preview-img
+            //-                 img(src=`${post.mainImg}`, alt="")
+            //-         .post__footer
+            //-                 .btn.btn-heart
+            //-                     i(class="far fa-heart")
+            //-                     .btn-heart__number=post.likes.length
+            //-                 .post__comment
+            //-                     img(src="https://lite-cdn.codementor.io/static/images//Community/icon-comment.png", alt="")
+            //-                     span.post__comment-count=post.comments.length

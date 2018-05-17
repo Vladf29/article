@@ -21,13 +21,13 @@ const pages = {
         res.render('editor');
     },
     renderPosts: async (req, res) => {
-        const [user, posts] = await Promise.all([User.findById(req.user.id), Article.find({})]);
+        const user = await User.findById(req.user.id).populate('articles');
 
         res.render('me/posts', {
             owner: true,
             user,
-            posts
-        })
+            posts: user.articles
+        });
     }
 }
 
@@ -211,15 +211,24 @@ const writePost = {
     publish: async (req, res) => {
         let data = req.body.data;
 
-        const info = {
+        const content = {
             title: data.find((item) => item.type === 'mainTitle').text,
             mainImg: data.find((item) => item.type === 'mainImg').src,
-            summary: data.find((item) => item.type === 'par').text.slice(0, 158),
-            content: new Buffer(JSON.stringify(data))
+            content: new Buffer(JSON.stringify(data)),
+            author: req.user.id
         }
 
-        const newArticle = new Article(info);
+        
+        const summery = data.find((item) => item.type === 'par');
+        content.summery = summery ? summery.text.slice(0, 158) : '';
+
+        const newArticle = new Article(content);
         await newArticle.save();
+
+        const user = await User.findById(req.user.id);
+        user.articles.push(newArticle.id);
+        await user.save();
+
         req.flash('success', 'publish');
         res.send();
     }

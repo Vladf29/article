@@ -1,23 +1,21 @@
-.content
+if posts
     .posts
-        .post
-            a(href='#').post__author
-                .post__author-avatar
-                    img(src="https://process.filestackapi.com/cache=expiry:max/resize=width:200/GSpSnbsWSVqa8cw6aqv1", alt="")
-                span.post__author-name Aditya Agarwal
-            .post__content
-                .post__body
-                    a(href='/article.html')
-                        h3.post__title How to escape async/await hell
-                        .post__summary
-                            |async/await freed us from callback hell, but people have started abusing it — leading to the birth of async/await hell.
-                            |In this article, I will try to explain what async/await hell is, and I’ll also share some tips to escape it.
-                .post__preview-img
-                    img(src="https://process.filestackapi.com/cache=expiry:max/resize=width:200/compress/MVynIq3R5Kfc8sX8uFXQ", alt="")
-            .post__footer
-                    .btn.btn-heart
-                        i(class="far fa-heart")
-                        .btn-heart__number 15
-                    .post__comment
-                        img(src="https://lite-cdn.codementor.io/static/images//Community/icon-comment.png", alt="")
-                        span.post__comment-count 2
+        each post in posts
+            .post
+                .post__author
+                    a(href=`/${post.author.username}`).post__author-avatar
+                        img(src=`${post.author.avatarUrl}`, alt=`${post.author.name}`)
+                    a(href=`/${post.author.username}`).post__author-name=post.author.name
+                a(href=`/posts/${post.id}`).post__content
+                    .post__body
+                        h3.post__title=post.title
+                        .post__summary=post.summary
+                    .post__preview-img
+                        img(src=post.mainImg, alt="")
+                .post__footer
+                        .btn.btn-heart
+                            i(class="far fa-heart")
+                            .btn-heart__number=post.comments.length
+                        .post__comment
+                            img(src="https://lite-cdn.codementor.io/static/images//Community/icon-comment.png", alt="")
+                            span.post__comment-count=post.likes.length

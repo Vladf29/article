@@ -11,13 +11,12 @@ const articleSchema = new Schema({
     mainImg: String,
     summary: {
         type: String,
-        required: true,
     },
     author: {
         type: Schema.Types.ObjectId,
         ref: 'user'
     },
-    comment: [{
+    comments: [{
         author: {
             type: Schema.Types.ObjectId,
             ref: 'user',
@@ -25,7 +24,7 @@ const articleSchema = new Schema({
         comment: String,
         data: Date
     }],
-    liked: [{
+    likes: [{
         type: Schema.Types.ObjectId,
         ref: 'user'
     }],
