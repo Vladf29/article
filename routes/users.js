@@ -29,10 +29,12 @@ router.get('/delete', UserControllers.userDeleteAccount);
 
 router.get('/write_a_post', authorized.isAuthorized, UserControllers.pages.writePost);
 
-router.get('/write_a_post/download_draft', UserControllers.writePost.downloadDraft)
+router.get('/write_a_post/downloadDraft', UserControllers.writePost.downloadDraft)
 router.post('/write_a_post/draft', UserControllers.writePost.draft);
 router.delete('/write_a_post/delete', UserControllers.writePost.delete);
 router.post('/write_a_post/publish', UserControllers.writePost.publish);
+
+router.get('/write_a_post/downloadPost', UserControllers.writePost.downloadPost)
 
 
 router.put('/update/email', validateBody(schemas.logIn), UserControllers.updates.userEmail);

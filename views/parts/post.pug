@@ -6,7 +6,7 @@ if posts
                     a(href=`/${post.author.username}`).post__author-avatar
                         img(src=`${post.author.avatarUrl}`, alt=`${post.author.name}`)
                     a(href=`/${post.author.username}`).post__author-name=post.author.name
-                a(href=`/posts/${post.id}`).post__content
+                a(href=`/posts/post/${post.id}`).post__content
                     .post__body
                         h3.post__title=post.title
                         .post__summary=post.summary

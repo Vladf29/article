@@ -153,15 +153,27 @@ export const Editor = (() => {
         }
 
         Init() {
-            const id = localStorage.getItem('id_article_draft');
-            if (id) {
+            const PostId = document.cookie.split('=')[1];
+            const idDraft = localStorage.getItem('id_article_draft');
+            if (PostId) {
                 $.ajax({
                     method: 'GET',
-                    url: `/me/write_a_post/download_draft?draft=${id}`,
+                    url: `/me/write_a_post/downloadPost?post=${PostId}`,
+                    success: function (data) {
+                        _id = PostId;
+                        // localStorage.setItem('id_article_draft', _id);
+                        _that.filingEditorByPost(data.data);
+                        _that.Start();
+                    }
+                });
+            } else if (idDraft) {
+                $.ajax({
+                    method: 'GET',
+                    url: `/me/write_a_post/downloadDraft?post=${idDraft}`,
                     success: function (data) {
                         _id = data.id;
                         localStorage.setItem('id_article_draft', _id);
-                        _that.AddArticle(data.data);
+                        _that.filingEditorByPost(data.data);
                         _that.Start();
                     }
                 });
@@ -340,7 +352,7 @@ export const Editor = (() => {
             this.DeleteTextarea();
         }
 
-        AddArticle(data = []) {
+        filingEditorByPost(data = []) {
             if (!data) return;
 
             data.forEach((item) => {
@@ -372,6 +384,12 @@ export const Editor = (() => {
                                 t.innerHTML = item.items[i];
                             }
                             elem = list;
+                            break;
+                        }
+                    case 'title':
+                        {
+                            elem = this.newTitleH2('', false);
+                            elem.innerHTML = item.text;
                             break;
                         }
                     default:

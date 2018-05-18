@@ -163,9 +163,20 @@ const updates = {
 }
 
 const writePost = {
+    downloadPost: async (req, res) => {
+        const idPost = req.query.post;
+        if (!idPost) return res.status(400).send('Bad Request');
+
+        const post = await Article.findById(idPost);
+        if (!post) return res.status(404).send('The post wasn\'t found');
+
+        res.json({
+            data: JSON.parse(post.content.toString())
+        });
+    },
     downloadDraft: async (req, res) => {
         const user = await User.findById(req.user.id);
-        const idDraft = req.query.draft
+        const idDraft = req.query.post
         if (!idDraft) return res.status(404).send('Not Found');
 
         const isTaken = user.draftArticles.id(idDraft);
@@ -218,9 +229,9 @@ const writePost = {
             author: req.user.id
         }
 
-        
+
         const summery = data.find((item) => item.type === 'par');
-        content.summery = summery ? summery.text.slice(0, 158) : '';
+        content.summery = summery.text ? summery.text.slice(0, 158) : '';
 
         const newArticle = new Article(content);
         await newArticle.save();

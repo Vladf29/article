@@ -7,63 +7,76 @@ block content
     .content
         .article
             header.article__header
+                if owner
+                    a(href=`/posts/edit/${post.id}`).article__edit
+                        i.fas.fa-pencil-alt
                 .article__author
-                    a.article__avatar(href='#')
-                        img(src="https://avatars0.githubusercontent.com/u/22058265?v=4", alt="" class='js-img')
-                    a.article__content(href='#')
-                        .article__name Elliot Plant
+                    a.article__avatar(href=`/${post.author.username}`)
+                        img(src=`${post.author.avatarUrl}`, alt="avatar_author")
+                    a.article__content(href=`/${post.author.username}`)
+                        .article__name=post.author.name
                         .article__headline Front End and Full Stack JavaScript Engineer
                 
-                h1.article__main-title Understanding JavaScript Module Resolution Systems with Dinosaurs
-                .article__header-timestamps 
-                    small.publish-date Published Apr 16, 2018
-                    small.updated-at Last updated Apr 27, 2018
+                h1.article__main-title=post.title
+                .article__header-timestamps
+                    small.publish-date=post.dataPublish
+                    small.updated-at=post.dataLastUpdate
             
             .article__main-img.article__img
-                img(src="https://process.filestackapi.com/cache=expiry:max/resize=width:700/compress/O5DLf7kIT1qjFKCuW3UK", alt="" class='js-img')
+                img(src=`${post.mainImg}`, alt="main_img" class='js-img')
             
             .article__body
-                p
-                    |Modules make code cleaner, more reusable, and more fun to work with. They let you separate your JavaScript into separate files and they protect you and everyone else on your team from muddying up the global scope. It's also worth considering the fact that the dinosaurs didn't use modules and now they're extinct.
-                p   To take advantage of modules in modern ES6 JavaScript, simply use the 
-                    code import and  
-                    code from 
-                    |keywords:
-                figure.code
-                    pre    
-                        code(class="language-javascript hljs")
-                            |import{ pterodactly } from 'dinotopia';
-                p It just works! Somehow JavaScript knows how to find the 
-                    code pterodactly 
-                    |export in the 
-                    code dinotopia 
-                    |module and fit them together seamlessly. But... how?
-                p And while we're asking questions, what are modules? How do they work? Why are there so many kinds of modules? And why does my text editor complain about them so much?
-                h2#a-bit-of-history A Bit of History
-                figure.article__img
-                    img(src="https://upload.wikimedia.org/wikipedia/commons/e/e5/KT-impact.gif" alt="jQuery is a Meteor" class='js-img')
-                    br
-                    em An artist's rendition of using the global namespace, courtesy of Wikimedia.org
-                h2#the-state-of-the-industry The State of the Industry
-                p Somehow we ended up with five major module loading systems.
-                p To solve module resolution in the browser, the Asynchronous Module Definition (AMD) standard was created. The AMD library require.js is used by many front-end libraries because it is much faster than CommonJS, but this unfortunately created two different standards.
-                figure.article__img
-                    img(src="https://imgs.xkcd.com/comics/standards.png" alt="Standards beget Standards" class='js-img')
-                    br
-                    em How standards reproduce, courtesy of xkcd.com
-                p As JavaScript became more complex, SystemJS entered the scene as a more complete module resolution system that can import all of the standard JavaScript module types as well as "global" modules into its own namespace. It has some nice bells and whistles that the other systems don't have, but takes a bit of configuration to set up in your project.
-                p Next, we see that CommonJS uses 
-                    code require
-                    |, which is also not in the ECMAScript standard. CommonJS relies on Node or another library to define the 
-                    code require
-                    |function. If you're interested in how 
-                    code require
-                    |works under the hood, check out Fred K Schott's 
-                    a(href="http://fredkschott.com/post/2014/06/require-and-the-module-system/" target="_blank" rel="nofollow noopener" class='js-img') excellent post 
-                    |about it. The important part for us is that 
-                    code require 
-                    |accepts a filepath as a string argument and synchronously returns a value that we store in the variable 
-                    code best_dino_1
+                each item in content
+                    if item.type === 'par'
+                        p!=item.text
+                    else if item.type === 'title'
+                        h2!=item.text
+                    else if item.type === 'list'
+                        ul
+                            each i in item.items
+                                li!=i
+                
+                //- p
+                //-     |Modules make code cleaner, more reusable, and more fun to work with. They let you separate your JavaScript into separate files and they protect you and everyone else on your team from muddying up the global scope. It's also worth considering the fact that the dinosaurs didn't use modules and now they're extinct.
+                //- p   To take advantage of modules in modern ES6 JavaScript, simply use the 
+                //-     code import and  
+                //-     code from 
+                //-     |keywords:
+                //- figure.code
+                //-     pre    
+                //-         code(class="language-javascript hljs")
+                //-             |import{ pterodactly } from 'dinotopia';
+                //- p It just works! Somehow JavaScript knows how to find the 
+                //-     code pterodactly 
+                //-     |export in the 
+                //-     code dinotopia 
+                //-     |module and fit them together seamlessly. But... how?
+                //- p And while we're asking questions, what are modules? How do they work? Why are there so many kinds of modules? And why does my text editor complain about them so much?
+                //- h2#a-bit-of-history A Bit of History
+                //- figure.article__img
+                //-     img(src="https://upload.wikimedia.org/wikipedia/commons/e/e5/KT-impact.gif" alt="jQuery is a Meteor" class='js-img')
+                //-     br
+                //-     em An artist's rendition of using the global namespace, courtesy of Wikimedia.org
+                //- h2#the-state-of-the-industry The State of the Industry
+                //- p Somehow we ended up with five major module loading systems.
+                //- p To solve module resolution in the browser, the Asynchronous Module Definition (AMD) standard was created. The AMD library require.js is used by many front-end libraries because it is much faster than CommonJS, but this unfortunately created two different standards.
+                //- figure.article__img
+                //-     img(src="https://imgs.xkcd.com/comics/standards.png" alt="Standards beget Standards" class='js-img')
+                //-     br
+                //-     em How standards reproduce, courtesy of xkcd.com
+                //- p As JavaScript became more complex, SystemJS entered the scene as a more complete module resolution system that can import all of the standard JavaScript module types as well as "global" modules into its own namespace. It has some nice bells and whistles that the other systems don't have, but takes a bit of configuration to set up in your project.
+                //- p Next, we see that CommonJS uses 
+                //-     code require
+                //-     |, which is also not in the ECMAScript standard. CommonJS relies on Node or another library to define the 
+                //-     code require
+                //-     |function. If you're interested in how 
+                //-     code require
+                //-     |works under the hood, check out Fred K Schott's 
+                //-     a(href="http://fredkschott.com/post/2014/06/require-and-the-module-system/" target="_blank" rel="nofollow noopener" class='js-img') excellent post 
+                //-     |about it. The important part for us is that 
+                //-     code require 
+                //-     |accepts a filepath as a string argument and synchronously returns a value that we store in the variable 
+                //-     code best_dino_1
         
             footer.article__footer
                 .article__tags

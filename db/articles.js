@@ -31,11 +31,14 @@ const articleSchema = new Schema({
     content: {
         type: Buffer,
         required: true
-    }
-}, {
-    timestamps: {
-        createdAt: 'createdAt',
-        updatedAt: 'updatedAt'
+    },
+    dataPublish: {
+        type: String,
+        default: new Date(),
+    },
+    dataLastUpdate: {
+        type: String,
+        default: new Date(),
     }
 });
 

@@ -51,7 +51,7 @@ app.use('/', require('./routes/index'));
 app.use('/me', require('./routes/users'));
 app.use('/topic', require('./routes/topic'));
 app.use('/form', require('./routes/forms'));
-app.use('/article', require('./routes/article'))
+app.use('/posts', require('./routes/posts'))
 
 app.use((err, req, res, next) => {
     res.send(err);

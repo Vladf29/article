@@ -2,6 +2,20 @@
     $aw: 720px;
     width: $aw;
     margin: auto;
+    position: relative;
+    &__edit {
+        right: 15px;
+        top: 5px;
+        font-size: 16px;
+        padding: 4px;
+        color: #969191;
+        opacity: .85;
+        position: absolute;
+        cursor: pointer;
+        &:hover {
+            opacity: 1;
+        }
+    }
     &__header {
         margin-bottom: 12px;
         margin-top: 22px;
@@ -113,10 +127,28 @@
                 border-radius: 4px;
                 color: #c7254e;
             }
-            a {
-                &:hover {
-                    text-decoration: underline;
-                }
+        }
+        a {
+            font-size: 19px;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        ol li {
+            list-style-type: decimal !important;
+        }
+        ul li {
+            list-style-type: circle !important;
+        }
+        ol,
+        ul {
+            margin: 15px 0;
+            padding-left: 40px;
+            li {
+                font-size: 19px;
+                color: #26293a;
+                font-weight: 300;
+                line-height: 1.5;
             }
         }
         pre {
@@ -187,7 +219,7 @@
     padding: 16px 0;
     border-top: 1px solid #efefef;
     position: relative;
-    &:first-child{
+    &:first-child {
         border-top: 0;
     }
     &__delete {
