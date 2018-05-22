@@ -229,7 +229,6 @@ const writePost = {
             author: req.user.id
         }
 
-
         const summery = data.find((item) => item.type === 'par');
         content.summery = summery.text ? summery.text.slice(0, 158) : '';
 
