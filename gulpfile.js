@@ -17,8 +17,8 @@ const rimraf = require('rimraf');
 
 const srcPaths = {
     pug: './views',
-    js: './things/js',
-    sass: './things/sass'
+    js: './frontFiles/js',
+    sass: './frontFiles/sass'
 }
 
 const uploadFolder = {
@@ -94,7 +94,7 @@ gulp.task('watchG', () => {
     gulp.watch(srcPaths.pug + '/**/*.pug', gulp.series('pug'));
 });
 
-gulp.task('wathcS', () => {
+gulp.task('watchServer', () => {
     gulp.watch(srcPaths.js + '/**/*.js', gulp.series('js'));
     gulp.watch(srcPaths.sass + '/**/*.scss', gulp.series('sass'));
 });
@@ -112,11 +112,11 @@ gulp.task('clean', gulp.series('cleanB', 'cleanP'));
 gulp.task('srv', gulp.series(
     'clean',
     gulp.parallel('js', 'sass'),
-    gulp.parallel('wathcS')
+    gulp.parallel('watchServer')
 ));
 
 gulp.task('default', gulp.series(
     'clean',
     gulp.parallel('js', 'pug', 'sass'),
-    gulp.parallel('watchG', 'wathcS', 'server')
+    gulp.parallel('watchG', 'watchServer', 'server')
 ));

@@ -6,7 +6,7 @@
   "nodemonConfig": {
     "ignore": [
       "asset/*",
-      "things/*",
+      "frontFiles/*",
       "build/*",
       "public/*"
     ]

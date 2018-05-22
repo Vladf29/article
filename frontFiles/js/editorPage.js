@@ -4,9 +4,7 @@ import {
     uploadImg
 } from './modules/uploadImg';
 
-import {
-    Editor
-} from './modules/editor';
+import Editor from './modules/editor/index';
 
 const editor = new Editor();
 editor.Init();
