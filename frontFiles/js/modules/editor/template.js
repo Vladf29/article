@@ -15,13 +15,13 @@ const panels = {
     def: `
             <ul class="edit-board__items">
               ${icons.par}
-              ${icons.list}
-              ${icons.img}
-              ${icons.code}
               ${icons.H}
               ${icons.bold}
               ${icons.italic}
               ${icons.link}
+              ${icons.list}
+              ${icons.img}
+              ${icons.code}
             </ul>
         `,
     list: `
@@ -35,6 +35,7 @@ const panels = {
         `,
     img: `
         <ul class='edit-board__items'>
+            ${icons.H}            
             ${icons.par}
             <li class='edit-board__item' data-action='addCaption'><i class="far fa-closed-captioning"></i></li>
             ${icons.del}
@@ -58,5 +59,4 @@ const panels = {
 
 export default {
     panels,
-    icons
 }

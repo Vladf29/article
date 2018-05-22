@@ -45,6 +45,7 @@ app.use((req, res, next) => {
     res.locals.success_messages = req.flash('success');
     res.locals.error_messages = req.flash('error');
     next();
+
 });
 
 app.use('/', require('./routes/index'));
@@ -53,9 +54,10 @@ app.use('/topic', require('./routes/topic'));
 app.use('/form', require('./routes/forms'));
 app.use('/posts', require('./routes/posts'))
 
+
 app.use((err, req, res, next) => {
-    res.send(err);
-});
+   console.log(err)
+})
 
 app.listen(port, () => {
     console.log(`Server is running and waiting to connection on port ${port}`);

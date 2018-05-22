@@ -31,6 +31,12 @@ block content
                         p!=item.text
                     else if item.type === 'title'
                         h2!=item.text
+                    else if item.type === 'img'
+                        figure.article__img
+                            img(src=`${item.src}` alt="Standards beget Standards" class='js-img')
+                            br
+                            if item.caption
+                                em=item.caption
                     else if item.type === 'list'
                         ul
                             each i in item.items

@@ -13,6 +13,7 @@ window.addEventListener('load', () => {
     $('.aut__item[data-sign-toggle]').click(function () {
         const signToggle = $(this).attr('data-sign-toggle');
         $('.sign-c').addClass('sign-c_show').attr('data-state', signToggle);
+        $(`.sign-c .${signToggle}`).find('.sign__control:first').focus();
     });
 
     $('.sign__close').click(function () {

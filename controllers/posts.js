@@ -6,7 +6,7 @@ const User = require('../db/users');
 
 module.exports = {
     renderPost: async (req, res) => {
-        const post = await Posts.findById(req.params.idPost).populate('author', ['name', 'avatarUrl','username']);
+        const post = await Posts.findById(req.params.idPost).populate('author', ['name', 'avatarUrl', 'username']);
         let owner = false;
 
         if (req.user) {
@@ -23,6 +23,8 @@ module.exports = {
 
     editPost: async (req, res) => {
         const idPost = req.params.idPost;
-        res.render('editor');
+        res.render('editor', {
+            type: 'public'
+        });
     }
 }

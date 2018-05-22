@@ -10,12 +10,12 @@
         display: block;
     }
     &[data-state='sign-up'] {
-        .sign_up {
+        .sign-up {
             display: flex;
         }
     }
     &[data-state='log-in'] {
-        .log_in {
+        .log-in {
             display: flex;
         }
     }
@@ -94,7 +94,7 @@
     }
 }
 
-.log_in,
-.sign_up {
+.log-in,
+.sign-up {
     display: none;
 }
