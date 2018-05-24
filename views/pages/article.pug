@@ -4,6 +4,9 @@ block append head
     link(rel="stylesheet", href="/styles/article.css")        
 
 block content
+    -var isLiked = false;    
+    if post.likes.length !== 0
+        - isLiked = post.likes.some((id)=> id == authUser.id)
     .content
         .article
             header.article__header
@@ -86,15 +89,16 @@ block content
         
             footer.article__footer
                 .article__tags
-                    each item in ['Javscript','Node.js','TypeScript']
-                        a.btn.btn_outline(href='#')=item
+                    -var arrTopics = ['JavaScript','Node.js','TypeScript']
+                    each topic in post.topics 
+                        a.btn.btn_outline(href=`/topic/${topic}`)=topic
                 .article__engager
-                    .btn.btn-heart.js-like(data-liked='false')
-                        i(class="far fa-heart js-icon-heart")
-                        .btn-heart__number.js-number-heart 15
+                    .btn.btn-heart.js-like(data-liked=`${isLiked}` data-post-id=post.id)
+                            i(class=`${isLiked ? 'fas' : 'far' } fa-heart js-icon-heart`)
+                            .btn-heart__number.js-number-likes=post.likes.length
                     .article__comment
                         img(src="https://lite-cdn.codementor.io/static/images//Community/icon-comment.png", alt="")
-                        span.article__comment-count 2
+                        span.article__comment-count=post.comments.length
                 
                 .article__comments
                     .comment.no-border
@@ -134,3 +138,5 @@ block content
 
 block append script
     script(src="/js/article.js")
+    if auth
+        script(src="/js/index.js")

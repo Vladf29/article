@@ -197,7 +197,7 @@ const writePost = {
     },
     draft: async (req, res) => {
         const user = await User.findById(req.user.id);
-        console.log(req.user.id )
+        console.log(req.user.id)
         const isTaken = user.draftArticles.id(req.body.id);
         if (!isTaken) {
             user.draftArticles.push({
@@ -250,7 +250,8 @@ const writePost = {
 
         const content = {
             content: new Buffer(JSON.stringify(data)),
-            author: req.user.id
+            author: req.user.id,
+            topics: ['JavaScript', 'Node.js', 'React', 'TypeScript']
         }
 
         if (!preContent.title) {
@@ -263,7 +264,7 @@ const writePost = {
         if (preContent.mainImg) content.mainImg = preContent.mainImg.src;
 
         const summary = data.find((item) => item.type === 'par');
-        content.summary = summary ? summary.text.slice(0, 158) : '';
+        content.summary = summary ? summary.text.slice(0, 155) : '...';
 
         const newArticle = new Article(content);
         await newArticle.save();

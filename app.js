@@ -54,11 +54,6 @@ app.use('/topic', require('./routes/topic'));
 app.use('/form', require('./routes/forms'));
 app.use('/posts', require('./routes/posts'))
 
-
-app.use((err, req, res, next) => {
-   console.log(err)
-})
-
 app.listen(port, () => {
     console.log(`Server is running and waiting to connection on port ${port}`);
 });

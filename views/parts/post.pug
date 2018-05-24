@@ -1,21 +1,26 @@
 if posts
     .posts
         each post in posts
+            -var isLiked = false;
+            -var link = `/posts/post/${post.id}`      
+            if post.likes.length !== 0 && auth
+                - isLiked = post.likes.some((id)=> id == authUser.id)
+            
             .post
                 .post__author
                     a(href=`/${post.author.username}`).post__author-avatar
                         img(src=`${post.author.avatarUrl}`, alt=`${post.author.name}`)
                     a(href=`/${post.author.username}`).post__author-name=post.author.name
-                a(href=`/posts/post/${post.id}`).post__content
+                a(href=link).post__content
                     .post__body
                         h3.post__title=post.title
                         .post__summary=post.summary
                     .post__preview-img
                         img(src=post.mainImg, alt="")
                 .post__footer
-                        .btn.btn-heart
-                            i(class="far fa-heart")
-                            .btn-heart__number=post.comments.length
-                        .post__comment
-                            img(src="https://lite-cdn.codementor.io/static/images//Community/icon-comment.png", alt="")
-                            span.post__comment-count=post.likes.length
+                        .btn.btn-heart.js-like(data-liked=`${isLiked}` data-post-id=post.id)
+                            i(class=`${isLiked ? 'fas' : 'far' } fa-heart js-icon-heart`)
+                            .btn-heart__number.js-number-likes=post.likes.length
+                        a.post__comment(href=link)
+                            i.fas.fa-comments
+                            span.post__comment-count=post.comments.length

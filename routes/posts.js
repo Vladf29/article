@@ -10,14 +10,12 @@ router.use('/edit/:idPost', (req, res, next) => {
         path: '/posts/edit'
     });
     next();
-})
-
-router.get('/', (req, res) => {
-    res.render('article');
 });
 
 router.get('/post/:idPost', postsControllers.renderPost);
 
 router.get('/edit/:idPost', authorized.isAuthorized, postsControllers.editPost);
+
+router.post('/like', authorized.isAuthorized, postsControllers.likePost);
 
 module.exports = router;

@@ -28,6 +28,10 @@ const articleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'user'
     }],
+    topics: [{
+        type: String,
+        lowercase: true
+    }],
     content: {
         type: Buffer,
         required: true

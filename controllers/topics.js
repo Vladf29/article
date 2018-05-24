@@ -1,4 +1,7 @@
 'use strict'
+
+const Posts = require('../db/articles');
+
 const topic = 'Tutorials and Insights'
 const topics = {
     js: {
@@ -18,6 +21,47 @@ const topics = {
         img: '/asset/img/icon-typescript.png'
     }
 }
+
+
+
 module.exports = {
-    topics
+    javaScript: async (req, res) => {
+        const posts = await Posts.find({
+            topics: "javascript"
+        }).populate('author', ['username', 'name', 'avatarUrl']);
+        res.render('index', {
+            posts,
+            ...topics.js
+        });
+    },
+
+    react: async (req, res) => {
+        const posts = await Posts.find({
+            topics: "react"
+        }).populate('author', ['username', 'name', 'avatarUrl']);
+        res.render('index', {
+            posts,
+            ...topics.react
+        });
+    },
+
+    nodejs: async (req, res) => {
+        const posts = await Posts.find({
+            topics: "nodejs"
+        }).populate('author', ['username', 'name', 'avatarUrl']);
+        res.render('index', {
+            posts,
+            ...topics.nodejs
+        });
+    },
+
+    typeScript: async (req, res) => {
+        const posts = await Posts.find({
+            topics: "typescript"
+        }).populate('author', ['username', 'name', 'avatarUrl']);
+        res.render('index', {
+            posts,
+            ...topics.typescript
+        });
+    },
 }

@@ -3,24 +3,14 @@
 const express = require('express');
 const router = express.Router();
 
-const {
-    topics
-} = require('../controllers/topics')
+const topicsController = require('../controllers/topics')
 
-router.get('/javascript', (req, res) => {
-    res.render('index', topics.js);
-});
+router.get('/javascript', topicsController.javaScript);
 
-router.get('/react', (req, res) => {
-    res.render('index', topics.react);
-});
+router.get('/react', topicsController.react);
 
-router.get('/node.js', (req, res) => {
-    res.render('index', topics.nodejs);
-});
+router.get('/node.js', topicsController.nodejs);
 
-router.get('/typescript', (req, res) => {
-    res.render('index', topics.typescript);
-})
+router.get('/typescript', topicsController.typeScript);
 
 module.exports = router;

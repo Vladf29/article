@@ -17,21 +17,21 @@ $(document.body).on('click', '.js-big-img', function () {
     bigImg.attr('data-state', 'hidden');
 });
 
-$(document.body).on('click', '.js-like', function () {
-    const b = $(this);
-    const number = $(this).find('.js-number-heart');
-    const numbers = number.text() || 0;
-    number.empty();
-    if (b.attr('data-liked') === 'true') {
-        b.find('.js-icon-heart').removeClass('fas').addClass('far');
-        b.attr('data-liked', 'false');
-        number.text(+numbers - 1);
-    } else {
-        b.find('.js-icon-heart').removeClass('far').addClass('fas');
-        b.attr('data-liked', 'true');
-        number.text(+numbers + 1);
-    }
-});
+// $(document.body).on('click', '.js-like', function () {
+//     const likeElem = $(this);
+//     const number = $(this).find('.js-number-likes');
+//     const numbers = number.text() || 0;
+//     number.empty();
+//     if (likeElem.attr('data-liked') === 'true') {
+//         likeElem.find('.js-icon-heart').removeClass('fas').addClass('far');
+//         likeElem.attr('data-liked', 'false');
+//         number.text(+numbers - 1);
+//     } else {
+//         likeElem.find('.js-icon-heart').removeClass('far').addClass('fas');
+//         likeElem.attr('data-liked', 'true');
+//         number.text(+numbers + 1);
+//     }
+// });
 
 $(document.body).on('click', '.js-replay', function () {
     const repaly = $(this);
