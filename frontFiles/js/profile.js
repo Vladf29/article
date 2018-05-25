@@ -3,9 +3,7 @@
 import {
     httpRequest
 } from './modules/httpRequest';
-import {
-    uploadImg
-} from './modules/uploadImg';
+import uploadImg from './modules/uploadImg';
 
 $('.js-avatar').click(function () {
     $('.js-upload').attr('data-state', 'show')

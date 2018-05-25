@@ -782,7 +782,7 @@ export default class Editor {
             }),
             contentType: 'application/json',
             success: function (data) {
-                location.reload();
+                location.href = `/posts/post/${data.id}`;
             },
             error: function (err) {
                 location.reload();

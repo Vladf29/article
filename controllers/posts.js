@@ -5,7 +5,8 @@ const Posts = require('../db/articles');
 const User = require('../db/users');
 
 const pathsCookie = {
-    writePost: 'posts/write_a_post'
+    writePost: 'posts/write_a_post',
+    editPost: 'posts/edit/'
 }
 
 const editPostFunc = {
@@ -24,10 +25,46 @@ const editPostFunc = {
         });
     },
     savePost: async (req, res) => {
+        const data = req.body.data;
         const idPost = req.cookies['idPost'];
-        res.json({
-            status: 'OK'
-        })
+        if (!idPost) return res.status(404).send('Not Found!');
+
+        const preContent = {
+            title: data.find((item) => item.type === 'mainTitle'),
+            mainImg: data.find((item) => item.type === 'mainImg'),
+        }
+
+        const content = {
+            content: new Buffer(JSON.stringify(data)),
+            // topics: ['JavaScript', 'Node.js', 'React', 'TypeScript']
+        }
+
+        if (!preContent.title) {
+            req.flash('error', `Oh! Something went wrong:( You forgot to add title for the article.`);
+            return res.status(400).send();
+        }
+
+        content.title = preContent.title.text;
+
+        if (preContent.mainImg) content.mainImg = preContent.mainImg.src;
+
+        const summary = data.find((item) => item.type === 'par');
+        content.summary = summary ? summary.text.slice(0, 155) : '...';
+
+        const post = await Posts.findById(idPost);
+
+        post.summary = content.summary;
+        post.mainImg = content.mainImg;
+        post.title = content.title;
+        post.content = content.content;
+
+        await post.save();
+
+        res.clearCookie('idPost', {
+            path: pathsCookie.editPost
+        });
+        // req.flash('success', `The post was successfully upateded.`);
+        res.send();
     },
 }
 
@@ -87,7 +124,7 @@ const writePostFunc = {
         const user = await User.findById(req.user.id);
         const DrafPostIdCookie = req.cookies['DrafPostId'];
         if (!DrafPostIdCookie) return res.status(404).send('Not Found!');
-        
+
         res.clearCookie('DrafPostId', {
             path: pathsCookie.writePost
         });
@@ -105,7 +142,6 @@ const writePostFunc = {
     publish: async (req, res) => {
         let data = req.body.data;
         const DrafPostIdCookie = req.cookies['DrafPostId'];
-        if (!DrafPostIdCookie) return res.status(404).send('Not Found!');
 
         const preContent = {
             title: data.find((item) => item.type === 'mainTitle'),
@@ -135,14 +171,17 @@ const writePostFunc = {
 
         const user = await User.findById(req.user.id);
         user.articles.push(newPost.id);
-        user.draftArticles.pull(DrafPostIdCookie);
+        if (DrafPostIdCookie) user.draftArticles.pull(DrafPostIdCookie);
+
         await user.save();
 
         res.clearCookie('DrafPostId', {
             path: pathsCookie.writePost
         });
         req.flash('success', `The post was successfully publish.`);
-        res.send();
+        res.json({
+            id: newPost.ids
+        });
     }
 }
 

@@ -12,7 +12,7 @@ router.use('/write_a_post', authorized.isAuthorized);
 router.use('/edit', authorized.isAuthorized);
 router.use('/edit/post/:idPost', (req, res, next) => {
     res.cookie('idPost', req.params.idPost, {
-        path: '/posts/edit'
+        path: '/posts/edit/'
     });
     next();
 });
