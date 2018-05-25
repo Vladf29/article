@@ -36,7 +36,8 @@ block content
                     block varibale
                     -var items = ['Profile','Posts','Likes']
                     each item in items
-                        a.user-profile__tab(href='/me/'+item.toLowerCase() class=`${active === item.toLowerCase() ? 'user-profile__tab--active' : ''}`)=item
+                        -var url = `/${owner ? 'me' : 'users/'+user.username}/${item.toLowerCase()}`
+                        a.user-profile__tab(href=url class=`${active === item.toLowerCase() ? 'user-profile__tab--active' : ''}`)=item
         .user-profile__content
             block contentInner
     
@@ -46,3 +47,5 @@ block content
 block append script
     if (owner)
         script(src="/js/profile.js")
+    if auth
+        script(src='/js/index.js')

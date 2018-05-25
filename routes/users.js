@@ -1,41 +1,46 @@
 'use strict'
 
 const router = require('express-promise-router')();
-const multer = require('multer');
-
-const authorized = require('../modules/authorized');
-const UserControllers = require('../controllers/users');
-const {
-    schemas,
-    validateBody,
-    validateParam
-} = require('../helpers/validator');
 const User = require('../db/users');
+const Posts = require('../db/articles');
 
-const uploadAvatar = multer({
-    dest: './asset/users/avatars'
+router.get('/:username', async (req, res) => {
+    const user = await User.findOne({
+        username: req.params.username
+    });
+
+    if (!user) {
+        req.flash('error', `User with the 'username' ${req.params.username} isn't exsited`);
+        return res.redirect('/');
+    }
+
+    let owner = req.user ? user.id === req.user.id : false;
+    if (owner) return res.redirect('/me/profile');
+
+    res.render('me/aboutMe', {
+        user,
+        owner
+    });
 });
 
-router.get('/users', async (req, res) => {
-    const found = await User.find({});
-    res.json(found);
+router.get('/:username/posts', async (req, res) => {
+    const user = await User.findOne({
+        username: req.params.username
+    }).populate('articles', ['title', 'mainMain', 'summary'])
+    const posts = user.articles;
+    if (!user) {
+        req.flash('error', `User with the 'username' ${req.params.username} isn't exsited`);
+        return res.redirect('/');
+    }
+
+    let owner = req.user ? user.id === req.user.id : false;
+    if (owner) return res.redirect('/me/posts');
+    
+    res.render('me/posts', {
+        owner,
+        user,
+        posts
+    });
 });
-
-router.get('/settings', authorized.isAuthorized, UserControllers.pages.renderSettings);
-router.get('/profile', authorized.isAuthorized, UserControllers.pages.renderProfile);
-router.get('/posts', authorized.isAuthorized, UserControllers.pages.renderPosts);
-
-router.get('/delete', UserControllers.userDeleteAccount);
-
-router.put('/update/email', validateBody(schemas.logIn), UserControllers.updates.userEmail);
-router.put('/update/username', validateBody(schemas.username), UserControllers.updates.userUsername);
-router.put('/update/password', validateBody(schemas.updataPassword), UserControllers.updates.userPassword);
-
-router.put('/update/name', UserControllers.updates.userName);
-router.put('/update/describe', UserControllers.updates.userDescribe);
-router.put('/update/aboutMe', UserControllers.updates.userAboutMe);
-
-router.put('/update/imgUrl', UserControllers.updates.userAvatarUrl);
-router.put('/update/avatarImg', uploadAvatar.single('img'), UserControllers.updates.userAvatarImg);
 
 module.exports = router;

@@ -11,7 +11,7 @@ const passport = require('passport');
 const flash = require('connect-flash');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 mongoose.connect('mongodb://localhost/articles');
 mongoose.Promise = global.Promise;
@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(session({
     secret: 'music',
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     // store: new MongoStore({
     //     mongooseConnection: mongoose.connection
@@ -53,7 +53,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/', require('./routes/index'));
-app.use('/me', require('./routes/users'));
+app.use('/me', require('./routes/account'));
+app.use('/users', require('./routes/users'));
 app.use('/topic', require('./routes/topic'));
 app.use('/form', require('./routes/forms'));
 app.use('/posts', require('./routes/posts'));

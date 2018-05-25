@@ -14,9 +14,9 @@ block content
                     a(href=`/posts/edit/post/${post.id}`).article__edit
                         i.fas.fa-pencil-alt
                 .article__author
-                    a.article__avatar(href=`/${post.author.username}`)
+                    a.article__avatar(href=`/users/${post.author.username}`)
                         img(src=`${post.author.avatarUrl}`, alt="avatar_author")
-                    a.article__content(href=`/${post.author.username}`)
+                    a.article__content(href=`/users/${post.author.username}`)
                         .article__name=post.author.name
                         .article__headline Front End and Full Stack JavaScript Engineer
                 

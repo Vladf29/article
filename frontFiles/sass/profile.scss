@@ -30,6 +30,10 @@
             cursor: pointer;
             overflow: hidden;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             &:hover {
                 .user-profile__avatar-upload {
                     display: flex;
