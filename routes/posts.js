@@ -18,6 +18,9 @@ router.use('/edit/post/:idPost', (req, res, next) => {
 });
 
 router.get('/post/:idPost', postsControllers.renderPost);
+router.post('/post/addComment', authorized.isAuthorized, postsControllers.addComment)
+router.delete('/post/deleteComment', authorized.isAuthorized, postsControllers.deleteComment)
+
 router.post('/like', authorized.isAuthorized, postsControllers.likePost);
 
 router.get('/edit/post/:idPost', postsControllers.editPost);

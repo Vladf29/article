@@ -248,7 +248,13 @@
         position: relative;
         width: 42px;
         height: 42px;
-        background-color: #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        } // background-color: #ccc;
         border-radius: 50%;
         overflow: hidden;
         flex-shrink: 0;

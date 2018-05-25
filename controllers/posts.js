@@ -187,12 +187,17 @@ const writePostFunc = {
 
 module.exports = {
     renderPost: async (req, res) => {
-        const post = await Posts.findById(req.params.idPost).populate('author', ['name', 'avatarUrl', 'username']);
+        const post = await Posts.findById(req.params.idPost).populate('author', ['name', 'avatarUrl', 'username']).populate('comments.author', ['name', 'avatarUrl', 'username']);
         let owner = false;
 
         if (req.user) {
             owner = req.user.id === post.author.id;
         }
+
+
+        res.cookie('idPost', post.id, {
+            path: '/posts/post'
+        });
 
         res.render('article', {
             owner,
@@ -206,6 +211,45 @@ module.exports = {
         res.render('editor', {
             type: 'public'
         });
+    },
+
+    addComment: async (req, res) => {
+        const comment = req.body.comment;
+        if (!comment) return res.status(400).send('Bad Reaquest');
+
+        const idPost = req.cookies['idPost'];
+        if (!idPost) return res.status(404).send('Not Found!');
+
+        const [post, user] = await Promise.all([Posts.findById(idPost), User.findById(req.user.id)]);
+        if (!post || !user) return res.status(404).send('Not found!');
+
+        post.comments.push({
+            author: user.id,
+            comment
+        });
+
+        await post.save();
+        user.comments.push(post.comments[post.comments.length - 1].id);
+        await user.save();
+
+        res.send();
+    },
+
+    deleteComment: async (req, res) => {
+        const idComment = req.body.idComment;
+        if (!idComment) return res.status(400).send('Bad Reaquest');
+
+        const idPost = req.cookies['idPost'];
+        if (!idPost) return res.status(404).send('Not Found!');
+
+        const [post, user] = await Promise.all([Posts.findById(idPost), User.findById(req.user.id)]);
+        if (!post || !user) return res.status(404).send('Not found!');
+
+        post.comments.pull(idComment);
+        user.comments.pull(idComment);
+
+        await Promise.all([post.save(), user.save()]);
+        res.send();
     },
 
     likePost: async (req, res) => {

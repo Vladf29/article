@@ -4,6 +4,13 @@ import {
     httpRequest
 } from './modules/httpRequest';
 
+const cookies = {};
+document.cookie.split(';').forEach((item) => {
+    const cookie = item.split('=').map((i) => i.split(' ').filter(i => i != false).join(''));
+    cookies[cookie[0]] = cookie[1];
+});
+const idPost = cookies['idPost']
+
 $(document.body).on('click', '.js-img', function () {
     const src = $(this).attr('src');
     const bigImg = $('.js-big-img');
@@ -17,29 +24,13 @@ $(document.body).on('click', '.js-big-img', function () {
     bigImg.attr('data-state', 'hidden');
 });
 
-// $(document.body).on('click', '.js-like', function () {
-//     const likeElem = $(this);
-//     const number = $(this).find('.js-number-likes');
-//     const numbers = number.text() || 0;
-//     number.empty();
-//     if (likeElem.attr('data-liked') === 'true') {
-//         likeElem.find('.js-icon-heart').removeClass('fas').addClass('far');
-//         likeElem.attr('data-liked', 'false');
-//         number.text(+numbers - 1);
-//     } else {
-//         likeElem.find('.js-icon-heart').removeClass('far').addClass('fas');
-//         likeElem.attr('data-liked', 'true');
-//         number.text(+numbers + 1);
-//     }
-// });
-
 $(document.body).on('click', '.js-replay', function () {
     const repaly = $(this);
 });
 
 $(document.body).on('submit', '.js-add-comment', function () {
-    const comment = $(this).find('.js-comment-control');
-    if (!comment.val()) return;
+    const comment = $(this).find('.js-comment-control').val();
+    if (!comment) return;
     const temp = `
         <div class="comment js-comment" data-state="data-state">
             <div class="comment__delete js-comment-delete">
@@ -50,7 +41,7 @@ $(document.body).on('submit', '.js-add-comment', function () {
               <div class="comment__body">
                 <div class="comment__info"><a class="comment__name" href="#">Someone</a><span class="comment__timestamp">Time</span></div>
                 <div class="comment__content">
-                  <p>${comment.val()}</p>
+                  <p>${comment}</p>
                 </div>
                 <div class="comment__footer">
                   <div class="comment__like js-like">
@@ -64,13 +55,32 @@ $(document.body).on('submit', '.js-add-comment', function () {
             <div class="comment__children js-comment-children"></div>
         </div>
     `
+    // if ($(this).hasClass('js-add-comment-chilren')) {
+    //     $(this).closest('.js-comment').attr('data-state', '');
+    //     $(this).closest('.js-add-comment-c').replaceWith(temp);
+    // } else {
+    //     $('.js-comments').prepend(temp);
+    // }
+    // return false;
+    const _that = $(this);
+    $.ajax({
+        method: "POST",
+        url: `/posts/post/addComment`,
+        data: JSON.stringify({
+            comment
+        }),
+        contentType: 'application/json',
+        success: function (data) {
+            location.reload();
+            // if (_that.hasClass('js-add-comment-chilren')) {
+            //     _that.closest('.js-comment').attr('data-state', '');
+            //     // _that.closest('.js-add-comment-c').replaceWith(temp);
+            // } else {
+            //     // $('.js-comments').prepend(temp);
+            // }
+        }
+    });
 
-    if ($(this).hasClass('js-add-comment-chilren')) {
-        $(this).closest('.js-comment').attr('data-state', '');
-        $(this).closest('.js-add-comment-c').replaceWith(temp);
-    } else {
-        $('.js-comments').prepend(temp);
-    }
     return false;
 });
 
@@ -101,5 +111,19 @@ $(document.body).on('click', '.js-replay', function () {
 });
 
 $(document.body).on('click', '.js-comment-delete', function () {
-    $(this).closest('.js-comment').remove();
+    const commentElem = $(this).closest('.js-comment');
+    const idComment = commentElem.attr('data-comment-id');
+    if (!idComment) return;
+
+    $.ajax({
+        method: 'DELETE',
+        url: '/posts/post/deleteComment',
+        data: JSON.stringify({
+            idComment
+        }),
+        contentType: 'application/json',
+        success: function (data) {
+            commentElem.remove();
+        }
+    });
 });

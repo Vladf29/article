@@ -22,7 +22,14 @@ const articleSchema = new Schema({
             ref: 'user',
         },
         comment: String,
-        data: Date
+        data: {
+            type: Date,
+            default: new Date()
+        },
+        likes: [{
+            type: Schema.Types.ObjectId,
+            ref: 'user'
+        }]
     }],
     likes: [{
         type: Schema.Types.ObjectId,

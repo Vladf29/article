@@ -102,18 +102,39 @@ block content
                         span.article__comment-count=post.comments.length
                 
                 .article__comments
-                    .comment.no-border
-                        .comment__c
-                            .comment__avatar
-                                    img(src="", alt="")
-                            .comment__body
-                                form.js-add-comment                               
-                                    .comment__field
-                                         textarea.comment__control(placeholder='Leave a comment' class='js-comment-control')
-                                    .comment__footer(style='justify-content: flex-end;')
-                                         button.btn.btn_primary Submit
+                    if auth
+                        .comment.no-border
+                            .comment__c
+                                .comment__avatar
+                                        img(src=`${authUser.avatarUrl}`, alt="user")
+                                .comment__body
+                                    form.js-add-comment                               
+                                        .comment__field
+                                             textarea.comment__control(placeholder='Leave a comment' class='js-comment-control')
+                                        .comment__footer(style='justify-content: flex-end;')
+                                             button.btn.btn_primary Submit
                     .js-comments
-                        .comment.js-comment(data-state)
+                        each comment in post.comments
+                            .comment.js-comment(data-state='' data-comment-id=comment.id)
+                                if auth && authUser.id == comment.author.id
+                                    .comment__delete.js-comment-delete
+                                        i(class="fas fa-times")
+                                .comment__c
+                                    .comment__avatar
+                                            img(src=`${comment.author.avatarUrl}`, alt="user")
+                                    .comment__body
+                                        .comment__info
+                                            a(href=`/users/${comment.author.username}`).comment__name=comment.author.name
+                                            span.comment__timestamp=comment.data
+                                        .comment__content
+                                            p=comment.comment
+                                        .comment__footer
+                                            .comment__like.js-like
+                                                i(class="far fa-heart js-icon-heart")
+                                                span.comment__count.js-number-heart=comment.likes.length
+                                            //- span.replay.js-replay Repaly
+                                //- .comment__children.js-comment-children
+                        //- .comment.js-comment(data-state)
                             .comment__delete.js-comment-delete
                                 i(class="fas fa-times")
                             .comment__c
