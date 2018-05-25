@@ -46,26 +46,21 @@ export default class Editor {
             cookies[cookie[0]] = cookie[1];
         });
 
-        if (cookies['idPost']) {
+        const idCookies = cookies['idPost'] ? 'idPost' : cookies['DrafPostId'] ? 'DrafPostId' : '';
+
+        if (idCookies) {
             $.ajax({
                 method: 'GET',
-                url: `/me/write_a_post/downloadPost?post=${cookies['idPost']}`,
+                url: `/posts/${idCookies === 'idPost' ? 'edit/downloadPost' : 'write_a_post/downloadDraft'}`,
                 success: function (data) {
-                    _id = cookies['idPost'];
+                    _id = cookies['idCookies'];
                     _that.filingEditorByPost(data.data);
                     _that.Start();
+                },
+                error: function (err) {
+                    if (err.status === 404) return location.href = '/posts/write_a_post'
                 }
-            });
-        } else if (cookies['DrafPostId']) {
-            $.ajax({
-                method: 'GET',
-                url: `/me/write_a_post/downloadDraft?post=${cookies['DrafPostId']}`,
-                success: function (data) {
-                    _id = cookies['DrafPostId'];
-                    _that.filingEditorByPost(data.data);
-                    _that.Start();
-                }
-            });
+            })
         } else {
             this.Start();
         }
@@ -735,7 +730,8 @@ export default class Editor {
         });
     }
 
-    Save(url = '/me/write_a_post/draft') {
+    Save(url) {
+        if (!url) return url;
         this.SetSequenceNumber();
         this.SetDataForSend();
 
@@ -744,12 +740,9 @@ export default class Editor {
         storageData.sort((a, b) => a.ind - b.ind);
         if (_notifQ.hasClass('notif--success')) _notifQ.removeClass('notif--success');
 
-        console.log(storageData)
-
-
         $.ajax({
             method: 'POST',
-            url: '/me/write_a_post/draft',
+            url: url,
             data: JSON.stringify({
                 id: _id,
                 data: storageData
@@ -768,7 +761,7 @@ export default class Editor {
 
     WriteNewPost() {
         document.cookie = `DrafPostId=;path=${location.pathname};expires=Thu, 01 Jan 1970 00:00:00 GMT`
-        location.href = '/me/write_a_post';
+        location.href = '/posts/write_a_post';
     }
 
     Publish() {
@@ -782,7 +775,7 @@ export default class Editor {
 
         $.ajax({
             method: 'POST',
-            url: '/me/write_a_post/publish',
+            url: '/posts/write_a_post/publish',
             data: JSON.stringify({
                 id: _id,
                 data: storageData
@@ -797,10 +790,11 @@ export default class Editor {
         });
     }
 
-    Delete() {
+    Delete(url) {
+        if (!url) return url;
         $.ajax({
             method: 'DELETE',
-            url: '/me/write_a_post/delete',
+            url: url,
             data: JSON.stringify({
                 id: _id
             }),

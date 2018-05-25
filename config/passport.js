@@ -34,7 +34,6 @@ const localPassport = new LocalPassport({
         }
 
         const isValid = await user.comparePassword(password);
-        console.log('>>>', isValid);
         if (!isValid) {
             // req.flash('error', 'Incorrect password');
             return done(null, false);

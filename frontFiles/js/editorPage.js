@@ -1,9 +1,6 @@
 'use strict'
 
-import {
-    uploadImg
-} from './modules/uploadImg';
-
+import uploadImg from './modules/uploadImg';
 import Editor from './modules/editor/index';
 
 const editor = new Editor();
@@ -58,22 +55,30 @@ $('.js-preview-action').on('click', '.btn', function () {
 
 $('.js-btns-action').click(function (event) {
     event.preventDefault();
-    const target = event.target;
-    const attr = $(target).attr('data-action');
-    if (!attr) return;
+    const target = $(event.target);
+    const attr = target.attr('data-action');
+    
     switch (attr) {
         case 'publish':
             editor.Publish();
             break;
-        case 'saveInDraft':
-            editor.Save();
-            break;
+        case 'save':
+            {
+                const actionUrl = target.attr('data-action-url');
+                if (!actionUrl) return;
+                editor.Save(actionUrl);
+                break;
+            }
         case 'newPost':
             editor.WriteNewPost();
             break;
         case 'delete':
-            editor.Delete();
-            break;
+            {
+                const actionUrl = target.attr('data-action-url');
+                if (!actionUrl) return;
+                editor.Delete(actionUrl);
+                break;
+            }
         default:
             break;
     }

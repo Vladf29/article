@@ -1,0 +1,3 @@
+.btn.btn-heart.js-like(data-liked=`${isLiked}` data-post-id=post.id)
+    i(class=`${isLiked ? 'fas' : 'far' } fa-heart js-icon-heart`)
+    .btn-heart__number.js-number-likes=post.likes.length

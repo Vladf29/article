@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
 const session = require('express-session');
+// const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 const flash = require('connect-flash');
 
@@ -25,8 +26,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(session({
     secret: 'music',
-    resave: false,
-    saveUninitialized: true,
+    resave: true,
+    saveUninitialized: false,
+    // store: new MongoStore({
+    //     mongooseConnection: mongoose.connection
+    // })
 }));
 
 require('./config/passport');
@@ -52,7 +56,12 @@ app.use('/', require('./routes/index'));
 app.use('/me', require('./routes/users'));
 app.use('/topic', require('./routes/topic'));
 app.use('/form', require('./routes/forms'));
-app.use('/posts', require('./routes/posts'))
+app.use('/posts', require('./routes/posts'));
+
+app.use((err, req, res, next) => {
+    console.log(err);
+    next();
+})
 
 app.listen(port, () => {
     console.log(`Server is running and waiting to connection on port ${port}`);

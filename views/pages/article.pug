@@ -5,13 +5,13 @@ block append head
 
 block content
     -var isLiked = false;    
-    if post.likes.length !== 0
+    if post.likes.length !== 0 && auth
         - isLiked = post.likes.some((id)=> id == authUser.id)
     .content
         .article
             header.article__header
                 if owner
-                    a(href=`/posts/edit/${post.id}`).article__edit
+                    a(href=`/posts/edit/post/${post.id}`).article__edit
                         i.fas.fa-pencil-alt
                 .article__author
                     a.article__avatar(href=`/${post.author.username}`)
@@ -93,9 +93,10 @@ block content
                     each topic in post.topics 
                         a.btn.btn_outline(href=`/topic/${topic}`)=topic
                 .article__engager
-                    .btn.btn-heart.js-like(data-liked=`${isLiked}` data-post-id=post.id)
-                            i(class=`${isLiked ? 'fas' : 'far' } fa-heart js-icon-heart`)
-                            .btn-heart__number.js-number-likes=post.likes.length
+                    include ../parts/likeElement
+                    //- .btn.btn-heart.js-like(data-liked=`${isLiked}` data-post-id=post.id)
+                    //-         i(class=`${isLiked ? 'fas' : 'far' } fa-heart js-icon-heart`)
+                    //-         .btn-heart__number.js-number-likes=post.likes.length
                     .article__comment
                         img(src="https://lite-cdn.codementor.io/static/images//Community/icon-comment.png", alt="")
                         span.article__comment-count=post.comments.length

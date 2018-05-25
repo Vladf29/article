@@ -22,7 +22,6 @@ $(document.body).on('click', '.js-like', function () {
                     likeElem.attr('data-liked', 'false');
                     numberField.text(+numberLikes - 1);
                 } else {
-
                     likeElem.find('.js-icon-heart').removeClass('far').addClass('fas');
                     likeElem.attr('data-liked', 'true');
                     numberField.text(+numberLikes + 1);

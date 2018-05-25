@@ -1,5 +1,5 @@
 'use strict'
-const uploadImg = () => {
+export default () => {
     $('.js-upload-close').click(function () {
         $('.js-upload').attr('data-state', 'hidden');
     });
@@ -46,7 +46,3 @@ const uploadImg = () => {
         elemPreview.find('.preview-c').append(`<img src='${url}'>`);
     });
 }
-
-export {
-    uploadImg
-};

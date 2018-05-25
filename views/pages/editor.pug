@@ -15,14 +15,14 @@ block content
                     .notif__msg Save
                 .notif__content.js-btns-action
                     if type ===  'public'
-                        button.btn.btn_primary(data-action='save') Save
+                        button.btn.btn_primary(data-action='save' data-action-url=`/posts/edit/savePost`) Save
                         button.btn.btn_primary(data-action='newPost') New Post
-                        button.btn.btn_danger-outline(data-action='delete') Delete
+                        button.btn.btn_danger-outline(data-action='delete' data-action-url=`/posts/edit/deletePost`) Delete
                     else 
-                        button.btn.btn_primary(data-action='publish') Save and Publish
-                        button.btn.btn_primary(data-action='saveInDraft') Save in Draft
+                        button.btn.btn_primary(data-action='publish') Publish
+                        button.btn.btn_primary(data-action='save' data-action-url=`/posts/write_a_post/saveDraft`) Save in Draft
                         button.btn.btn_primary(data-action='newPost') New Post
-                        button.btn.btn_danger-outline(data-action='delete') Delete
+                        button.btn.btn_danger-outline(data-action='delete' data-action-url=`/posts/write_a_post/deleteDraft`) Delete
         .article-wrapper.js-article-wrapper
             .edit-board.js-edit-board
                 .edit-board__c

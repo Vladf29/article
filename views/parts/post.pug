@@ -18,9 +18,7 @@ if posts
                     .post__preview-img
                         img(src=post.mainImg, alt="")
                 .post__footer
-                        .btn.btn-heart.js-like(data-liked=`${isLiked}` data-post-id=post.id)
-                            i(class=`${isLiked ? 'fas' : 'far' } fa-heart js-icon-heart`)
-                            .btn-heart__number.js-number-likes=post.likes.length
+                        include ./likeElement
                         a.post__comment(href=link)
                             i.fas.fa-comments
                             span.post__comment-count=post.comments.length
