@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
 const session = require('express-session');
-// const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 const flash = require('connect-flash');
 
@@ -28,10 +28,14 @@ app.use(session({
     secret: 'music',
     resave: false,
     saveUninitialized: false,
-    // store: new MongoStore({
-    //     mongooseConnection: mongoose.connection
-    // })
+    cookie: {
+        maxAge: 7 * 24 * 60 * 60 * 1000,    
+    },
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    })
 }));
+
 
 require('./config/passport');
 app.use(passport.initialize());
