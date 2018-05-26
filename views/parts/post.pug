@@ -1,10 +1,10 @@
 if posts
     .posts
-        each post in posts
-            -var isLiked = false;
-            -var link = `/posts/post/${post.id}`
-            -var linkOnAuthor = `/users/${post.author.username}`
-            if auth && post.likes.length != 0
+        each post in posts.reverse()
+            -let isLiked = false;
+            -const link = `/posts/post/${post.id}`
+            -const linkOnAuthor = `/users/${post.author.username}`
+            if auth && post.likes && post.likes.length != 0
                 - isLiked = post.likes.some((id)=> id == authUser.id)
             
             .post
@@ -22,4 +22,4 @@ if posts
                         include ./likeElement
                         a.post__comment(href=link)
                             i.fas.fa-comments
-                            span.post__comment-count=post.comments.length
+                            span.post__comment-count= post.comments ? post.comments.length : 0

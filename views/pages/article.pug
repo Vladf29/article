@@ -105,7 +105,7 @@ block content
                     if auth
                         .comment.no-border
                             .comment__c
-                                .comment__avatar
+                                a(href=`/users/${authUser.username}`).comment__avatar
                                         img(src=`${authUser.avatarUrl}`, alt="user")
                                 .comment__body
                                     form.js-add-comment                               
@@ -114,13 +114,14 @@ block content
                                         .comment__footer(style='justify-content: flex-end;')
                                              button.btn.btn_primary Submit
                     .js-comments
-                        each comment in post.comments
+                        -const comments = post.comments.reverse();
+                        each comment in comments
                             .comment.js-comment(data-state='' data-comment-id=comment.id)
                                 if auth && authUser.id == comment.author.id
                                     .comment__delete.js-comment-delete
                                         i(class="fas fa-times")
                                 .comment__c
-                                    .comment__avatar
+                                    a(href=`/users/${comment.author.username}`).comment__avatar
                                             img(src=`${comment.author.avatarUrl}`, alt="user")
                                     .comment__body
                                         .comment__info

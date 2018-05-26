@@ -36,7 +36,8 @@ block content
                     block varibale
                     -var items = ['Profile','Posts','Likes']
                     each item in items
-                        -var url = `/${owner ? 'me' : 'users/'+user.username}/${item.toLowerCase()}`
+                        -const s = item === 'Profile' ? '' : item
+                        -const url = `/${owner ? 'me' : 'users/'+user.username}/${s.toLowerCase()}`
                         a.user-profile__tab(href=url class=`${active === item.toLowerCase() ? 'user-profile__tab--active' : ''}`)=item
         .user-profile__content
             block contentInner

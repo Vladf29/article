@@ -176,13 +176,40 @@
             display: flex;
             align-content: center;
             cursor: pointer;
+            margin-bottom: 15px;
             i {
                 margin-right: 12px;
+            }
+        }
+        &__write-list {
+            display: flex;
+            flex-direction: column;
+            a {
+                margin-bottom: 8px;
+                position: relative;
+                padding-left: 13px;
+                &::before {
+                    content: "";
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 50%;
+                    background-color: #333;
+                    position: absolute;
+                    left: 1px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 18px;
+                }
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                &:hover {
+                    color: #333;
+                }
             }
         }
         &__content {}
     }
 }
-
 
 @import './base/post.scss';

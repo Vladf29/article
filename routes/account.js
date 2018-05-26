@@ -16,14 +16,22 @@ const uploadAvatar = multer({
     dest: './asset/users/avatars'
 });
 
-router.get('/users', async (req, res) => {
-    const found = await User.find({});
-    res.json(found);
-});
+router.use(authorized.isAuthorized);
 
-router.get('/settings', authorized.isAuthorized, AccountControllers.pages.renderSettings);
-router.get('/profile', authorized.isAuthorized, AccountControllers.pages.renderProfile);
-router.get('/posts', authorized.isAuthorized, AccountControllers.pages.renderPosts);
+router.get('/', AccountControllers.pages.renderProfile);
+router.get('/settings', AccountControllers.pages.renderSettings);
+router.get('/posts', AccountControllers.pages.renderPosts);
+
+router.get('/likes', async (req, res) => {
+    const User = require('../db/users');
+    const user = await User.findById(req.user.id).populate('likes');
+    res.render('me/posts', {
+        owner: true,
+        user,
+        posts: user.likes,
+        active:'likes'
+    });
+});
 
 router.get('/delete', AccountControllers.userDeleteAccount);
 

@@ -1,7 +1,7 @@
 extends ./profile
 
 block append varibale
-    -var active = 'profile'
+    -const active = 'profile'
 block contentInner
     .user-profile__c
         .user-profile__heading
@@ -15,8 +15,8 @@ block contentInner
                     span Ok
         .user-profile__block.about-block
             .about-block__c(data-state='show' data-action='ok')
-                if (user && user.aboutMe)
-                    p=user.aboutMe
+                if (authUser && authUser.aboutMe)
+                    p=authUser.aboutMe
                 else 
                     p
             if (owner)
@@ -32,3 +32,7 @@ block contentInner
                 .post-block__write
                     i(class="fas fa-plus-circle")
                     span Write a post
+            .post-block__write-list
+                each post in user.articles
+                    a(href=`/posts/post/${post.id}`)=post.title
+                        

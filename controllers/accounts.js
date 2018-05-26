@@ -8,7 +8,7 @@ const Article = require('../db/articles');
 
 const pages = {
     renderProfile: async (req, res) => {
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user.id).populate('articles',['title']);
         res.render('me/aboutMe', {
             owner: true,
             user
@@ -23,7 +23,8 @@ const pages = {
         res.render('me/posts', {
             owner: true,
             user,
-            posts: user.articles
+            posts: user.articles,
+            active:'posts'
         });
     },
 }

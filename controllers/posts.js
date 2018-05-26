@@ -179,9 +179,7 @@ const writePostFunc = {
             path: pathsCookie.writePost
         });
         req.flash('success', `The post was successfully publish.`);
-        res.json({
-            id: newPost.ids
-        });
+        res.send('Ok')
     }
 }
 
@@ -193,7 +191,6 @@ module.exports = {
         if (req.user) {
             owner = req.user.id === post.author.id;
         }
-
 
         res.cookie('idPost', post.id, {
             path: '/posts/post'
