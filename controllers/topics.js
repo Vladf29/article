@@ -47,7 +47,7 @@ module.exports = {
 
     nodejs: async (req, res) => {
         const posts = await Posts.find({
-            topics: "nodejs"
+            topics: "node.js"
         }).populate('author', ['username', 'name', 'avatarUrl']);
         res.render('index', {
             posts,

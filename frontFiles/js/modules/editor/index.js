@@ -10,7 +10,10 @@ const _editPanel = document.querySelector(".js-edit-board");
 const _notifQ = $(".js-notif");
 
 let _isSelected;
-const storageData = [];
+const storageData = {
+  topics: [],
+  data: []
+};
 
 /**
  * def - default
@@ -18,6 +21,7 @@ const storageData = [];
  * img
  * img-caption
  * code
+ * title
  */
 let _routine = "def";
 
@@ -62,7 +66,7 @@ export default class Editor {
         }`,
         success: function(data) {
           _id = cookies["idCookies"];
-          _that.filingEditorByPost(data.data);
+          _that.filingEditorByPost(data);
           _that.Start();
         },
         error: function(err) {
@@ -245,6 +249,7 @@ export default class Editor {
     )
       setAtr("img");
     else if (_hasClass(_isSelected, "js-img-caption")) setAtr("img-caption");
+    else if (_hasClass(_isSelected, "js-title")) setAtr("title");
 
     _routine = _articleBlock.getAttribute("data-routine");
 
@@ -259,15 +264,26 @@ export default class Editor {
     this.DeleteTextarea();
   }
 
-  filingEditorByPost(data = []) {
-    if (!data) return;
+  filingEditorByPost({ content = [], topics = [] }) {
+    if (!content.length || !topics.length) return;
+    console.log(topics);
+    $(".js-btn-topic")
+      .attr("data-chosen-topic", "false")
+      .addClass("btn_outline")
+      .removeClass("btn_primary");
+    topics.forEach(topic => {
+      $(`.js-btn-topic[data-topic='${topic}']`)
+        .attr("data-chosen-topic", "true")
+        .removeClass("btn_outline")
+        .addClass("btn_primary");
+    });
 
-    data.forEach(item => {
+    content.forEach(item => {
       const type = item.type;
       let elem;
       switch (type) {
         case "mainTitle": {
-          const title = `<h1 class="js-graf js-f js-plain js-main-field" data-name="mainTitle" data-touch="touch" data-remove="false">${
+          const title = `<h1 class="js-graf js-title js-f js-plain js-main-field" data-name="mainTitle" data-touch="touch" data-remove="false">${
             item.text
           }</h1>`;
           _articleBlock.innerHTML = title;
@@ -419,6 +435,7 @@ export default class Editor {
     const par = this.AddNewElement("p", str, ["js-graf", "js-f", "js-plain"]);
     par.setAttribute("data-name", `par`);
     par.setAttribute("data-touch", "untouch");
+    par.setAttribute("data-placeholder", "any text");
     par.setAttribute("data-index", _articleBlock.children.length - 1);
 
     if (select) {
@@ -431,31 +448,26 @@ export default class Editor {
 
   newTitleH2(str = "", select = true) {
     let parent = _articleBlock;
+    const clss = ["js-graf", "js-f", "js-plain", "js-title"];
+
     if (_isSelected && _isSelected.parentElement != parent) {
       while (_isSelected.parentElement != parent) {
         _isSelected = _isSelected.parentElement;
       }
     }
-    if (_isSelected && _isSelected.tagName === "P") {
-      const title = this.CreateNewElement("h2", str, [
-        "js-graf",
-        "js-f",
-        "js-plain"
-      ]);
+    if (false && _isSelected && _isSelected.tagName === "P") {
+      const title = this.CreateNewElement("h2", str, clss.slice());
       title.setAttribute("data-name", `title`);
       title.setAttribute("data-touch", "untouch");
       this.OutSelecte();
       _articleBlock.replaceChild(title, _isSelected);
       this.OnSelecte(title);
     } else {
-      const title = this.AddNewElement("h2", str, [
-        "js-graf",
-        "js-f",
-        "js-plain"
-      ]);
+      const title = this.AddNewElement("h2", str, clss.slice());
       // const title = this.AddNewElement('h2', '', ['js-graf', 'js-f', 'js-empty', 'js-plain']);
       title.setAttribute("data-name", "title");
       title.setAttribute("data-touch", "untouch");
+      title.setAttribute("data-placeholder", "title");
       if (select) {
         this.OutSelecte();
         this.OnSelecte(title);
@@ -470,6 +482,8 @@ export default class Editor {
       "js-f",
       "js-list-item"
     ]);
+    item.setAttribute("data-placeholder", "any text");
+
     const list = this.CreateNewElement("ul", "", ["js-list", "js-container"]);
     list.setAttribute("data-name", `list`);
     list.setAttribute("data-touch", `untouch`);
@@ -496,6 +510,7 @@ export default class Editor {
       ["js-graf", "js-f", "js-list-item"],
       parent
     );
+    item.setAttribute("data-placeholder", "any text");
     if (select) {
       this.OutSelecte();
       this.OnSelecte(item);
@@ -504,7 +519,7 @@ export default class Editor {
   }
 
   addMainFields(opt) {
-    const title = `<h1 class="js-graf js-f js-plain is-empty js-main-field" data-name="mainTitle" data-touch="untouch" data-remove="false"></h1>`;
+    const title = `<h1 class="js-graf js-f js-title js-plain is-empty js-main-field" data-placeholder='main title' data-name="mainTitle" data-touch="untouch" data-remove="false"></h1>`;
     const img = `<div class="block-img block-img--main js-block-main js-container js-main-field" data-name="mainImg" data-touch="untouch" data-remove="false" data-empty="true">
                             <div class="block-img__placeholder">Set main image</div>
                         </div>`;
@@ -588,6 +603,7 @@ export default class Editor {
       "js-img-caption",
       "js-f"
     ]);
+    caption.setAttribute("data-placeholder", "any text");
 
     containerCaption.appendChild(caption);
     elem.closest(".js-block-img").appendChild(containerCaption);
@@ -653,38 +669,44 @@ export default class Editor {
     }
     // textarea.placeholder = 'TITLE';
 
+    if (_isSelected && $(_isSelected).attr("data-placeholder"))
+      textarea.placeholder = `Enter ${$(_isSelected).attr("data-placeholder")}`;
+
     _addClass(_isSelected, "is-selected");
     _isSelected.textContent = "";
     _isSelected.appendChild(textarea);
 
-    textarea.addEventListener("keydown", function(event) {
-      if (event.keyCode === 13) {
-        if (_routine === "code") return;
-        if (_routine === "list") _that.AddListItem();
-        else _that.newParagraph();
-        return;
-      }
-      if (event.keyCode === 8) {
-        if (this.value.length === 0) _that.DeleteElement();
-        return;
-      }
-    });
+    textarea.addEventListener("keydown", this.handlerTextarea);
 
     autosize($(".js-edit-field"));
     textarea.focus();
+  }
+
+  handlerTextarea(event) {
+    if (event.keyCode === 13) {
+      if (_routine === "code") return;
+      if (_routine === "list") _that.AddListItem();
+      else _that.newParagraph();
+      return;
+    }
+    if (event.keyCode === 8) {
+      if (this.value.length === 0) _that.DeleteElement();
+      return;
+    }
   }
 
   DeleteTextarea() {
     if (_isSelected && _hasClass(_isSelected, "is-selected")) {
       const textarea = document.querySelector(".js-edit-field");
       let str = textarea.value;
+      const { placeholder } = textarea.placeholder;
 
       _isSelected.removeChild(textarea);
       _isSelected.classList.remove("is-selected");
 
       if (!str) {
         _isSelected.appendChild(
-          this.CreateNewElement("span", "Enter any text", [
+          this.CreateNewElement("span", placeholder, [
             "placeholder",
             "js-placeholder"
           ])
@@ -712,8 +734,9 @@ export default class Editor {
   }
 
   SetDataForSend() {
-    if (storageData.length === 0 && _articleBlock.children.length === 0) return;
-    storageData.length = [];
+    if (storageData.data.length === 0 && _articleBlock.children.length === 0)
+      return;
+    storageData.data = [];
     this.OutSelecte();
     $(_articleBlock)
       .children()
@@ -742,7 +765,7 @@ export default class Editor {
                 src: img,
                 caption
               };
-              storageData.push(a);
+              storageData.data.push(a);
               break;
             }
             case "list": {
@@ -757,7 +780,7 @@ export default class Editor {
                 );
               });
 
-              storageData.push(list);
+              storageData.data.push(list);
               break;
             }
 
@@ -777,7 +800,7 @@ export default class Editor {
             ind: +key,
             type
           };
-          storageData.push(a);
+          storageData.data.push(a);
         }
       });
 
@@ -807,13 +830,21 @@ export default class Editor {
     this.SetSequenceNumber();
     this.SetDataForSend();
 
-    if (storageData.length === 0 && _articleBlock.children.length === 0) return;
+    if (storageData.data.length === 0 && _articleBlock.children.length === 0)
+      return;
 
-    storageData.sort((a, b) => a.ind - b.ind);
+    storageData.data.sort((a, b) => a.ind - b.ind);
+    $(".js-btn-topic[data-chosen-topic=true]").each(function() {
+      const target = $(this);
+      if (target.attr("data-chosen-topic") === "true") {
+        if (!target.attr("data-topic")) return;
+        storageData.topics.push(target.attr("data-topic"));
+      }
+    });
+    console.log(storageData.topics);
+
     if (_notifQ.hasClass("notif--success"))
       _notifQ.removeClass("notif--success");
-
-    console.log(storageData);
 
     $.ajax({
       method: "POST",
@@ -832,6 +863,8 @@ export default class Editor {
         console.log(err);
       }
     });
+    storageData.data = [];
+    storageData.topics = [];
   }
 
   WriteNewPost() {
@@ -845,9 +878,19 @@ export default class Editor {
     this.SetSequenceNumber();
     this.SetDataForSend();
 
-    if (storageData.length === 0 && _articleBlock.children.length === 0) return;
+    if (storageData.data.length === 0 && _articleBlock.children.length === 0)
+      return;
 
-    storageData.sort((a, b) => a.ind - b.ind);
+    storageData.data.sort((a, b) => a.ind - b.ind);
+
+    $(".js-btn-topic[data-chosen-topic=true]").each(function() {
+      const target = $(this);
+      if (target.attr("data-chosen-topic") === "true") {
+        if (!target.attr("data-topic")) return;
+        storageData.topics.push(target.attr("data-topic"));
+      }
+    });
+
     if (_notifQ.hasClass("notif--success"))
       _notifQ.removeClass("notif--success");
 
@@ -860,17 +903,20 @@ export default class Editor {
       }),
       contentType: "application/json",
       success: function(data) {
+        location.reload();
         // location.href = `/posts/post/${data.id}`;
       },
       error: function(err) {
         location.reload();
       }
     });
+
+    storageData.data = [];
+    storageData.topics = [];
   }
 
   Delete(url) {
     if (!url) return url;
-    console.log(_id);
     $.ajax({
       method: "DELETE",
       url: url,

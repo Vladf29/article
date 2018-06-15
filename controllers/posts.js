@@ -21,11 +21,13 @@ const editPostFunc = {
     if (!post) return res.status(404).send("The post wasn't found");
 
     res.json({
-      data: JSON.parse(post.content.toString())
+      content: JSON.parse(post.content.toString()),
+      topics: post.topics
     });
   },
   savePost: async (req, res) => {
-    const data = req.body.data;
+    const body = req.body.data;
+    const data = body.data;
     const idPost = req.cookies["idPost"];
     if (!idPost) return res.status(404).send("Not Found!");
 
@@ -35,8 +37,8 @@ const editPostFunc = {
     };
 
     const content = {
-      content: new Buffer(JSON.stringify(data))
-      // topics: ['JavaScript', 'Node.js', 'React', 'TypeScript']
+      content: new Buffer(JSON.stringify(data)),
+      topics: body.topics
     };
 
     if (!preContent.title) {
@@ -60,6 +62,7 @@ const editPostFunc = {
     post.mainImg = content.mainImg;
     post.title = content.title;
     post.content = content.content;
+    post.topics = content.topics;
 
     await post.save();
 
@@ -71,7 +74,6 @@ const editPostFunc = {
   },
   deletePost: async (req, res) => {
     const idPost = req.cookies["idPost"];
-    console.log(idPost);
     if (!idPost) {
       req.flash("error", "Something went wrong. Please try doing it late!");
       return res.status(400).send();
@@ -122,10 +124,12 @@ const writePostFunc = {
     const user = await User.findById(req.user.id);
     const DrafPostIdCookie = req.cookies["DrafPostId"];
 
+    const data = req.body.data.data;
+
     const isTaken = user.draftArticles.id(DrafPostIdCookie);
     if (!isTaken) {
       user.draftArticles.push({
-        content: new Buffer(JSON.stringify(req.body.data))
+        content: new Buffer(JSON.stringify(data))
       });
 
       await user.save();
@@ -138,7 +142,7 @@ const writePostFunc = {
       });
     }
 
-    isTaken.content = new Buffer(JSON.stringify(req.body.data));
+    isTaken.content = new Buffer(JSON.stringify(data));
     await user.save();
 
     res.cookie("DrafPostId", isTaken.id, {
@@ -168,7 +172,8 @@ const writePostFunc = {
     res.send("OK");
   },
   publish: async (req, res) => {
-    let data = req.body.data;
+    const body = req.body.data;
+    const data = body.data;
     const DrafPostIdCookie = req.cookies["DrafPostId"];
 
     const preContent = {
@@ -179,7 +184,7 @@ const writePostFunc = {
     const content = {
       content: new Buffer(JSON.stringify(data)),
       author: req.user.id,
-      topics: ["JavaScript", "Node.js", "React", "TypeScript"]
+      topics: body.topics
     };
 
     if (!preContent.title) {

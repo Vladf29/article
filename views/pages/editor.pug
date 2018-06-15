@@ -13,6 +13,10 @@ block content
                     .notif__icon
                         i.far.fa-check-circle
                     .notif__msg Save
+                .notif__content.js-btns-topics
+                    -var topics = ['JavaScript','React','TypeScript','Node.js']
+                    each topic in topics
+                        .btn.btn_primary.js-btn-topic(data-chosen-topic='true' data-topic=topic.toLowerCase())=topic
                 .notif__content.js-btns-action
                     if type ===  'public'
                         button.btn.btn_primary(data-action='save' data-action-url=`/posts/edit/savePost`) Save
