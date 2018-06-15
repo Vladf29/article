@@ -22,16 +22,7 @@ router.get('/', AccountControllers.pages.renderProfile);
 router.get('/settings', AccountControllers.pages.renderSettings);
 router.get('/posts', AccountControllers.pages.renderPosts);
 
-router.get('/likes', async (req, res) => {
-    const User = require('../db/users');
-    const user = await User.findById(req.user.id).populate('likes');
-    res.render('me/posts', {
-        owner: true,
-        user,
-        posts: user.likes,
-        active:'likes'
-    });
-});
+router.get('/likes', AccountControllers.likes);
 
 router.get('/delete', AccountControllers.userDeleteAccount);
 

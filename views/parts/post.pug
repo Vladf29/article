@@ -9,9 +9,10 @@ if posts
             
             .post
                 .post__author
-                    a(href=linkOnAuthor).post__author-avatar
-                        img(src=`${post.author.avatarUrl}`, alt=`${post.author.name}`)
-                    a(href=linkOnAuthor).post__author-name=post.author.name
+                    if post.author.avatarUrl
+                        a(href=linkOnAuthor).post__author-avatar
+                            img(src=`${post.author.avatarUrl}`, alt=`${post.author.name}`)
+                        a(href=linkOnAuthor).post__author-name=post.author.name
                 a(href=link).post__content
                     .post__body
                         h3.post__title=post.title

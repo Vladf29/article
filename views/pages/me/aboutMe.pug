@@ -15,7 +15,9 @@ block contentInner
                     span Ok
         .user-profile__block.about-block
             .about-block__c(data-state='show' data-action='ok')
-                if (authUser && authUser.aboutMe)
+                if user && user.aboutMe
+                    p=user.aboutMe
+                else if authUser && authUser.aboutMe
                     p=authUser.aboutMe
                 else 
                     p
@@ -25,7 +27,7 @@ block contentInner
 
     .user-profile__c
         .user-profile__heading
-            span.user-profile__title Posts by Vlad
+            span.user-profile__title Posts by #{authUser ? authUser.name : user.name}
         .user-profile__block.post-block
             .post-block__content
             if (owner)

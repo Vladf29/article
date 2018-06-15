@@ -29,13 +29,11 @@ const localPassport = new LocalPassport({
         });
 
         if (!user) {
-            // req.flash('error', 'Incorrect email');
             return done(null, false);
         }
 
         const isValid = await user.comparePassword(password);
         if (!isValid) {
-            // req.flash('error', 'Incorrect password');
             return done(null, false);
         }
 

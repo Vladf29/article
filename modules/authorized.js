@@ -8,6 +8,7 @@ module.exports = {
     },
     isNotAuthorized: (req, res, next) => {
         if (!req.user) return next()
+        req.flash('error', 'Firstly you should log out');        
         res.redirect('/');
     }
 }

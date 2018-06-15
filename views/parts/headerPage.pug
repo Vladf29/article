@@ -27,10 +27,10 @@ header.header-page
                     .avatar__log.js-avatar-log
                         img(src=`${authUser.avatarUrl}`, alt="user avatar")
                     ul.avatar__drop-list
-                        -var items = ['Write a post','Articles','Bookmarks','Profile','Settings']
+                        -var items = [{t:'Write a post', href:'/write_a_post'},{t:'Profile',href:'/'},{t:'Settings',href:'/settings'}]
                         each item in items
                             li.avatar__drop-item
-                                a(href='/me/'+item.toLowerCase().replace(/\s/g,'_'))=item
+                                a(href=`/me${item.href}`)=item.t
                         li.avatar__drop-item
                                 a(href='/form/log_out') Log out
             a.aut__item.aut__write-post(href='/posts/write_a_post') 

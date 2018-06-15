@@ -8,14 +8,14 @@ block append head
 block content
     .settings
         .settings__c
-            .sidebar
-                .slidebar__c
-                    span.sidebar__title Settings
-                    .sidebar__items
-                        -var items = ['Account','Profile','Notification']
-                        each item in items                                    
-                            a.sidebar__item(href='#')
-                                span=item + ' Settings'
+            //- .sidebar
+            //-     .slidebar__c
+            //-         span.sidebar__title Settings
+            //-         .sidebar__items
+            //-             -var items = ['Account','Profile']
+            //-             each item in items                                    
+            //-                 a.sidebar__item(href='#')
+            //-                     span=item + ' Settings'
             .settings__content
                 span.settings__content-title.settings__content-title Account Settings
                 .settings__block

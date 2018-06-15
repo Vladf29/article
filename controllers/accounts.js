@@ -8,7 +8,7 @@ const Article = require('../db/articles');
 
 const pages = {
     renderProfile: async (req, res) => {
-        const user = await User.findById(req.user.id).populate('articles',['title']);
+        const user = await User.findById(req.user.id).populate('articles', ['title']);
         res.render('me/aboutMe', {
             owner: true,
             user
@@ -24,7 +24,7 @@ const pages = {
             owner: true,
             user,
             posts: user.articles,
-            active:'posts'
+            active: 'posts'
         });
     },
 }
@@ -155,7 +155,7 @@ const updates = {
         });
 
         src.on('error', () => {
-
+            res.status(400).send();
         });
     },
 }
@@ -176,5 +176,15 @@ module.exports = {
 
         await user.remove();
         res.send('Ok');
+    },
+    likes: async (req, res) => {
+        const User = require('../db/users');
+        const user = await User.findById(req.user.id).populate('likes');
+        res.render('me/posts', {
+            owner: true,
+            user,
+            posts: user.likes,
+            active: 'likes'
+        });
     }
 }
