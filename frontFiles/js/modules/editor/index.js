@@ -706,14 +706,15 @@ export default class Editor {
     if (_isSelected && _hasClass(_isSelected, "is-selected")) {
       const textarea = document.querySelector(".js-edit-field");
       let str = textarea.value;
-      const { placeholder } = textarea.placeholder;
+      // const placeholder  = $(textarea).attr('placeholder');
+      const { placeholder } = textarea;
 
       _isSelected.removeChild(textarea);
       _isSelected.classList.remove("is-selected");
 
       if (!str) {
         _isSelected.appendChild(
-          this.CreateNewElement("span", placeholder, [
+          this.CreateNewElement("span", placeholder || "Enter any text", [
             "placeholder",
             "js-placeholder"
           ])

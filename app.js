@@ -64,8 +64,10 @@ app.use("/users", require("./routes/users"));
 app.use("/topic", require("./routes/topic"));
 app.use("/form", require("./routes/forms"));
 app.use("/posts", require("./routes/posts"));
+app.use("/search", require("./routes/search"));
 
 app.use((req, res) => {
+  req.flash("error", "Page 404 ---- Not Found");
   res.redirect("/");
 });
 

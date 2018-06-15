@@ -18,10 +18,9 @@ header.header-page
         .search(data-state='closed')
             .search__icon.js-search-icon
                 i.fas.fa-search
-            .search__c
-                input.search__control(type="text" placeholder='Search post' id='search-post')
+            form.search__c.js-search-form
+                input.search__control(type="text" placeholder='Search post' name='search-post')
         .aut
-
             if (auth)
                 .avatar(data-state='closed')
                     .avatar__log.js-avatar-log

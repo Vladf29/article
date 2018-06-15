@@ -30,7 +30,7 @@ block content
                 img(src=`${post.mainImg}`, alt="main_img" class='js-img')
                 br
                 - var ca = content.find((a)=>a.type === 'mainImg')
-                if ca.caption
+                if ca && ca.caption
                     em=ca.caption
             
             .article__body

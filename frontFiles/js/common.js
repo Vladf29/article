@@ -50,4 +50,14 @@ window.addEventListener("load", () => {
       .closest(".flash-msg")
       .remove();
   });
+
+  $(".js-search-form").submit(function(e) {
+    e.preventDefault();
+    const val = $(this)
+      .find(`input[name=search-post]`)
+      .val();
+    if (!val) return;
+
+    location.href = `/search?value=${val}`;
+  });
 });

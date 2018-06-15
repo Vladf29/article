@@ -226,7 +226,6 @@ module.exports = {
       .populate("author", ["name", "avatarUrl", "username", "describe"])
       .populate("comments.author", ["name", "avatarUrl", "username"]);
     let owner = false;
-    console.log(JSON.parse(post.content))
 
     if (req.user) {
       owner = req.user.id === post.author.id;
