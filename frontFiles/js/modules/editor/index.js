@@ -264,21 +264,22 @@ export default class Editor {
     this.DeleteTextarea();
   }
 
-  filingEditorByPost({ content = [], topics = [] }) {
-    if (!content.length || !topics.length) return;
-    console.log(topics);
-    $(".js-btn-topic")
-      .attr("data-chosen-topic", "false")
-      .addClass("btn_outline")
-      .removeClass("btn_primary");
-    topics.forEach(topic => {
-      $(`.js-btn-topic[data-topic='${topic}']`)
-        .attr("data-chosen-topic", "true")
-        .removeClass("btn_outline")
-        .addClass("btn_primary");
-    });
+  filingEditorByPost({ data = [], content = [], topics = [] }) {
+    data = data.length === 0 ? (content.length !== 0 ? content : data) : data;
+    if (topics.length !== 0) {
+      $(".js-btn-topic")
+        .attr("data-chosen-topic", "false")
+        .addClass("btn_outline")
+        .removeClass("btn_primary");
+      topics.forEach(topic => {
+        $(`.js-btn-topic[data-topic='${topic}']`)
+          .attr("data-chosen-topic", "true")
+          .removeClass("btn_outline")
+          .addClass("btn_primary");
+      });
+    }
 
-    content.forEach(item => {
+    data.forEach(item => {
       const type = item.type;
       let elem;
       switch (type) {
@@ -290,7 +291,11 @@ export default class Editor {
           break;
         }
         case "mainImg": {
-          elem = this.AddMainImg(item.src, false);
+          elem = this.AddMainImg(
+            item.src,
+            item.caption ? item.caption : "",
+            false
+          );
           break;
         }
         case "par": {
@@ -540,13 +545,15 @@ export default class Editor {
     }
   }
 
-  AddMainImg(url, select = true) {
+  AddMainImg(url, caption = "", select = true) {
     const blockImg = this.AddBlockImg(url, select);
     $(blockImg).attr("data-touch", "touch");
     $(blockImg).attr("data-remove", "false");
     $(blockImg).attr("data-name", "mainImg");
 
     $(blockImg).addClass("block-img--main js-block-main js-main-field");
+
+    if (caption) this.AddImgCaption(caption, blockImg, false);
 
     const deleteElem = this.CreateNewElement("div", "", [
       "block-img__delete",
@@ -827,6 +834,8 @@ export default class Editor {
 
   Save(url) {
     if (!url) return url;
+    storageData.data = [];
+    storageData.topics = [];
     this.SetSequenceNumber();
     this.SetDataForSend();
 
@@ -841,7 +850,6 @@ export default class Editor {
         storageData.topics.push(target.attr("data-topic"));
       }
     });
-    console.log(storageData.topics);
 
     if (_notifQ.hasClass("notif--success"))
       _notifQ.removeClass("notif--success");
@@ -863,8 +871,6 @@ export default class Editor {
         console.log(err);
       }
     });
-    storageData.data = [];
-    storageData.topics = [];
   }
 
   WriteNewPost() {

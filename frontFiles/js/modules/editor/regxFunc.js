@@ -20,7 +20,7 @@ const toTag = [
         return str.replace(regx, (str) => {
             const text = str.match(/\[.+?\]/g)[0].replace(/(\[|\])/g, '');
             const href = str.match(/\(.+?\)/g)[0].replace(/(\(|\))/g, '');
-            return `<a href='${href}'>${text}</a>`
+            return `<a href='${href}' target='_blank'>${text}</a>`
         });
     }
 ];

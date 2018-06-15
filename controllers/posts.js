@@ -66,6 +66,7 @@ const editPostFunc = {
 
     await post.save();
 
+
     res.clearCookie("idPost", {
       path: pathsCookie.editPost
     });
@@ -146,7 +147,7 @@ const writePostFunc = {
     await user.save();
 
     res.cookie("DrafPostId", isTaken.id, {
-      path: pathsCookies.writePost
+      path: pathsCookie.writePost
     });
     res.json({
       id: req.body.id
@@ -225,6 +226,7 @@ module.exports = {
       .populate("author", ["name", "avatarUrl", "username", "describe"])
       .populate("comments.author", ["name", "avatarUrl", "username"]);
     let owner = false;
+    console.log(JSON.parse(post.content))
 
     if (req.user) {
       owner = req.user.id === post.author.id;

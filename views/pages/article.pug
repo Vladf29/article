@@ -29,8 +29,9 @@ block content
             .article__main-img.article__img
                 img(src=`${post.mainImg}`, alt="main_img" class='js-img')
                 br
-                if post.captionMainImg
-                    em=post.captionMainImg
+                - var ca = content.find((a)=>a.type === 'mainImg')
+                if ca.caption
+                    em=ca.caption
             
             .article__body
                 each item in content
