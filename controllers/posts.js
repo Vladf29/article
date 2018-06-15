@@ -66,7 +66,6 @@ const editPostFunc = {
 
     await post.save();
 
-
     res.clearCookie("idPost", {
       path: pathsCookie.editPost
     });
@@ -226,6 +225,11 @@ module.exports = {
       .populate("author", ["name", "avatarUrl", "username", "describe"])
       .populate("comments.author", ["name", "avatarUrl", "username"]);
     let owner = false;
+
+    if (!post) {
+      req.flash("error", "The post was removed by Admin or not existed");
+      return res.redirect("/");
+    }
 
     if (req.user) {
       owner = req.user.id === post.author.id;

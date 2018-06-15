@@ -48,6 +48,7 @@ app.use(express.static("public"));
 app.use((req, res, next) => {
   res.locals.auth = req.user ? true : false;
   if (res.locals.auth) {
+    res.locals.isAdmin = req.user.admin;
     res.locals.authUser = req.user;
     res.locals.authUser.avatarUrl = req.user.avatarUrl
       ? req.user.avatarUrl
@@ -65,6 +66,7 @@ app.use("/topic", require("./routes/topic"));
 app.use("/form", require("./routes/forms"));
 app.use("/posts", require("./routes/posts"));
 app.use("/search", require("./routes/search"));
+app.use("/admin", require("./routes/admin"));
 
 app.use((req, res) => {
   req.flash("error", "Page 404 ---- Not Found");

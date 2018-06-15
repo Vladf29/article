@@ -13,6 +13,9 @@ block content
                 if owner
                     a(href=`/posts/edit/post/${post.id}`).article__edit
                         i.fas.fa-pencil-alt
+                else if isAdmin
+                        .article__edit.js-admin-delete-article(data-post-id=post.id data-author-id=post.author.username)
+                            i.fas.fa-trash-alt
                 .article__author
                     a.article__avatar(href=`/users/${post.author.username}`)
                         img(src=`${post.author.avatarUrl}`, alt="avatar_author")
@@ -80,8 +83,11 @@ block content
                         -const comments = post.comments.reverse();
                         each comment in comments
                             .comment.js-comment(data-state='' data-comment-id=comment.id)
-                                if auth && authUser.id == comment.author.id
+                                if auth && authUser && comment.author && authUser.id == comment.author.id
                                     .comment__delete.js-comment-delete
+                                        i(class="fas fa-times")
+                                else if isAdmin
+                                    .comment__delete.js-admin-delete-comment(data-post-id=post.id  data-comment-id=comment.id data-author-id=comment.author.username)
                                         i(class="fas fa-times")
                                 .comment__c
                                     a(href=`/users/${comment.author.username}`).comment__avatar
@@ -126,3 +132,5 @@ block append script
     script(src="/js/article.js")
     if auth
         script(src="/js/index.js")
+    if isAdmin
+        script(src='/js/admin.js')

@@ -1,60 +1,66 @@
-'use strict'
+"use strict";
 
-const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
+const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    username: {
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    avatarUrl: {
-        type: String,
-        default: 'https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200'
-    },
-    password: {
-        type: String,
-        minlength: 6,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    comments: [{
-        type: Schema.Types.ObjectId,
-        ref: 'comment'
-    }],
-    articles: [{
-        type: Schema.Types.ObjectId,
-        ref: 'article'
-    }],
-    draftArticles: [
-        new Schema({
-            content: Buffer,
-        })
-    ],
-    likes: [{
-        type: Schema.Types.ObjectId,
-        ref: 'article'
-    }],
-    describe: String,
-    aboutMe: String,
-    emailActive: {
-        type: Boolean,
-        default: false
-    },
-    tokenConfirmEmail: String,
-}, {
-    timestamps: {
-        createdAt: 'createdAt',
-        updatedAt: 'updatedAt'
+  username: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  avatarUrl: {
+    type: String,
+    default:
+      "https://www.gravatar.com/avatar/eece7547006bb22bca41841eb40cb4b1?d=mm&s=200"
+  },
+  password: {
+    type: String,
+    minlength: 6,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "comment"
     }
+  ],
+  articles: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "article"
+    }
+  ],
+  draftArticles: [
+    new Schema({
+      content: Buffer
+    })
+  ],
+  likes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "article"
+    }
+  ],
+  describe: String,
+  aboutMe: String,
+  emailActive: {
+    type: Boolean,
+    default: false
+  },
+  tokenConfirmEmail: String,
+  admin: {
+    type: Boolean,
+    default: false
+  }
 });
 
 // userSchema.pre('save', async function (next) {
@@ -68,23 +74,23 @@ const userSchema = new Schema({
 //     }
 // });
 
-userSchema.methods.hashPassword = async function () {
-    try {
-        const salt = await bcrypt.genSalt(5);
-        const passwordHash = await bcrypt.hash(this.password, salt);
-        this.password = passwordHash;
-    } catch (err) {
-        return new Error('Comparing failed', err);
-    }
-}
+userSchema.methods.hashPassword = async function() {
+  try {
+    const salt = await bcrypt.genSalt(5);
+    const passwordHash = await bcrypt.hash(this.password, salt);
+    this.password = passwordHash;
+  } catch (err) {
+    return new Error("Comparing failed", err);
+  }
+};
 
-userSchema.methods.comparePassword = async function (password) {
-    try {
-        return await bcrypt.compare(password, this.password);
-    } catch (err) {
-        return new Error('Comparing failed', err);
-    }
-}
+userSchema.methods.comparePassword = async function(password) {
+  try {
+    return await bcrypt.compare(password, this.password);
+  } catch (err) {
+    return new Error("Comparing failed", err);
+  }
+};
 
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model("user", userSchema);
 module.exports = User;
